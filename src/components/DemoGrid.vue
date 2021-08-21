@@ -146,7 +146,8 @@ import request from 'request';
 //import axios from 'axios';
 import crypto from 'crypto';
 
-var baseurl = document.location.origin;  
+//var baseurl = document.location.origin;  
+var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
       // Place your API key and secret below. You can generate it from the website.
 
 var api_key  =  localStorage.getItem("api_key");
