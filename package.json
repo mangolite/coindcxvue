@@ -9,7 +9,7 @@
     "serve": "node --max_old_space_size=2560  vue-cli-service serve",
     "build": "node --max_old_space_size=2560  vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "npm run serve",
+    "start": "npm run serve"
   },
   "dependencies": {
     "axios": "^0.21.1",
