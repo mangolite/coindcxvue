@@ -26,7 +26,7 @@
           <b-row class="pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">Market Rate</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.ticker.last_price}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"> ...  </b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> NetWorth <small>(Earning+Stok) </small> </b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.earning+selected.stock*selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
