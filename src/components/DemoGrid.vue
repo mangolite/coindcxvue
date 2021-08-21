@@ -306,7 +306,7 @@ export default {
             summary[key].fee_amount+= (deal.fee_amount - 0);
 
             summary[key].stock = summary[key].buy_quantity - summary[key].sell_quantity;
-            summary[key].earning = summary[key].sell_amount - summary[key].buy_amount;
+            summary[key].earning = summary[key].sell_amount - summary[key].buy_amount-summary[key].fee_amount;
 
             summary[key].efective_rate =  (summary[key].buy_amount-summary[key].sell_amount)/summary[key].stock;
 
