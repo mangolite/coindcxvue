@@ -2,7 +2,8 @@
   <div class="hello">
         
         <b-table small striped hover :items="items" :fields="fields"
-          @row-selected="onRowSelected" selectable select-mode="single">
+          @row-selected="onRowSelected" selectable select-mode="single"
+          stacked="sm" selected-variant="active">
 
         <template #cell(show_details)="row">
           <b-button size="sm" @click="row.toggleDetails" class="mr-2">
@@ -159,14 +160,18 @@ export default {
     msg: String
   },
   data: () => ({
-        fields: [ { key: 'symbol', label : "Symbol", sortable: true }, 
-                  { key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
-                  { key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
-                  { key: 'sell_quantity', label: 'Sell Quantity', sortable: false, variant : "info"}, 
-                  { key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
-                  { key: 'fee_amount', label: 'Fee', sortable: true,variant : "danger"},
+        fields: [ { key: 'symbol', label : "Symbol", sortable: false }, 
+                  { key: 'ticker.last_price', label : "Now Rate", sortable: false,variant : "dark" },  
+                  { key: 'buy_rate', label: 'Buy Rate',sortable: false, variant : "warning"},  
+                  //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
+                  //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
+                  { key: 'sell_rate', label: 'Sell Rate', sortable: false, variant : "info"},
+                 // { key: 'sell_quantity', label: 'Sell Quantity', sortable: true, variant : "info"}, 
+                  //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
+                  //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
+                  { key: 'efective_rate', label: 'Avg Buy Rate', variant : "success"},
                   { key: 'stock', label: 'Stock', variant : "secondary"},
-                  { key: 'efective_rate', label: 'EffectiveRate', variant : "secondary"},
+               
         ],
         items: [],
         selected : null,
@@ -294,7 +299,8 @@ export default {
               buy_quantity : 0 , buy_amount : 0,
               sell_quantity : 0 , sell_amount : 0,
               fee_amount : 0,
-              starting_coins : 0
+              starting_coins : 0,
+              efective_rate : 0, now_rate : 0
             }
             if(deal.side == "sell"){
               summary[key].sell_quantity += (deal.quantity-0);
@@ -308,7 +314,10 @@ export default {
             summary[key].stock = summary[key].buy_quantity - summary[key].sell_quantity;
             summary[key].earning = summary[key].sell_amount - summary[key].buy_amount-summary[key].fee_amount;
 
-            summary[key].efective_rate =  (summary[key].buy_amount-summary[key].sell_amount)/summary[key].stock;
+
+            summary[key].buy_rate =  (summary[key].buy_amount)/summary[key].buy_quantity;
+            summary[key].sell_rate =  (summary[key].sell_amount)/summary[key].sell_quantity;
+            summary[key].efective_rate =  (-1*summary[key].earning)/summary[key].stock;
 
 
 
