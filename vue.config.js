@@ -25,7 +25,7 @@ module.exports = {
 	    entry: './src/main.js',
 	    template: 'public/app-coindcxvue.html',
 	    filename: 'app-coindcxvue.html',
-	    title: 'Front Page',
+	    title: 'CoinDCX Dashboard',
 	    chunks: ['chunk-vendors', 'chunk-common', 'coindcxvue']
 	  }
 	}
