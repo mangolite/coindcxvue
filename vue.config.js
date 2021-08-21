@@ -18,5 +18,16 @@ module.exports = {
 			},
   		},
   		clientLogLevel: 'debug', // 'silent' | 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'none' | 'warning'	
+	},
+	
+	pages : {
+	  'coindcxvue' : {
+	    entry: './src/main.js',
+	    template: 'public/app-coindcxvue.html',
+	    filename: 'app-coindcxvue.html',
+	    title: 'Front Page',
+	    chunks: ['chunk-vendors', 'chunk-common', 'coindcxvue']
+	  }
 	}
+
 }
