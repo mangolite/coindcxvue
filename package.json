@@ -9,7 +9,8 @@
     "serve": "node --max_old_space_size=2560  node_modules/.bin/vue-cli-service serve",
     "build": "node --max_old_space_size=2560  node_modules/.bin/vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "npm run serve"
+    "start": "npm run serve",
+    "now-dev": ""
   },
   "dependencies": {
     "axios": "^0.21.1",
