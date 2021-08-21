@@ -6,12 +6,10 @@
     "node": "14.x"
   },
   "scripts": {
-    "serve": "node --max_old_space_size=2560  node_modules/.bin/vue-cli-service serve",
-    "build": "node --max_old_space_size=2560  node_modules/.bin/vue-cli-service build",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "start": "npm run serve",
-    "now-dev": "",
-     "deploy": "sh deploy.sh"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -20,15 +18,7 @@
     "core-js": "^3.6.5",
     "crypto": "^1.0.1",
     "request": "^2.88.2",
-    "vue": "^2.6.11",
-    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
