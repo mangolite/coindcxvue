@@ -14,23 +14,23 @@
         </b-table>
 
         <b-card v-if="selected">
-          <b-row class="mb-2">
+          <b-row class="pb-2 pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">currency</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.symbol}}</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold">{{selected.symbol}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">My INR Balalnce</b-col>
             <b-col sm="2" lg="2" class="text-start"
               v-if="summary.INR && summary.INR.balance"
             ><small>₹ </small>{{summary.INR.balance.balance | round2}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">Market Rate</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.ticker.last_price}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end"> ...  </b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.earning+selected.stock*selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 pb-2 bg-warning">
             <b-col sm="2" lg="2" class="fw-bold text-end">Starting Coins</b-col>
             <b-col sm="2" lg="2" class="text-start" v-if="selected.balance">
               {{(selected.buy_quantity - selected.sell_quantity - selected.balance.locked_balance - selected.balance.balance) | round5}}</b-col>
@@ -39,21 +39,21 @@
               <small>₹ </small>{{selected.starting_coins*selected.ticker.last_price | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
-            <b-col sm="2" lg="2" class="fw-bold text-end">Purchased Coins</b-col>
+          <b-row class="pb-2 bg-warning" >
+            <b-col sm="2" lg="2" class="fw-bold text-end " >Purchased Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.buy_quantity | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">INR Debit</b-col>
             <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.buy_amount | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 bg-info bg-gradient">
             <b-col sm="2" lg="2" class="fw-bold text-end">Sold Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.sell_quantity | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">INR Credit</b-col>
             <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.sell_amount | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2" v-if="selected.balance">
+          <b-row class="pb-2 bg-info bg-gradient text-dark" v-if="selected.balance">
             <b-col sm="2" lg="2" class="fw-bold text-end">onSale Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.balance.locked_balance}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">onSale Worth</b-col>
@@ -61,7 +61,7 @@
               <small>₹ </small>{{selected.balance.locked_balance * selected.ticker.last_price | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2" v-if="selected.balance">
+          <b-row class="pb-2 bg-secondary text-light" v-if="selected.balance">
             <b-col sm="2" lg="2" class="fw-bold text-end">inStock Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.balance.balance | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">inStock Worth</b-col>
@@ -69,21 +69,21 @@
               <small>₹ </small>{{selected.balance.balance * selected.ticker.last_price | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 bg-secondary  text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.stock | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins Worth</b-col>
             <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.stock*selected.ticker.last_price | round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 bg-success text-light">
+            <b-col sm="2" lg="2" class="fw-bold text-end"> </b-col>
+            <b-col sm="2" lg="2" class="text-start">  </b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">My Earnings</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.earning |round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">My INR Value</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.stock*selected.ticker.last_price | round5}}</b-col>
+            <b-col sm="2" lg="2" class="text-start"><small>₹ </small> {{selected.earning |round5}}</b-col>
           </b-row>
 
-          <b-row class="mb-2">
+          <b-row class="pb-2 bg-success text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">Net BuyRate</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.efective_rate | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end"></b-col>
@@ -146,6 +146,7 @@
 import request from 'request';
 //import axios from 'axios';
 import crypto from 'crypto';
+import numeral from 'numeral';
 
 //var baseurl = document.location.origin;  
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
@@ -154,13 +155,18 @@ var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
 var api_key  =  localStorage.getItem("api_key");
 var api_secret   =  localStorage.getItem("api_secret");
 
+  var number = function (value,format) {
+      var _format = format || "0,0000"
+      return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
+  }
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
   },
   data: () => ({
-        fields: [ { key: 'symbol', label : "Symbol", sortable: false }, 
+        fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'ticker.last_price', label : "Now Rate", sortable: false,variant : "dark" },  
                   { key: 'buy_rate', label: 'Buy Rate',sortable: false, variant : "warning"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
@@ -189,13 +195,14 @@ export default {
     round5 : function (num,places) {
         let _places = places || 5;
         var base = Math.pow(10,_places)
-        return Math.round(num*base)/base;
+        return number(Math.round(num*base)/base);
     },
     round2 : function (num,places) {
         let _places = places || 2;
         var base = Math.pow(10,_places)
-        return Math.round(num*base)/base;
-    }
+        return number(Math.round(num*base)/base);
+    },
+
   },
   created : function () {
     var THAT = this;
