@@ -5,12 +5,14 @@
           @row-selected="onRowSelected" selectable select-mode="single"
           stacked="sm" selected-variant="active">
 
-        <template #cell(show_details)="row">
-          <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-            {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
-          </b-button>
-        </template>
-
+          <template #cell(efective_rate)="row">
+            <span :class="{
+              'fw-bold text-success' : row.item.efective_rate<0
+            }">
+              {{ row.item.efective_rate }}
+            </span>
+          </template>
+        
         </b-table>
 
         <b-card v-if="selected">
@@ -36,21 +38,21 @@
               {{(selected.buy_quantity - selected.sell_quantity - selected.balance.locked_balance - selected.balance.balance) | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">Starting Coins Worth</b-col>
             <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.starting_coins*selected.ticker.last_price | round5}}</b-col>
+              <small>₹ </small>{{selected.starting_coins*selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-warning" >
             <b-col sm="2" lg="2" class="fw-bold text-end " >Purchased Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.buy_quantity | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">INR Debit</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.buy_amount | round5}}</b-col>
+            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.buy_amount | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-info bg-gradient">
             <b-col sm="2" lg="2" class="fw-bold text-end">Sold Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.sell_quantity | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">INR Credit</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.sell_amount | round5}}</b-col>
+            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.sell_amount | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-info bg-gradient text-dark" v-if="selected.balance">
@@ -58,7 +60,7 @@
             <b-col sm="2" lg="2" class="text-start">{{selected.balance.locked_balance}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">onSale Worth</b-col>
             <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.balance.locked_balance * selected.ticker.last_price | round5}}</b-col>
+              <small>₹ </small>{{selected.balance.locked_balance * selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-secondary text-light" v-if="selected.balance">
@@ -66,28 +68,29 @@
             <b-col sm="2" lg="2" class="text-start">{{selected.balance.balance | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">inStock Worth</b-col>
             <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.balance.balance * selected.ticker.last_price | round5}}</b-col>
+              <small>₹ </small>{{selected.balance.balance * selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-secondary  text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins</b-col>
             <b-col sm="2" lg="2" class="text-start">{{selected.stock | round5}}</b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins Worth</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.stock*selected.ticker.last_price | round5}}</b-col>
+            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.stock*selected.ticker.last_price | round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-success text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end"> </b-col>
             <b-col sm="2" lg="2" class="text-start">  </b-col>
             <b-col sm="2" lg="2" class="fw-bold text-end">My Earnings</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small> {{selected.earning |round5}}</b-col>
+            <b-col sm="2" lg="2" class="text-start"><small>₹ </small> {{selected.earning |round2}}</b-col>
           </b-row>
 
           <b-row class="pb-2 bg-success text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">Net BuyRate</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.efective_rate | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"></b-col>
-            <b-col sm="2" lg="2" class="text-start">-</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{selected.efective_rate | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end">My Profit</b-col>
+            <b-col sm="2" lg="2" class="text-start">
+              <small>₹ </small>{{selected.stock*selected.ticker.last_price + selected.earning | round2}}</b-col>
           </b-row>
 
         </b-card>
@@ -159,6 +162,7 @@ var api_secret   =  localStorage.getItem("api_secret");
       var _format = format || "0,0000"
       return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
   }
+  var sync_history = 0, sync_ticker=0;
 
 export default {
   name: 'HelloWorld',
@@ -168,14 +172,14 @@ export default {
   data: () => ({
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'ticker.last_price', label : "Now Rate", sortable: false,variant : "dark" },  
-                  { key: 'buy_rate', label: 'Buy Rate',sortable: false, variant : "warning"},  
+                  { key: 'buy_rate', label: 'Avg Buy Rate',sortable: false, variant : "warning"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
-                  { key: 'sell_rate', label: 'Sell Rate', sortable: false, variant : "info"},
+                  { key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
                  // { key: 'sell_quantity', label: 'Sell Quantity', sortable: true, variant : "info"}, 
                   //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
-                  { key: 'efective_rate', label: 'Avg Buy Rate', variant : "success"},
+                  { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
                   { key: 'stock', label: 'Stock', variant : "secondary"},
                
         ],
@@ -195,7 +199,7 @@ export default {
     round5 : function (num,places) {
         let _places = places || 5;
         var base = Math.pow(10,_places)
-        return number(Math.round(num*base)/base);
+        return Math.round(num*base)/base;
     },
     round2 : function (num,places) {
         let _places = places || 2;
@@ -206,8 +210,13 @@ export default {
   },
   created : function () {
     var THAT = this;
-    setInterval(()=>THAT.sync_ticker(),2000);
-    this.sync();
+    THAT.sync_ticker();
+    THAT.sync_history();
+
+    setInterval(function(){
+      THAT.sync_ticker();
+      THAT.sync_history();
+    },20000);
 
   },
   methods: {
@@ -219,6 +228,7 @@ export default {
       this.sortOrders[key] = this.sortOrders[key] * -1;
     },
     sync_ticker: function() {
+        var THIS = this;
         let summary = this.summary;
         request.get(baseurl + "/exchange/ticker",function(error, response, body) {
             let tickers = JSON.parse(body);
@@ -228,7 +238,8 @@ export default {
                 summary[ticker.market].ticker = ticker;
               }
             }
-
+          clearTimeout(sync_ticker);
+          sync_ticker = setTimeout(()=>THIS.sync_ticker(),2000);
         });
     },
     sync_balance: function() {
@@ -263,10 +274,9 @@ export default {
                 summary.INR = { balance : balance}
               }
             }
-
         });
     },
-    sync: function() {
+    sync_history: function() {
          
       var timeStamp = Math.floor(Date.now());
       /// To check if the timestamp is correct
@@ -293,10 +303,8 @@ export default {
 
       let THIS = this;
       console.log("Here:Request:",options);
-
-      let summary = this.summary;
-
       request.post(options, function(error, response, body) {
+          var summary = {};
           for(var i in body){
             let deal = body[i];
             let key = deal.symbol;
@@ -319,23 +327,32 @@ export default {
             summary[key].fee_amount+= (deal.fee_amount - 0);
 
             summary[key].stock = summary[key].buy_quantity - summary[key].sell_quantity;
-            summary[key].earning = summary[key].sell_amount - summary[key].buy_amount-summary[key].fee_amount;
-
+            summary[key].net_debit = summary[key].buy_amount + summary[key].fee_amount
+            summary[key].net_credit = summary[key].sell_amount;
+            summary[key].earning = summary[key].net_credit - summary[key].net_debit;
 
             summary[key].buy_rate =  (summary[key].buy_amount)/summary[key].buy_quantity;
             summary[key].sell_rate =  (summary[key].sell_amount)/summary[key].sell_quantity;
-            summary[key].efective_rate =  (-1*summary[key].earning)/summary[key].stock;
 
-
+            if(summary[key].net_debit > summary[key].net_credit ){
+              summary[key].efective_rate =  (summary[key].net_debit - summary[key].net_credit)/summary[key].stock;
+            } else {
+              summary[key].efective_rate =  (summary[key].earning)/summary[key].stock;
+            }
+        
 
           }
 
-          for(var j in summary){
-            console.log("summary===",summary[j])
-            THIS.items.push(summary[j])
+          THIS.summary = summary;
+          THIS.items = [];
+          
+          for(var j in THIS.summary){
+            console.log("summary===",THIS.summary[j])
+            THIS.items.push(THIS.summary[j])
           }
           THIS.sync_balance();
-
+          clearTimeout(sync_history);
+          sync_history = setTimeout(()=>THIS.sync_history(),5000);
           //console.log("Here:Reponse:",body);
       });
 
