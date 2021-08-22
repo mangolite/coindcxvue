@@ -5,18 +5,39 @@
           @row-selected="onRowSelected" selectable select-mode="single"
           stacked="sm" selected-variant="active">
 
+          <template #cell(symbol)="row">
+              {{ row.item.symbol}}
+              <i :class="[
+              { 'far fa-thumbs-up text-success' : row.item.efective_rate<0 }
+            ]"></i>
+          </template>  
           <template #cell(efective_rate)="row">
             <span :class="{
-              'fw-bold text-success' : row.item.efective_rate<0
+              'fw-bold text-success' : row.item.efective_rate<0,
+              'text-danger' : row.item.efective_rate>row.item.buy_rate,
+              'fw-bold' : (row.item.sell_rate>0 && row.item.ticker.last_price < row.item.sell_rate)
             }">
               {{ row.item.efective_rate | round5}}
             </span>
-            <i :class="[
-              { 'fa fa-thumbs-up text-success' : row.item.efective_rate<0 },
-              ''
-            ]"></i>
           </template>
-        
+          
+          <template #cell(profit)="row">
+            <span v-if="row.item.stock" :class="{
+              'fw-bold text-success' : row.item.efective_rate<0
+            }">
+              {{row.item.stock*row.item.ticker.last_price + row.item.earning | round2}}
+            </span>
+          </template>
+
+          <template #cell(now_rate)="row">
+            <span v-if="row.item.ticker" :class="{
+              'fw-bold text-success' : (row.item.ticker.last_price > row.item.buy_rate),
+              'text-danger' : (row.item.ticker.last_price < row.item.buy_rate),
+            }">
+              {{row.item.ticker.last_price | round5}}
+            </span>
+          </template>
+
         </b-table>
 
         <b-card v-if="selected">
@@ -187,7 +208,7 @@ export default {
   },
   data: () => ({
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
-                  { key: 'ticker.last_price', label : "Now Rate", sortable: false,variant : "dark" },  
+                  { key: 'now_rate', label : "Now Rate", sortable: false,variant : "dark" },  
                   { key: 'buy_rate', label: 'Avg Buy Rate',sortable: false, variant : "warning"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
@@ -196,7 +217,8 @@ export default {
                   //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
-                  { key: 'stock', label: 'Stock', variant : "secondary"},
+                  //{ key: 'stock', label: 'Stock', variant : "secondary"},
+                  { key: 'profit', label: 'Profit', variant : "secondary"},
                
         ],
         items: [],
@@ -345,7 +367,7 @@ export default {
             summary[key].earning = summary[key].net_credit - summary[key].net_debit;
 
             summary[key].buy_rate =  (summary[key].buy_amount)/summary[key].buy_quantity;
-            summary[key].sell_rate =  (summary[key].sell_amount)/summary[key].sell_quantity;
+            summary[key].sell_rate = summary[key].sell_amount>0 ? (summary[key].sell_amount)/summary[key].sell_quantity : 0;
 
             if(summary[key].net_debit > summary[key].net_credit ){
               summary[key].efective_rate =  (summary[key].net_debit - summary[key].net_credit)/summary[key].stock;
