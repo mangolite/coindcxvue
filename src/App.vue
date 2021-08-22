@@ -22,7 +22,12 @@ export default {
   name: 'App',
   components: {
     DemoGrid
-  }
+  },
+  mounted : function () {
+    let recaptchaScript = document.createElement('script')
+    recaptchaScript.setAttribute('src', 'https://kit.fontawesome.com/1153462312.js')
+    document.head.appendChild(recaptchaScript);
+  },
 }
 </script>
 

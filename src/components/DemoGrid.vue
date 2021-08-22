@@ -9,8 +9,12 @@
             <span :class="{
               'fw-bold text-success' : row.item.efective_rate<0
             }">
-              {{ row.item.efective_rate }}
+              {{ row.item.efective_rate | round5}}
             </span>
+            <i :class="[
+              { 'fa fa-thumbs-up text-success' : row.item.efective_rate<0 },
+              ''
+            ]"></i>
           </template>
         
         </b-table>
@@ -163,6 +167,18 @@ var api_secret   =  localStorage.getItem("api_secret");
       return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
   }
   var sync_history = 0, sync_ticker=0;
+  var newSummary = function(key,symbol){
+    return {
+              key : key, ticker : {},
+              symbol : symbol,
+              buy_quantity : 0 , buy_amount : 0,
+              sell_quantity : 0 , sell_amount : 0,
+              fee_amount : 0,
+              starting_coins : 0,
+              efective_rate : 0, now_rate : 0
+      }
+  }
+
 
 export default {
   name: 'HelloWorld',
@@ -304,19 +320,16 @@ export default {
       let THIS = this;
       console.log("Here:Request:",options);
       request.post(options, function(error, response, body) {
-          var summary = {};
+          for (var k in THIS.summary) {
+            THIS.summary[k] = newSummary(k,k);
+          }
+          
+          var summary = THIS.summary;
+          
           for(var i in body){
             let deal = body[i];
             let key = deal.symbol;
-            summary[key] = summary[key] || {
-              key : key, ticker : {},
-              symbol : deal.symbol,
-              buy_quantity : 0 , buy_amount : 0,
-              sell_quantity : 0 , sell_amount : 0,
-              fee_amount : 0,
-              starting_coins : 0,
-              efective_rate : 0, now_rate : 0
-            }
+            summary[key] = summary[key] || newSummary(key,deal.symbol);
             if(deal.side == "sell"){
               summary[key].sell_quantity += (deal.quantity-0);
               summary[key].sell_amount += (deal.price * (deal.quantity-0));
@@ -337,19 +350,19 @@ export default {
             if(summary[key].net_debit > summary[key].net_credit ){
               summary[key].efective_rate =  (summary[key].net_debit - summary[key].net_credit)/summary[key].stock;
             } else {
-              summary[key].efective_rate =  (summary[key].earning)/summary[key].stock;
+              summary[key].efective_rate =  -1*(summary[key].earning)/summary[key].stock;
             }
         
 
           }
-
-          THIS.summary = summary;
-          THIS.items = [];
           
-          for(var j in THIS.summary){
-            console.log("summary===",THIS.summary[j])
-            THIS.items.push(THIS.summary[j])
+          if(THIS.items.length == 0){
+            for(var j in THIS.summary){
+              console.log("summary===",THIS.summary[j])
+              THIS.items.push(THIS.summary[j])
+            }
           }
+
           THIS.sync_balance();
           clearTimeout(sync_history);
           sync_history = setTimeout(()=>THIS.sync_history(),5000);
