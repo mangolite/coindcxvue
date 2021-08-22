@@ -2,8 +2,8 @@
   <div class="hello">
         
         <b-table small striped hover :items="items" :fields="fields"
-          @row-selected="onRowSelected" selectable select-mode="single"
-          stacked="sm" selected-variant="active">
+          stacked="sm" selected-variant="active"
+          @row-clicked="onRowSelected" >
 
           <template #cell(symbol)="row">
               {{ row.item.symbol}}
@@ -14,8 +14,8 @@
           <template #cell(efective_rate)="row">
             <span :class="{
               'fw-bold text-success' : row.item.efective_rate<0,
-              'text-danger' : row.item.efective_rate>row.item.buy_rate,
-              'fw-bold' : (row.item.sell_rate>0 && row.item.ticker.last_price < row.item.sell_rate)
+              'text-danger' : row.item.sell_rate>0 && row.item.efective_rate>row.item.buy_rate,
+              'fw-bold' : (row.item.sell_rate>0 && row.item.efective_rate > row.item.sell_rate)
             }">
               {{ row.item.efective_rate | round5}}
             </span>
@@ -32,14 +32,13 @@
           <template #cell(now_rate)="row">
             <span v-if="row.item.ticker" :class="{
               'fw-bold text-success' : (row.item.ticker.last_price > row.item.buy_rate),
-              'text-danger' : (row.item.ticker.last_price < row.item.buy_rate),
+              'fw-bold text-danger' : (row.item.ticker.last_price < row.item.buy_rate),
             }">
               {{row.item.ticker.last_price | round5}}
             </span>
           </template>
 
-        </b-table>
-
+ <template #row-details="row">
         <b-card v-if="selected">
           <b-row class="pb-2 pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">currency</b-col>
@@ -118,7 +117,19 @@
               <small>₹ </small>{{selected.stock*selected.ticker.last_price + selected.earning | round2}}</b-col>
           </b-row>
 
+          <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
+
         </b-card>
+
+
+
+ </template>  
+
+
+
+        </b-table>
+
+
 
   <b-button v-b-modal.modal-prevent-closing>Update Keys</b-button>
 
@@ -222,7 +233,7 @@ export default {
                
         ],
         items: [],
-        selected : null,
+        selected : null, selected_symbol : null,
         ticker : null,
         summary : {},
         apiKey : api_key, apiKeyState : null,
@@ -258,8 +269,16 @@ export default {
 
   },
   methods: {
-    onRowSelected : function(items){
-      this.selected = items ? items[0] : null;
+    onRowSelected : function(row){
+        this.selected = row;
+        
+        this.selected_symbol = row.symbol;
+        //let _showDetails = !!row._showDetails;
+        //for(var i in this.items){
+          //this.items[i]._showDetails = false;
+        //}
+        row._showDetails = !row._showDetails;
+        console.log("row.item",row._showDetails);
     },
     sortBy: function(key) {
       this.sortKey = key;
