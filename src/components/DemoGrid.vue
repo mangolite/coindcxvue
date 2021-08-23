@@ -22,10 +22,10 @@
           </template>
           
           <template #cell(profit)="row">
-            <span v-if="row.item.stock" :class="{
+            <span v-if="row.item.ticker" :class="{
               'fw-bold text-success' : row.item.efective_rate<0
             }">
-              {{row.item.stock*row.item.ticker.last_price + row.item.earning | round2}}
+              {{row.item.stock*row.item.ticker.last_price * 0.999 + row.item.earning | round2}}
             </span>
           </template>
 
@@ -39,7 +39,7 @@
           </template>
 
  <template #row-details="row">
-        <b-card v-if="selected">
+        <b-card v-if="selected" class="ml-auto"> 
           <b-row class="pb-2 pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">currency</b-col>
             <b-col sm="2" lg="2" class="text-start fw-bold">{{selected.symbol}}</b-col>
@@ -116,9 +116,11 @@
             <b-col sm="2" lg="2" class="text-start">
               <small>₹ </small>{{selected.stock*selected.ticker.last_price + selected.earning | round2}}</b-col>
           </b-row>
-
-          <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
-
+ <b-row class="pt-4  bg-success text-light">
+    <b-col sm="12" lg="12" class="fw-bold text-end text-center">
+          <b-button pill size="sm" variant="danger" @click="row.toggleDetails">Hide Details</b-button>
+    </b-col>     
+ </b-row>
         </b-card>
 
 
@@ -207,7 +209,8 @@ var api_secret   =  localStorage.getItem("api_secret");
               sell_quantity : 0 , sell_amount : 0,
               fee_amount : 0,
               starting_coins : 0,
-              efective_rate : 0, now_rate : 0
+              efective_rate : 0, now_rate : 0,
+              _showDetails : false
       }
   }
 
@@ -273,12 +276,12 @@ export default {
         this.selected = row;
         
         this.selected_symbol = row.symbol;
-        //let _showDetails = !!row._showDetails;
-        //for(var i in this.items){
-          //this.items[i]._showDetails = false;
-        //}
-        row._showDetails = !row._showDetails;
-        console.log("row.item",row._showDetails);
+        let _showDetails = !!row._showDetails;
+        for(var i in this.items){
+          this.items[i]._showDetails = false;
+        }
+        row._showDetails = !_showDetails;
+        console.log("row._showDetails",row._showDetails);
     },
     sortBy: function(key) {
       this.sortKey = key;
@@ -391,7 +394,11 @@ export default {
             if(summary[key].net_debit > summary[key].net_credit ){
               summary[key].efective_rate =  (summary[key].net_debit - summary[key].net_credit)/summary[key].stock;
             } else {
-              summary[key].efective_rate =  -1*(summary[key].earning)/summary[key].stock;
+              if(summary[key].stock != 0){
+                summary[key].efective_rate =  -1*(summary[key].earning)/summary[key].stock;
+              } else {
+                summary[key].efective_rate =  0;
+              }
             }
         
 
