@@ -70,6 +70,12 @@
         'market', 'side', 'price_per_unit','total_quantity'
        ]" stacked="xs">
 
+        <template #cell(side)="order">
+          <span :data-value="order.value" :class="{
+           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
+          }">{{order.value}}</span>
+        </template>
+
         <template #cell(price_per_unit)="order">
           <span :data-value="order.value">{{order.value | round5}}</span>
         </template>
@@ -91,6 +97,12 @@
         'symbol', 'side', 'price','quantity','amount'
        ]" stacked="xs">
 
+        <template #cell(side)="order">
+          <span :data-value="order.value" :class="{
+           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
+          }">{{order.value}}</span>
+        </template>
+        
           <template #cell(price)="trade">
             <span :data-value="trade.value">{{trade.value| round5}}</span>
           </template>
@@ -323,6 +335,8 @@ export default {
       let symbol = this.selected.symbol;
       return this.orders.filter(function(order){
         return order.market == symbol;
+      }).sort(function(a,b){
+          return a.price_per_unit - b.price_per_unit;
       });
     }
   },
