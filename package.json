@@ -19,7 +19,8 @@
     "crypto": "^1.0.1",
     "numeral": "^2.0.6",
     "request": "^2.88.2",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-router": "^3.0.5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",

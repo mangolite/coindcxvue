@@ -1,15 +1,38 @@
 <template>
   <div class="hello">
-        
-        <b-table small striped hover :items="items" :fields="fields"
-          stacked="sm" selected-variant="active"
-          @row-clicked="onRowSelected" >
+    
+  <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
+    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home"></i></b-navbar-brand>
 
+  <b-navbar-nav class="ml-auto" small v-if="selected">
+    <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
+  </b-navbar-nav>
+
+  <b-navbar-nav class="ml-auto" small v-if="selected">
+    <b-nav-item href="#" class="fw-bold" :active="tab=='history'" @click="tab='history'"  >History</b-nav-item>
+  </b-navbar-nav>
+
+  <b-navbar-nav class="ml-auto" small v-if="selected">
+    <b-nav-item href="#" class="fw-bold" :active="tab=='orders'" @click="tab='orders'" >Orders</b-nav-item>
+  </b-navbar-nav>
+
+
+    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-collapse id="nav-collapse" is-nav>
+      <!-- Right aligned nav items -->
+      <b-navbar-nav class="ml-auto" small>
+        <b-button v-b-modal.modal-prevent-closing size="sm">Update Keys</b-button>
+      </b-navbar-nav>
+    </b-collapse>
+  </b-navbar>
+
+
+
+  <div v-if="!selected" id="myMarketDiv">
+        <b-table small striped hover :items="items" :fields="fields" id="myMarket"
+          stacked="sm" selected-variant="active" >
           <template #cell(symbol)="row">
-              {{ row.item.symbol}}
-              <i :class="[
-              { 'far fa-thumbs-up text-success' : row.item.efective_rate<0 }
-            ]"></i>
+              <b-button variant="dark" size="sm" href="#"  @click="onRowSelected(row.item)">{{ row.item.symbol}}</b-button>
           </template>  
           <template #cell(efective_rate)="row">
             <span :class="{
@@ -38,8 +61,53 @@
             </span>
           </template>
 
- <template #row-details="row">
-        <b-card v-if="selected" class="ml-auto"> 
+        </b-table>
+
+  </div>
+<div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
+       <b-table small striped :items="myOrders" dark fixed id="myOrders"
+       :fields="[
+        'market', 'side', 'price_per_unit','total_quantity'
+       ]" stacked="xs">
+
+        <template #cell(price_per_unit)="order">
+          <span :data-value="order.value">{{order.value | round5}}</span>
+        </template>
+
+        <template #cell(total_quantity)="order">
+          <span :data-value="order.value">{{order.value | round5}}</span>
+        </template>
+
+          <template #cell(amount)="order">
+            {{(order.item.price_per_unit*order.item.total_quantity) | round2}}
+          </template>
+
+       </b-table>
+</div>
+
+<div v-else-if="!!selected && tab=='history' && myTrades.length>0" id="myTradesDiv">
+       <b-table small striped :items="myTrades" dark fixed id="myTrades"
+       :fields="[
+        'symbol', 'side', 'price','quantity','amount'
+       ]" stacked="xs">
+
+          <template #cell(price)="trade">
+            <span :data-value="trade.value">{{trade.value| round5}}</span>
+          </template>
+
+          <template #cell(quantity)="trade">
+           <span :data-value="trade.value"> {{trade.value| round5}}</span>
+          </template>
+
+        <template #cell(amount)="trade">
+            {{(trade.item.quantity*trade.item.price) | round2}}
+          </template>
+
+       </b-table>
+</div>
+
+  <div v-else-if="!!selected && tab=='summary'">
+        <b-card class="ml-auto"> 
           <b-row class="pb-2 pb-2 bg-dark text-light">
             <b-col sm="2" lg="2" class="fw-bold text-end">currency</b-col>
             <b-col sm="2" lg="2" class="text-start fw-bold">{{selected.symbol}}</b-col>
@@ -116,24 +184,18 @@
             <b-col sm="2" lg="2" class="text-start">
               <small>₹ </small>{{selected.stock*selected.ticker.last_price + selected.earning | round2}}</b-col>
           </b-row>
- <b-row class="pt-4  bg-success text-light">
-    <b-col sm="12" lg="12" class="fw-bold text-end text-center">
-          <b-button pill size="sm" variant="danger" @click="row.toggleDetails">Hide Details</b-button>
-    </b-col>     
- </b-row>
+          <b-row class="pt-4  bg-success text-light">
+              <b-col sm="12" lg="12" class="fw-bold text-end text-center">
+                    <b-button pill size="sm" variant="danger" @click="selected=null">Hide Details</b-button>
+              </b-col>     
+          </b-row>
         </b-card>
+  
+  </div>
 
 
 
- </template>  
 
-
-
-        </b-table>
-
-
-
-  <b-button v-b-modal.modal-prevent-closing>Update Keys</b-button>
 
    <b-modal
       id="modal-prevent-closing"
@@ -240,9 +302,29 @@ export default {
         ticker : null,
         summary : {},
         apiKey : api_key, apiKeyState : null,
-        apiSecret : api_secret, apiSecretState : null
+        apiSecret : api_secret, apiSecretState : null,
+        tab : null, // open,hisotry
+        orders : null, history : null
   }),
   computed: {
+    myTrades (){
+      if(!this.history || !this.selected){
+          return [];
+      }
+      let symbol = this.selected.symbol;
+      return this.history.filter(function(trade){
+        return trade.symbol == symbol;
+      });
+    },
+    myOrders (){
+      if(!this.orders || !this.selected){
+          return [];
+      }
+      let symbol = this.selected.symbol;
+      return this.orders.filter(function(order){
+        return order.market == symbol;
+      });
+    }
   },
   filters: {
     capitalize: function(str) {
@@ -250,12 +332,12 @@ export default {
     },
     round5 : function (num,places) {
         let _places = places || 5;
-        var base = Math.pow(10,_places)
+        let base = Math.pow(10,_places)
         return Math.round(num*base)/base;
     },
     round2 : function (num,places) {
         let _places = places || 2;
-        var base = Math.pow(10,_places)
+        let base = Math.pow(10,_places)
         return number(Math.round(num*base)/base);
     },
 
@@ -274,14 +356,9 @@ export default {
   methods: {
     onRowSelected : function(row){
         this.selected = row;
-        
         this.selected_symbol = row.symbol;
-        let _showDetails = !!row._showDetails;
-        for(var i in this.items){
-          this.items[i]._showDetails = false;
-        }
-        row._showDetails = !_showDetails;
-        console.log("row._showDetails",row._showDetails);
+        this.tab="summary"
+        console.log("row._showDetails",this.selected_symbol);
     },
     sortBy: function(key) {
       this.sortKey = key;
@@ -322,7 +399,7 @@ export default {
             json: true,
             body: body
         }
-
+        let THIS = this;
         request.post(options,function(error, response, body) {
             let balances = body;
             for(var i in balances){
@@ -334,6 +411,33 @@ export default {
                 summary.INR = { balance : balance}
               }
             }
+          THIS.sync_orders();
+        });
+    },
+   sync_orders : function() {
+        var timeStamp = Math.floor(Date.now());
+        // To check if the timestamp is correct
+        console.log(timeStamp);
+        let body = {
+            "timestamp": timeStamp
+        }
+        const payload = new Buffer(JSON.stringify(body)).toString();
+        const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+
+        const options = {
+            url: baseurl + "/exchange/v1/orders/active_orders",
+            headers: {
+                'X-AUTH-APIKEY': api_key,
+                'X-AUTH-SIGNATURE': signature
+            },
+            json: true,
+            body: body
+        }
+        var THIS =  this;
+        request.post(options,function(error, response, body) {
+            THIS.orders = body.orders;
+            clearTimeout(sync_history);
+            sync_history = setTimeout(()=>THIS.sync_history(),5000);
         });
     },
     sync_history: function() {
@@ -369,7 +473,7 @@ export default {
           }
           
           var summary = THIS.summary;
-          
+          THIS.history = body;
           for(var i in body){
             let deal = body[i];
             let key = deal.symbol;
@@ -412,8 +516,6 @@ export default {
           }
 
           THIS.sync_balance();
-          clearTimeout(sync_history);
-          sync_history = setTimeout(()=>THIS.sync_history(),5000);
           //console.log("Here:Reponse:",body);
       });
 
