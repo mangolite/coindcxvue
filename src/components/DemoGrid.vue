@@ -45,11 +45,32 @@
           </template>
           
           <template #cell(profit)="row">
-            <span v-if="row.item.ticker" :class="{
-              'fw-bold text-success' : row.item.efective_rate<0
-            }">
-              {{row.item.stock*row.item.ticker.last_price * 0.999 + row.item.earning | round2}}
-            </span>
+            <b-row>
+              <b-col>
+                <b  :class="{
+                  'fw-bold text-danger' : row.item.earning<0,
+                  'fw-bold text-success' : row.item.earning>0
+                }">{{row.item.earning | round2}}</b>
+                &nbsp;<i class="bi-arrow-right-short"/>
+              </b-col>
+              <b-col>  
+                <span v-if="row.item.ticker" style="font-size:18px" :class="{
+                  'fw-bold text-danger' : row.item.efective_rate>row.item.ticker.last_price,
+                  'fw-bold text-success' : row.item.efective_rate<row.item.ticker.last_price
+                }">
+                  {{row.item.stock*row.item.ticker.last_price * 0.999 + row.item.earning | round2}}
+                </span>
+              </b-col>  
+              <b-col>  
+                &nbsp;<i class="bi-arrow-right-short"/>
+                <span v-if="row.item.order" :class="{
+                  'fw-bold text-danger' : row.item.now_profit>row.item.postsale_profit,
+                  'fw-bold text-success' : row.item.now_profit<row.item.postsale_profit
+                }">
+                  {{row.item.postsale_profit | round2}}
+                </span>
+                </b-col>
+             </b-row>
           </template>
 
           <template #cell(now_rate)="row">
@@ -306,7 +327,7 @@ export default {
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
                   //{ key: 'stock', label: 'Stock', variant : "secondary"},
-                  { key: 'profit', label: 'Profit', variant : "secondary"},
+                  { key: 'profit', label: 'past-now-post', variant : "secondary"},
                
         ],
         items: [],
@@ -387,8 +408,10 @@ export default {
             let tickers = JSON.parse(body);
             for(var i in tickers){
               var ticker = tickers[i];
-              if(summary[ticker.market]){
-                summary[ticker.market].ticker = ticker;
+              var market = ticker.market
+              if(summary[market]){
+                summary[market].ticker = ticker;
+                summary[market].now_profit = summary[market].stock*summary[market].ticker.last_price * 0.999 + summary[market].earning
               }
             }
           clearTimeout(sync_ticker);
@@ -431,6 +454,7 @@ export default {
         });
     },
    sync_orders : function() {
+        let summary = this.summary;
         var timeStamp = Math.floor(Date.now());
         // To check if the timestamp is correct
         console.log(timeStamp);
@@ -452,6 +476,23 @@ export default {
         var THIS =  this;
         request.post(options,function(error, response, body) {
             THIS.orders = body.orders;
+            
+            for(var i in THIS.orders){
+              var order = THIS.orders[i];
+              var market = order.market;
+              if(summary[market]){
+                summary[market].order = summary[market].order || {
+                  onsale_ammount : 0, onbuy_amount : 0
+                };
+                if(order.side=='sell')
+                  summary[market].order.onsale_ammount+=(order.price_per_unit*order.remaining_quantity);
+                else 
+                  summary[market].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
+
+                summary[market].postsale_profit =  summary[market].order.onsale_ammount * 0.999 + summary[market].earning  
+              }  
+            }
+
             clearTimeout(sync_history);
             sync_history = setTimeout(()=>THIS.sync_history(),5000);
         });
