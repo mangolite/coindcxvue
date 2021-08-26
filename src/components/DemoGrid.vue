@@ -326,6 +326,8 @@ export default {
       let symbol = this.selected.symbol;
       return this.history.filter(function(trade){
         return trade.symbol == symbol;
+      }).sort(function(a,b){
+          return b.timestamp - a.timestamp;
       });
     },
     myOrders (){
@@ -336,7 +338,7 @@ export default {
       return this.orders.filter(function(order){
         return order.market == symbol;
       }).sort(function(a,b){
-          return a.price_per_unit - b.price_per_unit;
+          return b.price_per_unit - a.price_per_unit;
       });
     }
   },
