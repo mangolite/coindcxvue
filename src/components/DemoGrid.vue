@@ -222,6 +222,68 @@
                     <b-button pill size="sm" variant="danger" @click="selected=null">Hide Details</b-button>
               </b-col>     
           </b-row>
+
+          <b-row class="pb-2 bg-primary text-light" v-if="selected.ticker">
+            <b-col sm="12" lg="12" class="fw-bold text-center display-6"> Tips for NoProfit/NoLoss</b-col>
+
+            <b-col cols="6" lg= "2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/4 | round5}}</b> @ {{(selected.ticker.last_price*5 - selected.efective_rate*4) | round5}}
+            </b-col> 
+
+            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/3 | round5}}</b> @ {{(selected.ticker.last_price*4 - selected.efective_rate*3) | round5}}
+            </b-col> 
+
+            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/2 | round5}}</b> @ {{(selected.ticker.last_price*3 - selected.efective_rate*2) | round5}}
+            </b-col> 
+
+            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock | round5}}</b> @ {{(selected.ticker.last_price*2 - selected.efective_rate) | round5}}
+            </b-col>
+
+            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock*2 | round5}}</b> @ {{(selected.ticker.last_price*3 - selected.efective_rate)/2 | round5}}
+            </b-col> 
+
+            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock*3 | round5}}</b> @ {{(selected.ticker.last_price*4 - selected.efective_rate)/3 | round5}}
+            </b-col> 
+          </b-row>
+
+          <b-row class="pb-2 bg-danger text-light" v-if="selected.ticker">
+            <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock*3 | round5}}</b> @ {{(selected.efective_rate*4 - selected.ticker.last_price)/3 | round5}}
+            </b-col>
+            <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock*2 | round5}}</b> @ {{(selected.efective_rate*3 - selected.ticker.last_price)/2 | round5}}
+            </b-col>
+             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock | round5}}</b> @ {{(selected.efective_rate*2 - selected.ticker.last_price) | round5}}
+            </b-col>
+             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/2 | round5}}</b> @ {{(selected.efective_rate*3 - selected.ticker.last_price*2) | round5}}
+            </b-col>
+             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/3 | round5}}</b> @ {{(selected.efective_rate*4 - selected.ticker.last_price*3) | round5}}
+            </b-col>
+             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
+            <b-col cols="6" lg="2" class="text-start">
+              <b>{{selected.stock/4 | round5}}</b> @ {{(selected.efective_rate*5 - selected.ticker.last_price*4) | round5}}
+            </b-col>
+          </b-row>
+
         </b-card>
   
   </div>
