@@ -2,7 +2,7 @@
   <div class="hello">
     
   <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
-    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home"></i></b-navbar-brand>
+    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
@@ -21,7 +21,10 @@
     <b-collapse id="nav-collapse" is-nav>
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto" small>
-        <b-button v-b-modal.modal-prevent-closing size="sm">Update Keys</b-button>
+        <b-button @click="setIndex(1);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 1</b-button>
+        <b-button @click="setIndex(2);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 2</b-button>
+        <b-button @click="setIndex(3);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 3</b-button>
+        <b-button @click="setIndex(4);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 4</b-button>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -350,13 +353,29 @@ import numeral from 'numeral';
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
       // Place your API key and secret below. You can generate it from the website.
 
-var api_key  =  localStorage.getItem("api_key");
-var api_secret   =  localStorage.getItem("api_secret");
+var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
+var api_secret_1 = localStorage.getItem("api_secret_1") || localStorage.getItem("api_secret");
+
+if(api_key_1){
+  localStorage.setItem("api_key_1",api_key_1);
+  localStorage.setItem("api_secret_1",api_secret_1);
+}
+
+var KEYS = {};
+var INDEX = 0;
+for(var i =1; i<5; i++){
+  KEYS["api_key_" + i] = localStorage.getItem("api_key_"+i);
+  KEYS["api_secret_" + i] = localStorage.getItem("api_secret_"+i);
+  if(KEYS["api_key_" + i]){
+    INDEX++;
+  }
+}
 
   var number = function (value,format) {
       var _format = format || "0,0000"
       return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
   }
+
   var sync_history = 0, sync_ticker=0;
   var newSummary = function(key,symbol){
     return {
@@ -396,8 +415,9 @@ export default {
         selected : null, selected_symbol : null,
         ticker : null,
         summary : {},
-        apiKey : api_key, apiKeyState : null,
-        apiSecret : api_secret, apiSecretState : null,
+        nowIndex : 1, INDEX : INDEX,
+        apiKey : null, apiKeyState : null,
+        apiSecret : null, apiSecretState : null,
         tab : null, // open,hisotry
         orders : null, history : null
   }),
@@ -442,17 +462,36 @@ export default {
 
   },
   created : function () {
-    var THAT = this;
-    THAT.sync_ticker();
-    THAT.sync_history();
+    //var THAT = this;
+    // THAT.sync_ticker(0);
+    // THAT.sync_history(0);
 
-    setInterval(function(){
-      THAT.sync_ticker();
-      THAT.sync_history();
-    },20000);
-
+    // setInterval(function(){
+    //   THAT.sync_ticker(0);
+    //   THAT.sync_history(0);
+    // },20000);
+    this.setIndex(1);
   },
   methods: {
+    setIndex : function(index){
+      this.nowIndex = index;
+      this.apiKey = KEYS["api_key_" + this.nowIndex];
+      this.apiSecret = KEYS["api_secret_" + this.nowIndex];
+      this.items = []
+      this.summary = {};
+
+      clearTimeout(sync_ticker);
+      clearTimeout(sync_history);
+      this.sync_ticker(0);
+      this.sync_history(0);
+    },
+    getIndex : function () {
+      //return this.nowIndex;
+      console.log("getIndex",this.nowIndex,INDEX);
+      if(this.nowIndex <= INDEX){
+         return this.nowIndex;
+       } return 1;
+    },
     onRowSelected : function(row){
         this.selected = row;
         this.selected_symbol = row.symbol;
@@ -480,7 +519,12 @@ export default {
           sync_ticker = setTimeout(()=>THIS.sync_ticker(),2000);
         });
     },
-    sync_balance: function() {
+    sync_balance: function(index) {
+        let _index = this.getIndex(index)
+        let api_key = KEYS["api_key_" + _index];
+        let api_secret = KEYS["api_secret_" + _index];
+        console.log("_index",_index)
+
         let summary = this.summary;
         var timeStamp = Math.floor(Date.now());
         // To check if the timestamp is correct
@@ -512,10 +556,15 @@ export default {
                 summary.INR = { balance : balance}
               }
             }
-          THIS.sync_orders();
+          THIS.sync_orders(_index);
         });
     },
-   sync_orders : function() {
+   sync_orders : function(index) {
+        let _index = this.getIndex(index)
+        let api_key = KEYS["api_key_" + _index];
+        let api_secret = KEYS["api_secret_" + _index];
+        console.log("_index",_index)
+
         let summary = this.summary;
         var timeStamp = Math.floor(Date.now());
         // To check if the timestamp is correct
@@ -542,25 +591,31 @@ export default {
             for(var i in THIS.orders){
               var order = THIS.orders[i];
               var market = order.market;
-              if(summary[market]){
-                summary[market].order = summary[market].order || {
+              //var key = _index + "." + market;
+              var key = market;
+              if(summary[key]){
+                summary[key].order = summary[key].order || {
                   onsale_ammount : 0, onbuy_amount : 0
                 };
                 if(order.side=='sell')
-                  summary[market].order.onsale_ammount+=(order.price_per_unit*order.remaining_quantity);
+                  summary[key].order.onsale_ammount+=(order.price_per_unit*order.remaining_quantity);
                 else 
-                  summary[market].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
+                  summary[key].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
 
-                summary[market].postsale_profit =  summary[market].order.onsale_ammount * 0.999 + summary[market].earning  
+                summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning  
               }  
             }
 
             clearTimeout(sync_history);
-            sync_history = setTimeout(()=>THIS.sync_history(),5000);
+            sync_history = setTimeout(()=>THIS.sync_history(++_index),5000);
         });
     },
-    sync_history: function() {
-         
+    sync_history: function(index) {
+      let _index = this.getIndex(index)
+      let api_key = KEYS["api_key_" + _index];
+      let api_secret = KEYS["api_secret_" + _index];
+      console.log("_index",_index)
+
       var timeStamp = Math.floor(Date.now());
       /// To check if the timestamp is correct
       console.log(timeStamp);
@@ -595,6 +650,7 @@ export default {
           THIS.history = body;
           for(var i in body){
             let deal = body[i];
+            //let key = _index + "." + deal.symbol;
             let key = deal.symbol;
             summary[key] = summary[key] || newSummary(key,deal.symbol);
             if(deal.side == "sell"){
@@ -634,7 +690,7 @@ export default {
             }
           }
 
-          THIS.sync_balance();
+          THIS.sync_balance(_index);
           //console.log("Here:Reponse:",body);
       });
 
@@ -679,11 +735,11 @@ export default {
           return
         }
         // Push the name to submitted names
-        api_key = this.apiKey;
-        api_secret = this.apiSecret;
+        KEYS["api_key_"+this.nowIndex] = this.apiKey;
+        KEYS["api_secret_"+this.nowIndex] = this.apiSecret;
 
-        localStorage.setItem("api_key",api_key);
-        localStorage.setItem("api_secret",api_secret);
+        localStorage.setItem("api_key_"+this.nowIndex,this.apiKey);
+        localStorage.setItem("api_secret_"+this.nowIndex,this.apiSecret);
 
         // Hide the modal manually
         this.$nextTick(() => {
