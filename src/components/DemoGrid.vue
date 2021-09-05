@@ -37,6 +37,11 @@
           <template #cell(buy_rate)="row">
               {{row.item.buy_rate | round5}} ~ <small> {{row.item.buy_rate_stock | round5}}</small>
           </template>  
+          <template #cell(low_high)="row">
+            <small class="text-success" :class="{'bg-light badge fw-bold' : row.item.signal_buy >0}" >{{row.item.signal_buy|round2}}%</small>
+            <span>&nbsp;{{row.item.ticker.low | round5}} ~  {{row.item.ticker.high | round5}}&nbsp;</span>
+            <small class="text-danger" :class="{'bg-light badge fw-bold' : row.item.signal_sell<0}" >{{row.item.signal_sell|round2}}%</small>
+          </template> 
           <template #cell(symbol)="row">
               <b-button variant="dark" size="sm" href="#"  @click="onRowSelected(row.item)">{{ row.item.symbol}}</b-button>
           </template>  
@@ -422,6 +427,7 @@ export default {
   data: () => ({
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'now_rate', label : "Now Rate", sortable: false,variant : "dark" },  
+                  { key: 'low_high', label : "Low-High(24hrs)", sortable: false,variant : "secondary" }, 
                   { key: 'buy_rate', label: 'Avg Buy Rate',sortable: false, variant : "warning"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
@@ -535,8 +541,13 @@ export default {
               var market = ticker.market
               if(summary[market]){
                 summary[market].ticker = ticker;
-                summary[market].now_profit = summary[market].stock*summary[market].ticker.last_price * 0.999 + summary[market].earning
+                summary[market].now_profit = summary[market].stock*summary[market].ticker.last_price * 0.999 + summary[market].earning;
+                summary[market].signal_sell = (summary[market].ticker.high-summary[market].ticker.last_price)/(summary[market].ticker.high-summary[market].buy_rate_stock)*-100
+                summary[market].signal_buy = (summary[market].ticker.last_price-summary[market].ticker.low)/(summary[market].buy_rate_stock-summary[market].ticker.low)*100;
+                //summary[market].signal_sell = summary[market].ticker.high-summary[market].ticker.last_price;
               }
+            
+
             }
           clearTimeout(sync_ticker);
           sync_ticker = setTimeout(()=>THIS.sync_ticker(),2000);
@@ -712,11 +723,10 @@ export default {
             summary[key].buy_rate_stock = buyrate(
                 summary[key].stock,
                 summary[key].buy_quantity,
-                summary[key].buy_amount,
+                summary[key].net_debit,
                 summary[key].buy_rate_min,
                 summary[key].buy_rate_max 
             );
-        
 
           }
           
