@@ -34,6 +34,9 @@
   <div v-if="!selected" id="myMarketDiv">
         <b-table small striped hover :items="items" :fields="fields" id="myMarket"
           stacked="sm" selected-variant="active" >
+          <template #cell(buy_rate)="row">
+              {{row.item.buy_rate | round5}} ~ <small> {{row.item.buy_rate_stock | round5}}</small>
+          </template>  
           <template #cell(symbol)="row">
               <b-button variant="dark" size="sm" href="#"  @click="onRowSelected(row.item)">{{ row.item.symbol}}</b-button>
           </template>  
@@ -375,6 +378,26 @@ for(var i =1; i<5; i++){
       var _format = format || "0,0000"
       return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
   }
+  var buyrate = function(qty,tqty,tcost,min,max){
+      //let factor = tqty/qty;
+      let avg = tcost/tqty;
+      //let med = (max+min)/2;
+      if(!(qty>0 && tqty>0 && tcost>0 && min>0 && max >0)){
+        console.log("buyrate",qty, tqty,tcost,min,max);
+        return avg;
+      }
+      let havg = (max+avg)/2;
+      //let hrng = (max-avg);
+      let lrng = (avg-min);
+      let rng = max-min;
+
+      let hqty = tqty*lrng/rng;
+
+      if(qty>hqty){
+        return avg;
+      }
+      return buyrate(qty,hqty, hqty*havg,avg,max);
+  }
 
   var sync_history = 0, sync_ticker=0;
   var newSummary = function(key,symbol){
@@ -659,6 +682,12 @@ export default {
             } else  {
               summary[key].buy_quantity+= (deal.quantity-0);
               summary[key].buy_amount+= (deal.price * (deal.quantity-0));
+              
+              summary[key].buy_rate_min = summary[key].buy_rate_min || 99999999999999;
+              summary[key].buy_rate_min =  Math.min(summary[key].buy_rate_min,deal.price);
+              summary[key].buy_rate_max = summary[key].buy_rate_max || 0;
+              summary[key].buy_rate_max =  Math.max(summary[key].buy_rate_max,deal.price);
+
             }
             summary[key].fee_amount+= (deal.fee_amount - 0);
 
@@ -679,6 +708,14 @@ export default {
                 summary[key].efective_rate =  0;
               }
             }
+
+            summary[key].buy_rate_stock = buyrate(
+                summary[key].stock,
+                summary[key].buy_quantity,
+                summary[key].buy_amount,
+                summary[key].buy_rate_min,
+                summary[key].buy_rate_max 
+            );
         
 
           }
