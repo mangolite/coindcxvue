@@ -8,13 +8,15 @@
     <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
   </b-navbar-nav>
 
-  <b-navbar-nav class="ml-auto" small v-if="selected">
-    <b-nav-item href="#" class="fw-bold" :active="tab=='history'" @click="tab='history'"  >History</b-nav-item>
-  </b-navbar-nav>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='orders'" @click="tab='orders'" >Orders</b-nav-item>
   </b-navbar-nav>
+
+  <b-navbar-nav class="ml-auto" small v-if="selected">
+    <b-nav-item href="#" class="fw-bold" :active="tab=='history'" @click="tab='history'"  >History</b-nav-item>
+  </b-navbar-nav>
+
 
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -31,7 +33,7 @@
 
 
 
-  <div v-if="!selected" id="myMarketDiv">
+<div v-if="!selected" id="myMarketDiv">
         <b-table small striped hover :items="items" :fields="fields" id="myMarket"
           stacked="sm" selected-variant="active" >
           <template #cell(buy_rate)="row">
@@ -95,60 +97,75 @@
 
         </b-table>
 
-  </div>
-<div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
-       <b-table small striped :items="myOrders" dark fixed id="myOrders"
-       :fields="[
-        'market', 'side', 'price_per_unit','total_quantity'
-       ]" stacked="xs">
+</div>
 
-        <template #cell(side)="order">
+<div v-else-if="!!selected && tab ==  'history' && myTrades.length>0" id="myTradesDiv">
+      <div> Trades </div>
+       <b-table small striped :items="myTrades" dark id="myTrades"
+       :fields="tfields">
+
+        <template #cell(side)="trade">
+          <span :data-value="trade.value" :class="{
+           'text-danger' : (trade.value == 'sell'),  'text-success' : (trade.value == 'buy')
+          }">{{trade.value}}</span>
+        </template>
+        
+        <template #cell(price)="trade">
+            <span :data-value="trade.value">{{trade.value | round5}}</span>
+        </template>
+
+        <template #cell(quantity)="trade">
+           <span :data-value="trade.value"> {{trade.value | round5}}</span>
+        </template>
+
+        <template #cell(amount)="trade">
+            {{(trade.item.quantity * trade.item.price) | round2}}
+        </template>
+
+       </b-table>
+</div>
+
+<div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
+      <div> Orders </div>
+
+      <b-table small striped :items="myOrders" dark id="myOrders"
+       :fields="ofields">
+
+        <template v-slot:cell(side)="order">
           <span :data-value="order.value" :class="{
-           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
+           'text-danger' : (order.value == 'sell'), 
+           'text-danger text-bold fw-bold' : (order.value == 'highest'), 
+           'text-success text-bold fw-bold' : (order.value == 'lowest'), 
+           'text-success' : (order.value == 'buy'),
+           'text-warning' : (order.value == 'rate'),
+           'text-info' : (order.value == 'buyRateStock'),
+           'text-primary' : (order.value == 'buyRate')
           }">{{order.value}}</span>
         </template>
 
-        <template #cell(price_per_unit)="order">
-          <span :data-value="order.value">{{order.value | round5}}</span>
+        <template v-slot:cell(ppu)="order">
+          <span :data-value="order.value">
+            {{order.item.price_per_unit | round5}}
+          </span>
         </template>
 
-        <template #cell(total_quantity)="order">
+        <template v-slot:cell(price_per_unit)="order">
+          <span :data-value="order.value">
+            {{order.item.price_per_unit | round5}}
+          </span>
+        </template>
+
+        <template v-slot:cell(total_quantity)="order">
           <span :data-value="order.value">{{order.value | round5}}</span>
         </template>
 
           <template #cell(amount)="order">
-            {{(order.item.price_per_unit*order.item.total_quantity) | round2}}
+            {{(order.item.price_per_unit * order.item.total_quantity) | round2}}
           </template>
 
-       </b-table>
+      </b-table>
 </div>
 
-<div v-else-if="!!selected && tab=='history' && myTrades.length>0" id="myTradesDiv">
-       <b-table small striped :items="myTrades" dark fixed id="myTrades"
-       :fields="[
-        'symbol', 'side', 'price','quantity','amount'
-       ]" stacked="xs">
-
-        <template #cell(side)="order">
-          <span :data-value="order.value" :class="{
-           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
-          }">{{order.value}}</span>
-        </template>
-        
-          <template #cell(price)="trade">
-            <span :data-value="trade.value">{{trade.value| round5}}</span>
-          </template>
-
-          <template #cell(quantity)="trade">
-           <span :data-value="trade.value"> {{trade.value| round5}}</span>
-          </template>
-
-        <template #cell(amount)="trade">
-            {{(trade.item.quantity*trade.item.price) | round2}}
-          </template>
-
-       </b-table>
-</div>
 
   <div v-else-if="!!selected && tab=='summary'">
         <b-card class="ml-auto"> 
@@ -437,8 +454,21 @@ export default {
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
                   //{ key: 'stock', label: 'Stock', variant : "secondary"},
-                  { key: 'profit', label: 'past-now-post', variant : "secondary"},
-               
+                  { key: 'profit', label: 'past-now-post', variant : "secondary"}
+        ],
+        ofields : [
+            { key: 'market', label : "Symbol"},
+            { key: 'side', label : "Side"},
+            { key: 'ppu', label : "Price"},
+            { key: 'total_quantity', label : "TQty"},
+            { key: 'amount', label : "Amount"}
+        ],
+        tfields : [
+            { key: 'symbol', label : "Symbol"},
+            { key: 'side', label : "Side"},
+            { key: 'price', label : "Price"},
+            { key: 'quantity', label : "TQty"},
+            { key: 'amount', label : "Amount"}
         ],
         items: [],
         selected : null, selected_symbol : null,
@@ -467,7 +497,29 @@ export default {
           return [];
       }
       let symbol = this.selected.symbol;
-      return this.orders.filter(function(order){
+      return [...this.orders,{
+        side : 'rate',
+        market : symbol,
+        price_per_unit : this.selected.ticker.last_price,
+        total_quantity : this.selected.balance.balance
+      },{
+         side : 'buyRate',
+         market : symbol,
+         price_per_unit : this.selected.buy_rate
+      },{
+         side : "buyRateStock",
+         market : symbol,
+         price_per_unit : this.selected.buy_rate_stock
+      },
+      {
+         side : "highest",
+         market : symbol,
+         price_per_unit : this.selected.ticker.high
+      },{
+         side : "lowest",
+         market : symbol,
+         price_per_unit : this.selected.ticker.low
+      }].filter(function(order){
         return order.market == symbol;
       }).sort(function(a,b){
           return b.price_per_unit - a.price_per_unit;
@@ -642,7 +694,6 @@ export default {
                 summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning  
               }  
             }
-
             clearTimeout(sync_history);
             sync_history = setTimeout(()=>THIS.sync_history(++_index),5000);
         });
