@@ -2,7 +2,7 @@
   <div class="hello">
     
   <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
-    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
+    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">sss{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>

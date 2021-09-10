@@ -1,13 +1,12 @@
 <template>
-  <div id="app">    
-      <demo-grid>
-      </demo-grid>
+  <div id="app"> 
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import DemoGrid from './components/DemoGrid';
+//import DemoGrid from './components/DemoGrid';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -22,7 +21,7 @@ Vue.use(IconsPlugin);
 export default {
   name: 'App',
   components: {
-    DemoGrid
+    //DemoGrid
   },
   mounted : function () {
     let recaptchaScript = document.createElement('script')
