@@ -2,7 +2,7 @@
   <div class="hello">
     
   <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
-    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">sss{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
+    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
@@ -598,6 +598,9 @@ export default {
         let api_key = KEYS["api_key_" + _index];
         let api_secret = KEYS["api_secret_" + _index];
         console.log("_index",_index)
+        if(!api_key && !api_secret){
+          return;
+        }
 
         let summary = this.summary;
         var timeStamp = Math.floor(Date.now());
@@ -648,6 +651,11 @@ export default {
       let _index = this.getIndex(index)
       let api_key = KEYS["api_key_" + _index];
       let api_secret = KEYS["api_secret_" + _index];
+
+      if(!api_key && !api_secret){
+        return;
+      }
+
       console.log("_index",_index)
 
       var timeStamp = Math.floor(Date.now());
