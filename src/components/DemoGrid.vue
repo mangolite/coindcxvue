@@ -97,6 +97,31 @@
 
         </b-table>
 
+
+      <div >
+        <b-card class="ml-auto"> 
+          <b-row class="pb-2 pb-2 bg-dark text-light">
+            <b-col sm="2" lg="2" class="fw-bold text-end text-success">Total OnBuy</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-success">{{total.onBuy | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end text-danger">Total OnSell</b-col>
+            <b-col sm="2" lg="2" class="text-start text-danger fw-bold">{{total.onSell | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end text-warning">Total AfterSell</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-warning">{{total.afterSell | round2}}</b-col>
+            <b-col sm="2" lg="2" class="text-end fw-bold text-info">Total InStock</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-info">{{total.inStockWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="text-end fw-bold text-primary">Total NetStock</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-primary">{{total.netStockWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> InStockeINR</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.netINR | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> NetWorth</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.netWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> AfterSellWorth</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.afterSellWorth | round2}}</b-col>
+          </b-row>
+        </b-card>
+      </div>
+
+
 </div>
 
 <div v-else-if="!!selected && tab ==  'history' && myTrades.length>0" id="myTradesDiv">
@@ -524,6 +549,38 @@ export default {
       }).sort(function(a,b){
           return b.price_per_unit - a.price_per_unit;
       });
+    },
+    total(){
+      if(!this.orders){
+          return 0;
+      }
+      let that = this;
+      let TOTAL = {
+        onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
+        netWorth : 0, afterSellWorth  :0 
+      };
+      TOTAL=this.orders.reduce(function(total,n,i){
+        if(n.side == 'buy')
+          total.onBuy = total.onBuy + n.market_order_locked; //n.price_per_unit*n.total_quantity;
+         else {
+            total.afterSell = total.afterSell + (n.price_per_unit*n.total_quantity * 0.999);
+            total.onSell = total.onSell + (that.summary[n.market].ticker.last_price * n.total_quantity * 0.999);
+         }
+        return total;
+      },TOTAL);
+
+      TOTAL.netINR = this.summary.INR.balance.balance;
+
+      TOTAL = this.items.reduce(function (total, n) {
+        total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
+        total.netStockWorth = total.netStockWorth + n.stock * n.ticker.last_price;
+        return total;  
+      },TOTAL);
+
+      TOTAL.netWorth = (TOTAL.netStockWorth-0) + (TOTAL.netINR-0) + (TOTAL.onBuy-0);
+      TOTAL.afterSellWorth = (TOTAL.afterSell-0) + (TOTAL.inStockWorth-0) + (TOTAL.onBuy-0) + (TOTAL.netINR-0);
+
+      return TOTAL;
     }
   },
   filters: {
