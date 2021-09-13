@@ -564,15 +564,18 @@ export default {
           total.onBuy = total.onBuy + n.market_order_locked; //n.price_per_unit*n.total_quantity;
          else {
             total.afterSell = total.afterSell + (n.price_per_unit*n.total_quantity * 0.999);
-            total.onSell = total.onSell + (that.summary[n.market].ticker.last_price * n.total_quantity * 0.999);
+            if(that.summary[n.market])
+              total.onSell = total.onSell + (that.summary[n.market].ticker.last_price * n.total_quantity * 0.999);
          }
         return total;
       },TOTAL);
 
-      TOTAL.netINR = this.summary.INR.balance.balance;
+      if(this.summary.INR && this.summary.INR.balance)
+        TOTAL.netINR = this.summary.INR.balance.balance;
 
       TOTAL = this.items.reduce(function (total, n) {
-        total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
+        if(n.balance)
+          total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
         total.netStockWorth = total.netStockWorth + n.stock * n.ticker.last_price;
         return total;  
       },TOTAL);
