@@ -574,9 +574,10 @@ export default {
         TOTAL.netINR = this.summary.INR.balance.balance;
 
       TOTAL = this.items.reduce(function (total, n) {
-        if(n.balance)
+        if(n.balance){
           total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
-        total.netStockWorth = total.netStockWorth + n.stock * n.ticker.last_price;
+          total.netStockWorth = total.netStockWorth + (1*n.balance.balance + 1*n.balance.locked_balance) * n.ticker.last_price;
+        }
         return total;  
       },TOTAL);
 
