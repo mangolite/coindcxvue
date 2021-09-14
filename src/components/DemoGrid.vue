@@ -752,7 +752,9 @@ export default {
                 else 
                   summary[key].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
 
-                summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning  
+                summary[key].postsale_amount = summary[key].order.onsale_ammount * 0.999;
+                summary[key].postsale_profit =  summary[key].postsale_amount + summary[key].earning  
+                //summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning
               }  
             }
             clearTimeout(sync_history);
