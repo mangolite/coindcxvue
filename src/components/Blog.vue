@@ -8,30 +8,41 @@
     </div>
 
     <router-link to="/home">Go to Home</router-link>
-  
+    <post></post>
+     <post></post>
+      <post></post>
+       <post></post>
+
+
+
   </div>
 </template>
 
 <script>
 
-export default {
-  name: 'HelloWorld',
-  props: {
-  },
-  data: () => ({
-  }),
-  computed: {
-  },
-  filters: {
-  },
-  created : function () {
-  },
-  methods: {
-    onDivClicked : function(){
+        import Post from "./Post";
 
-    }
-  }
-}
+      export default {
+        name: 'HelloWorld',
+        components : {
+          Post
+        },
+        props: {
+        },
+        data: () => ({
+        }),
+        computed: {
+        },
+        filters: {
+        },
+        created : function () {
+        },
+        methods: {
+          onDivClicked : function(){
+
+          }
+        }
+      }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
