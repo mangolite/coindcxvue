@@ -2,19 +2,21 @@
   <div class="hello">
     
   <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
-    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">sss{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
+    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
+  </b-navbar-nav>
+
+
+  <b-navbar-nav class="ml-auto" small v-if="selected">
+    <b-nav-item href="#" class="fw-bold" :active="tab=='orders'" @click="tab='orders'" >Orders</b-nav-item>
   </b-navbar-nav>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
     <b-nav-item href="#" class="fw-bold" :active="tab=='history'" @click="tab='history'"  >History</b-nav-item>
   </b-navbar-nav>
 
-  <b-navbar-nav class="ml-auto" small v-if="selected">
-    <b-nav-item href="#" class="fw-bold" :active="tab=='orders'" @click="tab='orders'" >Orders</b-nav-item>
-  </b-navbar-nav>
 
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -31,7 +33,7 @@
 
 
 
-  <div v-if="!selected" id="myMarketDiv">
+<div v-if="!selected" id="myMarketDiv">
         <b-table small striped hover :items="items" :fields="fields" id="myMarket"
           stacked="sm" selected-variant="active" >
           <template #cell(buy_rate)="row">
@@ -95,60 +97,100 @@
 
         </b-table>
 
-  </div>
-<div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
-       <b-table small striped :items="myOrders" dark fixed id="myOrders"
-       :fields="[
-        'market', 'side', 'price_per_unit','total_quantity'
-       ]" stacked="xs">
 
-        <template #cell(side)="order">
+      <div >
+        <b-card class="ml-auto"> 
+          <b-row class="pb-2 pb-2 bg-dark text-light">
+            <b-col sm="2" lg="2" class="fw-bold text-end text-success">Total OnBuy</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-success">{{total.onBuy | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end text-danger">Total OnSell</b-col>
+            <b-col sm="2" lg="2" class="text-start text-danger fw-bold">{{total.onSell | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end text-warning">Total AfterSell</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-warning">{{total.afterSell | round2}}</b-col>
+            <b-col sm="2" lg="2" class="text-end fw-bold text-info">Total InStock</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-info">{{total.inStockWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="text-end fw-bold text-primary">Total NetStock</b-col>
+            <b-col sm="2" lg="2" class="text-start fw-bold text-primary">{{total.netStockWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> InStockeINR</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.netINR | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> NetWorth</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.netWorth | round2}}</b-col>
+            <b-col sm="2" lg="2" class="fw-bold text-end"> AfterSellWorth</b-col>
+            <b-col sm="2" lg="2" class="text-start">{{total.afterSellWorth | round2}}</b-col>
+          </b-row>
+        </b-card>
+      </div>
+
+
+</div>
+
+<div v-else-if="!!selected && tab ==  'history' && myTrades.length>0" id="myTradesDiv">
+      <div> Trades </div>
+       <b-table small striped :items="myTrades" dark id="myTrades"
+       :fields="tfields">
+
+        <template #cell(side)="trade">
+          <span :data-value="trade.value" :class="{
+           'text-danger' : (trade.value == 'sell'),  'text-success' : (trade.value == 'buy')
+          }">{{trade.value}}</span>
+        </template>
+        
+        <template #cell(price)="trade">
+            <span :data-value="trade.value">{{trade.value | round5}}</span>
+        </template>
+
+        <template #cell(quantity)="trade">
+           <span :data-value="trade.value"> {{trade.value | round5}}</span>
+        </template>
+
+        <template #cell(amount)="trade">
+            {{(trade.item.quantity * trade.item.price) | round2}}
+        </template>
+
+       </b-table>
+</div>
+
+<div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
+      <div> Orders </div>
+
+      <b-table small striped :items="myOrders" dark id="myOrders"
+       :fields="ofields">
+
+        <template v-slot:cell(side)="order">
           <span :data-value="order.value" :class="{
-           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
+           'text-danger' : (order.value == 'sell'), 
+           'text-danger text-bold fw-bold' : (order.value == 'highest'), 
+           'text-success text-bold fw-bold' : (order.value == 'lowest'), 
+           'text-success' : (order.value == 'buy'),
+           'text-warning' : (order.value == 'rate'),
+           'text-info' : (order.value == 'buyRateStock'),
+           'text-primary' : (order.value == 'buyRate')
           }">{{order.value}}</span>
         </template>
 
-        <template #cell(price_per_unit)="order">
-          <span :data-value="order.value">{{order.value | round5}}</span>
+        <template v-slot:cell(ppu)="order">
+          <span :data-value="order.value">
+            {{order.item.price_per_unit | round5}}
+          </span>
         </template>
 
-        <template #cell(total_quantity)="order">
+        <template v-slot:cell(price_per_unit)="order">
+          <span :data-value="order.value">
+            {{order.item.price_per_unit | round5}}
+          </span>
+        </template>
+
+        <template v-slot:cell(total_quantity)="order">
           <span :data-value="order.value">{{order.value | round5}}</span>
         </template>
 
           <template #cell(amount)="order">
-            {{(order.item.price_per_unit*order.item.total_quantity) | round2}}
+            {{(order.item.price_per_unit * order.item.total_quantity) | round2}}
           </template>
 
-       </b-table>
+      </b-table>
 </div>
 
-<div v-else-if="!!selected && tab=='history' && myTrades.length>0" id="myTradesDiv">
-       <b-table small striped :items="myTrades" dark fixed id="myTrades"
-       :fields="[
-        'symbol', 'side', 'price','quantity','amount'
-       ]" stacked="xs">
-
-        <template #cell(side)="order">
-          <span :data-value="order.value" :class="{
-           'text-danger' : (order.value == 'sell'),  'text-success' : (order.value == 'buy')
-          }">{{order.value}}</span>
-        </template>
-        
-          <template #cell(price)="trade">
-            <span :data-value="trade.value">{{trade.value| round5}}</span>
-          </template>
-
-          <template #cell(quantity)="trade">
-           <span :data-value="trade.value"> {{trade.value| round5}}</span>
-          </template>
-
-        <template #cell(amount)="trade">
-            {{(trade.item.quantity*trade.item.price) | round2}}
-          </template>
-
-       </b-table>
-</div>
 
   <div v-else-if="!!selected && tab=='summary'">
         <b-card class="ml-auto"> 
@@ -437,8 +479,21 @@ export default {
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
                   //{ key: 'stock', label: 'Stock', variant : "secondary"},
-                  { key: 'profit', label: 'past-now-post', variant : "secondary"},
-               
+                  { key: 'profit', label: 'past-now-post', variant : "secondary"}
+        ],
+        ofields : [
+            { key: 'market', label : "Symbol"},
+            { key: 'side', label : "Side"},
+            { key: 'ppu', label : "Price"},
+            { key: 'total_quantity', label : "TQty"},
+            { key: 'amount', label : "Amount"}
+        ],
+        tfields : [
+            { key: 'symbol', label : "Symbol"},
+            { key: 'side', label : "Side"},
+            { key: 'price', label : "Price"},
+            { key: 'quantity', label : "TQty"},
+            { key: 'amount', label : "Amount"}
         ],
         items: [],
         selected : null, selected_symbol : null,
@@ -467,11 +522,69 @@ export default {
           return [];
       }
       let symbol = this.selected.symbol;
-      return this.orders.filter(function(order){
+      return [...this.orders,{
+        side : 'rate',
+        market : symbol,
+        price_per_unit : this.selected.ticker.last_price,
+        total_quantity : this.selected.balance.balance
+      },{
+         side : 'buyRate',
+         market : symbol,
+         price_per_unit : this.selected.buy_rate
+      },{
+         side : "buyRateStock",
+         market : symbol,
+         price_per_unit : this.selected.buy_rate_stock
+      },
+      {
+         side : "highest",
+         market : symbol,
+         price_per_unit : this.selected.ticker.high
+      },{
+         side : "lowest",
+         market : symbol,
+         price_per_unit : this.selected.ticker.low
+      }].filter(function(order){
         return order.market == symbol;
       }).sort(function(a,b){
           return b.price_per_unit - a.price_per_unit;
       });
+    },
+    total(){
+      if(!this.orders){
+          return 0;
+      }
+      let that = this;
+      let TOTAL = {
+        onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
+        netWorth : 0, afterSellWorth  :0 
+      };
+      TOTAL=this.orders.reduce(function(total,n,i){
+        if(n.side == 'buy')
+          total.onBuy = total.onBuy + n.market_order_locked; //n.price_per_unit*n.total_quantity;
+         else {
+            total.afterSell = total.afterSell + (n.price_per_unit*n.total_quantity * 0.999);
+            if(that.summary[n.market])
+              total.onSell = total.onSell + (that.summary[n.market].ticker.last_price * n.total_quantity * 0.999);
+         }
+        return total;
+      },TOTAL);
+
+      if(this.summary.INR && this.summary.INR.balance)
+        TOTAL.netINR = this.summary.INR.balance.balance;
+
+      TOTAL = this.items.reduce(function (total, n) {
+        if(n.balance){
+          total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
+          total.netStockWorth = total.netStockWorth + (1*n.balance.balance + 1*n.balance.locked_balance) * n.ticker.last_price;
+        }
+        return total;  
+      },TOTAL);
+
+      TOTAL.netWorth = (TOTAL.netStockWorth-0) + (TOTAL.netINR-0) + (TOTAL.onBuy-0);
+      TOTAL.afterSellWorth = (TOTAL.afterSell-0) + (TOTAL.inStockWorth-0) + (TOTAL.onBuy-0) + (TOTAL.netINR-0);
+
+      return TOTAL;
     }
   },
   filters: {
@@ -598,6 +711,9 @@ export default {
         let api_key = KEYS["api_key_" + _index];
         let api_secret = KEYS["api_secret_" + _index];
         console.log("_index",_index)
+        if(!api_key && !api_secret){
+          return;
+        }
 
         let summary = this.summary;
         var timeStamp = Math.floor(Date.now());
@@ -636,10 +752,11 @@ export default {
                 else 
                   summary[key].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
 
-                summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning  
+                summary[key].postsale_amount = summary[key].order.onsale_ammount * 0.999;
+                summary[key].postsale_profit =  summary[key].postsale_amount + summary[key].earning  
+                //summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning
               }  
             }
-
             clearTimeout(sync_history);
             sync_history = setTimeout(()=>THIS.sync_history(++_index),5000);
         });
@@ -648,6 +765,11 @@ export default {
       let _index = this.getIndex(index)
       let api_key = KEYS["api_key_" + _index];
       let api_secret = KEYS["api_secret_" + _index];
+
+      if(!api_key && !api_secret){
+        return;
+      }
+
       console.log("_index",_index)
 
       var timeStamp = Math.floor(Date.now());
