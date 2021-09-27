@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     
-  <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
+  <b-navbar toggleable="lg" type="dark" variant="secondary" sticky small>
     <b-navbar-brand 
     :to="`/trade/${$route.params.account}`" 
     >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
