@@ -14,6 +14,7 @@ export default new Router({
         {
           path: '/',
           alias: '/trade',
+          redirect : '/trade/1',
           name : "default",
           component: () => import('./components/DemoGrid.vue'),
         },
