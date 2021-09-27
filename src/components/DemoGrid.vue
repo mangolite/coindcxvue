@@ -2,348 +2,68 @@
   <div class="hello">
     
   <b-navbar toggleable="lg" type="dark" variant="success" sticky small>
-    <b-navbar-brand @click="selected=null;tab='summary'" >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
+    <b-navbar-brand 
+    :to="`/trade/${$route.params.account}`" 
+    >&nbsp;<i class="fa fa-home">{{nowIndex}}/{{INDEX}}</i></b-navbar-brand>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
-    <b-nav-item href="#" class="fw-bold" :active="tab=='summary'"  @click="tab='summary'" >{{selected.symbol}}</b-nav-item>
+    <b-nav-item 
+      :to="`/trade/${$route.params.account}/${$route.params.currency}/summary`" 
+       class="fw-bold" :active="tab=='summary'" >{{selected.symbol}}</b-nav-item>
   </b-navbar-nav>
 
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
-    <b-nav-item href="#" class="fw-bold" :active="tab=='orders'" @click="tab='orders'" >Orders</b-nav-item>
+    <b-nav-item 
+      :to="`/trade/${$route.params.account}/${$route.params.currency}/orders`" 
+      class="fw-bold" :active="tab=='orders'" >Orders</b-nav-item>
   </b-navbar-nav>
 
   <b-navbar-nav class="ml-auto" small v-if="selected">
-    <b-nav-item href="#" class="fw-bold" :active="tab=='history'" @click="tab='history'"  >History</b-nav-item>
+    <b-nav-item 
+          :to="`/trade/${$route.params.account}/${$route.params.currency}/history`" 
+          class="fw-bold" :active="tab=='history'" >History</b-nav-item>
   </b-navbar-nav>
-
-
-
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-    <b-collapse id="nav-collapse" is-nav>
-      <!-- Right aligned nav items -->
+    <b-collapse id="nav-collapse" is-nav class="justify-content-end">
+      <!-- Right aligned nav items "  -->
       <b-navbar-nav class="ml-auto" small>
-        <b-button @click="setIndex(1);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 1</b-button>
-        <b-button @click="setIndex(2);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 2</b-button>
-        <b-button @click="setIndex(3);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 3</b-button>
-        <b-button @click="setIndex(4);$bvModal.show('modal-prevent-closing')" size="sm">Select Keys 4</b-button>
+          <span v-for="KEY in KEY_LIST"  v-bind:key="KEY.key"  >
+              <router-link :to="`/trade/${KEY.id}`"
+                tag="button" class="btn btn-secondary btn-sm" active-class="btn-light">
+                {{KEY.name}}
+              </router-link>&nbsp;
+          </span>
+          <b-button secondary class="btn-sm fa fa-plus" @click="keyIndex=null;$bvModal.show('modal-prevent-closing')"></b-button>&nbsp;
+          <b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=nowIndex;$bvModal.show('modal-prevent-closing')"></b-button>
+          <b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=nowIndex;deleteCurrentKey()"></b-button>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 
-
-
 <div v-if="!selected" id="myMarketDiv">
-        <b-table small striped hover :items="items" :fields="fields" id="myMarket"
-          stacked="sm" selected-variant="active" >
-          <template #cell(buy_rate)="row">
-              {{row.item.buy_rate | round5}} ~ <small> {{row.item.buy_rate_stock | round5}}</small>
-          </template>  
-          <template #cell(low_high)="row">
-            <small class="text-success" :class="{'bg-light badge fw-bold' : row.item.signal_buy >0}" >{{row.item.signal_buy|round2}}%</small>
-            <span>&nbsp;{{row.item.ticker.low | round5}} ~  {{row.item.ticker.high | round5}}&nbsp;</span>
-            <small class="text-danger" :class="{'bg-light badge fw-bold' : row.item.signal_sell<0}" >{{row.item.signal_sell|round2}}%</small>
-          </template> 
-          <template #cell(symbol)="row">
-              <b-button variant="dark" size="sm" href="#"  @click="onRowSelected(row.item)">{{ row.item.symbol}}</b-button>
-          </template>  
-          <template #cell(efective_rate)="row">
-            <span :class="{
-              'fw-bold text-success' : row.item.efective_rate<0,
-              'text-danger' : row.item.sell_rate>0 && row.item.efective_rate>row.item.buy_rate,
-              'fw-bold' : (row.item.sell_rate>0 && row.item.efective_rate > row.item.sell_rate)
-            }">
-              {{ row.item.efective_rate | round5}}
-            </span>
-          </template>
-          
-          <template #cell(profit)="row">
-            <b-row>
-              <b-col>
-                <b  :class="{
-                  'fw-bold text-danger' : row.item.earning<0,
-                  'fw-bold text-success' : row.item.earning>0
-                }">{{row.item.earning | round2}}</b>
-                &nbsp;<i class="bi-arrow-right-short"/>
-              </b-col>
-              <b-col>  
-                <span v-if="row.item.ticker" style="font-size:18px" :class="{
-                  'fw-bold text-danger' : row.item.efective_rate>row.item.ticker.last_price,
-                  'fw-bold text-success' : row.item.efective_rate<row.item.ticker.last_price
-                }">
-                  {{row.item.stock*row.item.ticker.last_price * 0.999 + row.item.earning | round2}}
-                </span>
-              </b-col>  
-              <b-col>  
-                &nbsp;<i class="bi-arrow-right-short"/>
-                <span v-if="row.item.order" :class="{
-                  'fw-bold text-danger' : row.item.now_profit>row.item.postsale_profit,
-                  'fw-bold text-success' : row.item.now_profit<row.item.postsale_profit
-                }">
-                  {{row.item.postsale_profit | round2}}
-                </span>
-                </b-col>
-             </b-row>
-          </template>
-
-          <template #cell(now_rate)="row">
-            <span v-if="row.item.ticker" :class="{
-              'fw-bold text-success' : (row.item.ticker.last_price > row.item.buy_rate),
-              'fw-bold text-danger' : (row.item.ticker.last_price < row.item.buy_rate),
-            }">
-              {{row.item.ticker.last_price | round5}}
-            </span>
-          </template>
-
-        </b-table>
-
-
-      <div >
-        <b-card class="ml-auto"> 
-          <b-row class="pb-2 pb-2 bg-dark text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end text-success">Total OnBuy</b-col>
-            <b-col sm="2" lg="2" class="text-start fw-bold text-success">{{total.onBuy | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end text-danger">Total OnSell</b-col>
-            <b-col sm="2" lg="2" class="text-start text-danger fw-bold">{{total.onSell | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end text-warning">Total AfterSell</b-col>
-            <b-col sm="2" lg="2" class="text-start fw-bold text-warning">{{total.afterSell | round2}}</b-col>
-            <b-col sm="2" lg="2" class="text-end fw-bold text-info">Total InStock</b-col>
-            <b-col sm="2" lg="2" class="text-start fw-bold text-info">{{total.inStockWorth | round2}}</b-col>
-            <b-col sm="2" lg="2" class="text-end fw-bold text-primary">Total NetStock</b-col>
-            <b-col sm="2" lg="2" class="text-start fw-bold text-primary">{{total.netStockWorth | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"> InStockeINR</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{total.netINR | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"> NetWorth</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{total.netWorth | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"> AfterSellWorth</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{total.afterSellWorth | round2}}</b-col>
-          </b-row>
-        </b-card>
-      </div>
-
-
+  <Dashboard
+    :items="items" :total="total" :account="nowIndex"
+  ></Dashboard>
 </div>
 
-<div v-else-if="!!selected && tab ==  'history' && myTrades.length>0" id="myTradesDiv">
-      <div> Trades </div>
-       <b-table small striped :items="myTrades" dark id="myTrades"
-       :fields="tfields">
-
-        <template #cell(side)="trade">
-          <span :data-value="trade.value" :class="{
-           'text-danger' : (trade.value == 'sell'),  'text-success' : (trade.value == 'buy')
-          }">{{trade.value}}</span>
-        </template>
-        
-        <template #cell(price)="trade">
-            <span :data-value="trade.value">{{trade.value | round5}}</span>
-        </template>
-
-        <template #cell(quantity)="trade">
-           <span :data-value="trade.value"> {{trade.value | round5}}</span>
-        </template>
-
-        <template #cell(amount)="trade">
-            {{(trade.item.quantity * trade.item.price) | round2}}
-        </template>
-
-       </b-table>
+<div v-else-if="!!selected && tab == 'history' && myTrades.length>0" id="myTradesDiv">
+  <History
+  :selected="selected" :myTrades="myTrades"></History>
 </div>
 
 <div v-else-if="!!selected && tab=='orders' && myOrders.length>0"  id="myOrdersDiv">
-      <div> Orders </div>
-
-      <b-table small striped :items="myOrders" dark id="myOrders"
-       :fields="ofields">
-
-        <template v-slot:cell(side)="order">
-          <span :data-value="order.value" :class="{
-           'text-danger' : (order.value == 'sell'), 
-           'text-danger text-bold fw-bold' : (order.value == 'highest'), 
-           'text-success text-bold fw-bold' : (order.value == 'lowest'), 
-           'text-success' : (order.value == 'buy'),
-           'text-warning' : (order.value == 'rate'),
-           'text-info' : (order.value == 'buyRateStock'),
-           'text-primary' : (order.value == 'buyRate')
-          }">{{order.value}}</span>
-        </template>
-
-        <template v-slot:cell(ppu)="order">
-          <span :data-value="order.value">
-            {{order.item.price_per_unit | round5}}
-          </span>
-        </template>
-
-        <template v-slot:cell(price_per_unit)="order">
-          <span :data-value="order.value">
-            {{order.item.price_per_unit | round5}}
-          </span>
-        </template>
-
-        <template v-slot:cell(total_quantity)="order">
-          <span :data-value="order.value">{{order.value | round5}}</span>
-        </template>
-
-          <template #cell(amount)="order">
-            {{(order.item.price_per_unit * order.item.total_quantity) | round2}}
-          </template>
-
-      </b-table>
+    <Orders
+      :selected="selected" :myOrders="myOrders"
+    ></Orders>
 </div>
 
-
   <div v-else-if="!!selected && tab=='summary'">
-        <b-card class="ml-auto"> 
-          <b-row class="pb-2 pb-2 bg-dark text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end">currency</b-col>
-            <b-col sm="2" lg="2" class="text-start fw-bold">{{selected.symbol}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">My INR Balalnce</b-col>
-            <b-col sm="2" lg="2" class="text-start"
-              v-if="summary.INR && summary.INR.balance"
-            ><small>₹ </small>{{summary.INR.balance.balance | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-dark text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end">Market Rate</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.ticker.last_price}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end"> NetWorth <small>(Earning+Stok) </small> </b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.earning+selected.stock*selected.ticker.last_price | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 pb-2 bg-warning">
-            <b-col sm="2" lg="2" class="fw-bold text-end">Starting Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start" v-if="selected.balance">
-              {{(selected.buy_quantity - selected.sell_quantity - selected.balance.locked_balance - selected.balance.balance) | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">Starting Coins Worth</b-col>
-            <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.starting_coins*selected.ticker.last_price | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-warning" >
-            <b-col sm="2" lg="2" class="fw-bold text-end " >Purchased Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.buy_quantity | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">INR Debit</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.buy_amount | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-info bg-gradient">
-            <b-col sm="2" lg="2" class="fw-bold text-end">Sold Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.sell_quantity | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">INR Credit</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.sell_amount | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-info bg-gradient text-dark" v-if="selected.balance">
-            <b-col sm="2" lg="2" class="fw-bold text-end">onSale Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.balance.locked_balance}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">onSale Worth</b-col>
-            <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.balance.locked_balance * selected.ticker.last_price | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-secondary text-light" v-if="selected.balance">
-            <b-col sm="2" lg="2" class="fw-bold text-end">inStock Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.balance.balance | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">inStock Worth</b-col>
-            <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.balance.balance * selected.ticker.last_price | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-secondary  text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.stock | round5}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">My Total Coins Worth</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small>{{selected.stock*selected.ticker.last_price | round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-success text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end"> </b-col>
-            <b-col sm="2" lg="2" class="text-start">  </b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">My Earnings</b-col>
-            <b-col sm="2" lg="2" class="text-start"><small>₹ </small> {{selected.earning |round2}}</b-col>
-          </b-row>
-
-          <b-row class="pb-2 bg-success text-light">
-            <b-col sm="2" lg="2" class="fw-bold text-end">Net BuyRate</b-col>
-            <b-col sm="2" lg="2" class="text-start">{{selected.efective_rate | round2}}</b-col>
-            <b-col sm="2" lg="2" class="fw-bold text-end">My Profit</b-col>
-            <b-col sm="2" lg="2" class="text-start">
-              <small>₹ </small>{{selected.stock*selected.ticker.last_price + selected.earning | round2}}</b-col>
-          </b-row>
-          <b-row class="pt-4  bg-success text-light">
-              <b-col sm="12" lg="12" class="fw-bold text-end text-center">
-                    <b-button pill size="sm" variant="danger" @click="selected=null">Hide Details</b-button>
-              </b-col>     
-          </b-row>
-
-          <b-row class="pb-2 bg-primary text-light" v-if="selected.ticker">
-            <b-col sm="12" lg="12" class="fw-bold text-center display-6"> Tips for NoProfit/NoLoss</b-col>
-
-            <b-col cols="6" lg= "2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/4 | round5}}</b> @ {{(selected.ticker.last_price*5 - selected.efective_rate*4) | round5}}
-            </b-col> 
-
-            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/3 | round5}}</b> @ {{(selected.ticker.last_price*4 - selected.efective_rate*3) | round5}}
-            </b-col> 
-
-            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/2 | round5}}</b> @ {{(selected.ticker.last_price*3 - selected.efective_rate*2) | round5}}
-            </b-col> 
-
-            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock | round5}}</b> @ {{(selected.ticker.last_price*2 - selected.efective_rate) | round5}}
-            </b-col>
-
-            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock*2 | round5}}</b> @ {{(selected.ticker.last_price*3 - selected.efective_rate)/2 | round5}}
-            </b-col> 
-
-            <b-col cols="6" lg="2" class="fw-bold text-end">Buy</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock*3 | round5}}</b> @ {{(selected.ticker.last_price*4 - selected.efective_rate)/3 | round5}}
-            </b-col> 
-          </b-row>
-
-          <b-row class="pb-2 bg-danger text-light" v-if="selected.ticker">
-            <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock*3 | round5}}</b> @ {{(selected.efective_rate*4 - selected.ticker.last_price)/3 | round5}}
-            </b-col>
-            <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock*2 | round5}}</b> @ {{(selected.efective_rate*3 - selected.ticker.last_price)/2 | round5}}
-            </b-col>
-             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock | round5}}</b> @ {{(selected.efective_rate*2 - selected.ticker.last_price) | round5}}
-            </b-col>
-             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/2 | round5}}</b> @ {{(selected.efective_rate*3 - selected.ticker.last_price*2) | round5}}
-            </b-col>
-             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/3 | round5}}</b> @ {{(selected.efective_rate*4 - selected.ticker.last_price*3) | round5}}
-            </b-col>
-             <b-col cols="6" lg="2" class="fw-bold text-end">Sell</b-col>
-            <b-col cols="6" lg="2" class="text-start">
-              <b>{{selected.stock/4 | round5}}</b> @ {{(selected.efective_rate*5 - selected.ticker.last_price*4) | round5}}
-            </b-col>
-          </b-row>
-
-        </b-card>
-  
+        <Summary
+          :selected="selected"
+          :summary="summary"
+        ></Summary>
   </div>
-
-
-
-
 
    <b-modal
       id="modal-prevent-closing"
@@ -354,6 +74,22 @@
       @ok="handleOk"
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
+
+        <b-form-group
+          label="Api Name"
+          label-for="api-name-input"
+          invalid-feedback="ApiName is required"
+          :state="apiNameState"
+        >
+          <b-form-input
+            id="api-key-input"
+            v-model="apiName"
+            :state="apiNameState"
+            required
+          ></b-form-input>
+
+        </b-form-group>
+
         <b-form-group
           label="Api Key"
           label-for="api-key-input"
@@ -394,13 +130,20 @@
 
 <script>
 
+import Vue from 'vue';
 import request from 'request';
 //import axios from 'axios';
 import crypto from 'crypto';
 import numeral from 'numeral';
+import Dashboard from './Dashboard.vue';
+import Summary from './Summary.vue';
+import Orders from './Orders.vue';
+import History from './History.vue';
+
 
 //var baseurl = document.location.origin;  
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
+var baseurlPublic =  'https://pure-citadel-90943.herokuapp.com/https://public.coindcx.com' 
       // Place your API key and secret below. You can generate it from the website.
 
 var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
@@ -411,15 +154,23 @@ if(api_key_1){
   localStorage.setItem("api_secret_1",api_secret_1);
 }
 
+var KEY_LIST = [];
 var KEYS = {};
 var INDEX = 0;
-for(var i =1; i<5; i++){
+for(var i =1; i < 50; i++){
   KEYS["api_key_" + i] = localStorage.getItem("api_key_"+i);
   KEYS["api_secret_" + i] = localStorage.getItem("api_secret_"+i);
+  KEYS["api_name_" + i] = localStorage.getItem("api_name_"+i) || ('Acct '+ i);
   if(KEYS["api_key_" + i]){
-    INDEX++;
+    KEY_LIST.push({
+      id : i,
+      name : KEYS["api_name_" + i],
+      key : KEYS["api_key_" + i],
+      secret : KEYS["api_secret_" + i],
+    });
   }
 }
+INDEX = KEY_LIST.length;
 
   var number = function (value,format) {
       var _format = format || "0,0000"
@@ -460,6 +211,19 @@ for(var i =1; i<5; i++){
       }
   }
 
+Vue.filter('capitalize', function (str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+});
+Vue.filter('round5', function (num,places) {
+    let _places = places || 5;
+    let base = Math.pow(10,_places)
+    return Math.round(num*base)/base;
+});
+Vue.filter('round2', function (num,places) {
+    let _places = places || 2;
+    let base = Math.pow(10,_places)
+    return number(Math.round(num*base)/base);
+});
 
 export default {
   name: 'HelloWorld',
@@ -467,43 +231,18 @@ export default {
     msg: String
   },
   data: () => ({
-        fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
-                  { key: 'now_rate', label : "Now Rate", sortable: false,variant : "dark" },  
-                  { key: 'low_high', label : "Low-High(24hrs)", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'Avg Buy Rate',sortable: false, variant : "warning"},  
-                  //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
-                  //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
-                  { key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
-                 // { key: 'sell_quantity', label: 'Sell Quantity', sortable: true, variant : "info"}, 
-                  //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
-                  //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
-                  { key: 'efective_rate', label: 'Effective Rate', variant : "success"},
-                  //{ key: 'stock', label: 'Stock', variant : "secondary"},
-                  { key: 'profit', label: 'past-now-post', variant : "secondary"}
-        ],
-        ofields : [
-            { key: 'market', label : "Symbol"},
-            { key: 'side', label : "Side"},
-            { key: 'ppu', label : "Price"},
-            { key: 'total_quantity', label : "TQty"},
-            { key: 'amount', label : "Amount"}
-        ],
-        tfields : [
-            { key: 'symbol', label : "Symbol"},
-            { key: 'side', label : "Side"},
-            { key: 'price', label : "Price"},
-            { key: 'quantity', label : "TQty"},
-            { key: 'amount', label : "Amount"}
-        ],
         items: [],
         selected : null, selected_symbol : null,
         ticker : null,
         summary : {},
         nowIndex : 1, INDEX : INDEX,
+        apiName : null, apiNameState :  null,
         apiKey : null, apiKeyState : null,
         apiSecret : null, apiSecretState : null,
-        tab : null, // open,hisotry
-        orders : null, history : null
+        orders : null, history : null,
+        ranges : {},
+        KEY_LIST : KEY_LIST,
+        keyIndex : null
   }),
   computed: {
     myTrades (){
@@ -523,10 +262,10 @@ export default {
       }
       let symbol = this.selected.symbol;
       return [...this.orders,{
-        side : 'rate',
+        side : 'Current Rate',
         market : symbol,
         price_per_unit : this.selected.ticker.last_price,
-        total_quantity : this.selected.balance.balance
+        total_quantity : this.selected.balance ? this.selected.balance.balance : 0
       },{
          side : 'buyRate',
          market : symbol,
@@ -537,17 +276,40 @@ export default {
          price_per_unit : this.selected.buy_rate_stock
       },
       {
-         side : "highest",
+         side : "24High",
          market : symbol,
-         price_per_unit : this.selected.ticker.high
+         price_per_unit : this.selected.ticker.high,
+         order : 10
       },{
-         side : "lowest",
+         side : "24Low",
          market : symbol,
-         price_per_unit : this.selected.ticker.low
+         price_per_unit : this.selected.ticker.low,
+         order : -10
+      },{
+         side : "wLow", order : -100,
+         market : symbol,
+         price_per_unit : this.ranges[symbol] ? this.ranges[symbol].wLow : this.selected.ticker.low,
+      },{
+         side : "wHigh", order : 100,
+         market : symbol,
+         price_per_unit : this.ranges[symbol] ? this.ranges[symbol].wHigh : this.selected.ticker.high
+      },
+      {
+         side : "mHigh", order : 1000,
+         market : symbol,
+         price_per_unit : this.ranges[symbol] ? this.ranges[symbol].mHigh : this.selected.ticker.high
+      },{
+         side : "mLow", order : -1000,
+         market : symbol,
+         price_per_unit : this.ranges[symbol] ? this.ranges[symbol].mLow : this.selected.ticker.low
       }].filter(function(order){
         return order.market == symbol;
       }).sort(function(a,b){
-          return b.price_per_unit - a.price_per_unit;
+          let diff = b.price_per_unit - a.price_per_unit;
+          if(diff == 0){
+            return b.order - a.order;
+          }
+          return diff;
       });
     },
     total(){
@@ -585,40 +347,37 @@ export default {
       TOTAL.afterSellWorth = (TOTAL.afterSell-0) + (TOTAL.inStockWorth-0) + (TOTAL.onBuy-0) + (TOTAL.netINR-0);
 
       return TOTAL;
+    },
+    tab : function(){
+      return this.$route.params.currency ? (this.$route.params.tab || 'summary') : null;
     }
   },
-  filters: {
-    capitalize: function(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
+  watch: {
+    "$route.params.account" : function (index) {
+        this.setIndex();
     },
-    round5 : function (num,places) {
-        let _places = places || 5;
-        let base = Math.pow(10,_places)
-        return Math.round(num*base)/base;
+   "$route.params.currency" : function (currency) {
+        this.onCurrencySelect();
     },
-    round2 : function (num,places) {
-        let _places = places || 2;
-        let base = Math.pow(10,_places)
-        return number(Math.round(num*base)/base);
-    },
-
+    "$route.params.tab" : function () {
+        this.onCurrencySelect();
+    }
   },
   created : function () {
-    //var THAT = this;
-    // THAT.sync_ticker(0);
-    // THAT.sync_history(0);
-
-    // setInterval(function(){
-    //   THAT.sync_ticker(0);
-    //   THAT.sync_history(0);
-    // },20000);
-    this.setIndex(1);
+    console.log("Account:",this.$route.params.account)
+    this.reload();
   },
   methods: {
-    setIndex : function(index){
-      this.nowIndex = index;
-      this.apiKey = KEYS["api_key_" + this.nowIndex];
-      this.apiSecret = KEYS["api_secret_" + this.nowIndex];
+    reload : function () {
+      this.setIndex();
+      this.onCurrencySelect();
+    },
+    setIndex : function(){
+      console.log("Account Changed ", this.$route.params.account);
+      var index = (this.$route.params.account || 1)
+      this.nowIndex = (index  <= INDEX) ? index : 1;
+      //this.apiKey = KEYS["api_key_" + this.nowIndex];
+      //this.apiSecret = KEYS["api_secret_" + this.nowIndex];
       this.items = []
       this.summary = {};
 
@@ -627,22 +386,81 @@ export default {
       this.sync_ticker(0);
       this.sync_history(0);
     },
+    onCurrencySelect : function(){
+        var currency = this.$route.params.currency;
+        if(currency){
+            this.selected = this.items.filter(function(item) {
+              return item.symbol == currency;
+            })[0];
+            //if(this.selected_symbol != currency){
+              this.sync_markets_details();
+            //}
+            this.selected_symbol = currency;
+            console.log("row._showDetails",this.selected_symbol);
+        } else {
+          this.selected = null;
+          this.selected_symbol = null;
+        }
+    },
     getIndex : function () {
-      //return this.nowIndex;
       console.log("getIndex",this.nowIndex,INDEX);
       if(this.nowIndex <= INDEX){
          return this.nowIndex;
        } return 1;
     },
-    onRowSelected : function(row){
-        this.selected = row;
-        this.selected_symbol = row.symbol;
-        this.tab="summary"
-        console.log("row._showDetails",this.selected_symbol);
-    },
     sortBy: function(key) {
       this.sortKey = key;
       this.sortOrders[key] = this.sortOrders[key] * -1;
+    },
+    sync_markets_details : function () {
+      console.log("sync_markets_details","this.summary",this.summary);
+      let THIS = this;
+      let summary = this.summary;
+      if(this.selected && this.selected.details){
+        THIS.sync_highlow();
+      }
+      request.get(baseurl + "/exchange/v1/markets_details",function(error, response, markets_details) {
+        let marketsDetails = JSON.parse(markets_details);
+        for(var i in marketsDetails){
+            if(summary[marketsDetails[i].symbol]){
+              summary[marketsDetails[i].symbol].details =  marketsDetails[i];
+            }
+        }
+        THIS.sync_highlow();
+      });
+    },
+    sync_highlow: function() {
+        var THIS = this;
+        
+        console.log("sync_highlow",THIS.selected);
+        if(!THIS.selected  ||   !THIS.selected.details){
+          return;
+        }
+        let ranges = this.ranges;
+
+        let endTime = new Date().getTime();
+        let startTime = endTime - (1000*60*60*24*32)
+
+
+        request.get(baseurlPublic + `/market_data/candles?pair=${this.selected.details.pair}&interval=1w&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
+            if(!THIS.selected) return;
+            candles = JSON.parse(candles);
+            let range =  ranges[THIS.selected.symbol] || {
+              wHigh : null, wLow : null,
+              mHigh : null, mLow : null,
+              highest : null, lowest : null
+            };
+
+            range.wHigh = candles[0].high;
+            range.wLow = candles[0].low;
+            candles.map(function (candle) {
+               range.mHigh = (range.mHigh  === null) ? candle.high : Math.max(range.mHigh,candle.high);
+               range.mLow = (range.mLow  === null) ? candle.low : Math.min(range.mLow,candle.low);
+
+            })
+            ranges[THIS.selected.symbol] = range;
+        });
+
     },
     sync_ticker: function() {
         var THIS = this;
@@ -758,7 +576,7 @@ export default {
               }  
             }
             clearTimeout(sync_history);
-            sync_history = setTimeout(()=>THIS.sync_history(++_index),5000);
+            sync_history = setTimeout(()=>THIS.sync_history(_index),5000);
         });
     },
     sync_history: function(index) {
@@ -854,11 +672,12 @@ export default {
           
           if(THIS.items.length == 0){
             for(var j in THIS.summary){
-              console.log("summary===",THIS.summary[j])
+              //console.log("summary===",THIS.summary[j])
               THIS.items.push(THIS.summary[j])
             }
           }
 
+          THIS.onCurrencySelect();
           THIS.sync_balance(_index);
           //console.log("Here:Reponse:",body);
       });
@@ -903,18 +722,47 @@ export default {
         if (!this.checkFormValidity()) {
           return
         }
-        // Push the name to submitted names
-        KEYS["api_key_"+this.nowIndex] = this.apiKey;
-        KEYS["api_secret_"+this.nowIndex] = this.apiSecret;
 
-        localStorage.setItem("api_key_"+this.nowIndex,this.apiKey);
-        localStorage.setItem("api_secret_"+this.nowIndex,this.apiSecret);
+        if(!this.keyIndex) this.keyIndex = ++INDEX;
+
+        // Push the name to submitted names
+        KEYS["api_name_" + this.keyIndex] = this.apiName;
+        KEYS["api_key_" + this.keyIndex] = this.apiKey;
+        KEYS["api_secret_" + this.keyIndex] = this.apiSecret;
+
+        localStorage.setItem("api_name_"+this.keyIndex,this.apiName);
+        localStorage.setItem("api_key_"+this.keyIndex,this.apiKey);
+        localStorage.setItem("api_secret_"+this.keyIndex,this.apiSecret);
 
         // Hide the modal manually
         this.$nextTick(() => {
           this.$bvModal.hide('modal-prevent-closing')
-        })
+        });
+        this.$router.push("/trade/"+this.keyIndex);
+        window.location.reload();
+      },
+      deleteCurrentKey(){
+
+        let name  = KEYS["api_name_" + this.keyIndex] || KEYS["api_key_" + this.keyIndex] ;
+
+        var r = window.confirm("Are you sure you want to delete "+ name);
+
+        if(r==true){
+            delete KEYS["api_name_" + this.keyIndex];
+            delete KEYS["api_key_" + this.keyIndex];// = this.apiKey;
+            delete KEYS["api_secret_" + this.keyIndex];// = this.apiSecret;
+
+            localStorage.removeItem("api_name_"+this.keyIndex);
+            localStorage.removeItem("api_key_"+this.keyIndex);
+            localStorage.removeItem("api_secret_"+this.keyIndex);
+            window.location.reload();
+        }
+
       }
+  }
+  ,
+  components : {
+    Dashboard,Summary,Orders,History
   }
 }
 </script>

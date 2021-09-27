@@ -13,18 +13,24 @@ export default new Router({
     routes: [
         {
           path: '/',
-          name : "demo",
+          alias: '/trade',
+          name : "default",
           component: () => import('./components/DemoGrid.vue'),
         },
         {
-          path: '/home',
-          name : "home",
-          component: () => import('./components/Home.vue'),
+          path: '/trade/:account',
+          name : "OnlyAccount",
+          component: () => import('./components/DemoGrid.vue'),
         },
         {
-          path: '/blog',
-          name : "blog",
-          component: () => import('./components/Blog.vue'),
+          path: '/trade/:account/:currency/',
+          name : "OnlyAccountCurrency",
+          component: () => import('./components/DemoGrid.vue'),
+        },
+        {
+          path: '/trade/:account/:currency/:tab',
+          name : "OnlyAccountCurrencyView",
+          component: () => import('./components/DemoGrid.vue'),
         }
     ]
 });
