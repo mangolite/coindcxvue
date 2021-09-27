@@ -34,8 +34,8 @@
                 {{KEY.name}}
               </router-link>&nbsp;
           </span>
-          <b-button secondary class="btn-sm fa fa-plus" @click="keyIndex=null;$bvModal.show('modal-prevent-closing')"></b-button>&nbsp;
-          <b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=nowIndex;$bvModal.show('modal-prevent-closing')"></b-button>
+          <b-button secondary class="btn-sm fa fa-plus" @click="keyIndex=null; showEditor();"></b-button>&nbsp;
+          <b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=nowIndex;showEditor();"></b-button>
           <b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=nowIndex;deleteCurrentKey()"></b-button>
       </b-navbar-nav>
     </b-collapse>
@@ -698,8 +698,13 @@ export default {
     },
 
 
-
-    checkFormValidity() {
+      showEditor(){
+        this.apiName = KEYS["api_name_" + this.keyIndex];
+        this.apiKey = KEYS["api_key_" + this.keyIndex];
+        this.apiSecret = KEYS["api_secret_" + this.keyIndex];
+        this.$bvModal.show('modal-prevent-closing')
+      },
+      checkFormValidity() {
         const valid = this.$refs.form.checkValidity()
         this.apiKeyState = valid
         this.apiSecretState = valid
