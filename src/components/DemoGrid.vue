@@ -472,7 +472,8 @@ export default {
               var market = ticker.market
               if(summary[market]){
                 summary[market].ticker = ticker;
-                summary[market].now_profit = summary[market].stock*summary[market].ticker.last_price * 0.999 + summary[market].earning;
+                summary[market].stock_worth = summary[market].stock*summary[market].ticker.last_price * 0.999;
+                summary[market].now_profit = summary[market].stock_worth + summary[market].earning;
                 summary[market].signal_sell = (summary[market].ticker.high-summary[market].ticker.last_price)/(summary[market].ticker.high-summary[market].buy_rate_stock)*-100
                 summary[market].signal_buy = (summary[market].ticker.last_price-summary[market].ticker.low)/(summary[market].buy_rate_stock-summary[market].ticker.low)*100;
                 //summary[market].signal_sell = summary[market].ticker.high-summary[market].ticker.last_price;
@@ -517,9 +518,11 @@ export default {
               let market = balance.currency + "INR";
               if(summary[market]){
                 summary[market].balance = balance;
+                 summary[market].instock_worth= (balance.balance*summary[market].ticker.last_price * 0.999);
               } else if(balance.currency == "INR"){
                 summary.INR = { balance : balance}
               }
+
             }
           THIS.sync_orders(_index);
         });
