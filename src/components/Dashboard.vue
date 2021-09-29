@@ -104,7 +104,7 @@
           <template #cell(worth)="row">
             <span v-if="row.item.order" class="float-start text-success fw-bold">{{row.item.order.onbuy_amount}}</span>
             <span v-if="row.item" class="float-none text-primary fw-bold text-center" >{{row.item | instock_worth}}</span>
-            <span v-if="row.item.order" class="float-end text-danger fw-bold">{{row.item.order.onsale_ammount}}</span>
+            <span v-if="row.item.order" class="float-end text-danger fw-bold">{{row.item.order.onsale_amount}}</span>
           </template>
 
         </b-table>

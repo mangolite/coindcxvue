@@ -503,7 +503,7 @@ export default {
               let market = balance.currency + "INR";
               if(summary[market]){
                 summary[market].balance = balance;
-                summary[market].instock_worth= (balance.balance * summary[market].ticker.last_price * 0.999);
+                //summary[market].instock_worth= (balance.balance * summary[market].ticker.last_price * 0.999);
               } else if(balance.currency == "INR"){
                 summary.INR = { balance : balance}
               }
@@ -551,16 +551,16 @@ export default {
               var key = market;
               if(summary[key]){
                 summary[key].order = summary[key].order || {
-                  onsale_ammount : 0, onbuy_amount : 0
+                  onsale_amount : 0, onbuy_amount : 0
                 };
                 if(order.side=='sell')
-                  summary[key].order.onsale_ammount+=(order.price_per_unit*order.remaining_quantity);
+                  summary[key].order.onsale_amount+=(order.price_per_unit*order.remaining_quantity);
                 else 
-                  summary[key].order.onbuy_ammount+=(order.price_per_unit*order.remaining_quantity);
+                  summary[key].order.onbuy_amount+=(order.price_per_unit*order.remaining_quantity);
 
-                summary[key].postsale_amount = summary[key].order.onsale_ammount * 0.999;
+                summary[key].postsale_amount = summary[key].order.onsale_amount * 0.999;
                 summary[key].postsale_profit =  summary[key].postsale_amount + summary[key].earning  
-                //summary[key].postsale_profit =  summary[key].order.onsale_ammount * 0.999 + summary[key].earning
+                //summary[key].postsale_profit =  summary[key].order.onsale_amount * 0.999 + summary[key].earning
               }  
             }
             clearTimeout(sync_history);
