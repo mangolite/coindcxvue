@@ -134,11 +134,13 @@ import Vue from 'vue';
 import request from 'request';
 //import axios from 'axios';
 import crypto from 'crypto';
-import numeral from 'numeral';
+
+import formatter from './../formatter';
 import Dashboard from './Dashboard.vue';
 import Summary from './Summary.vue';
 import Orders from './Orders.vue';
 import History from './History.vue';
+
 
 
 //var baseurl = document.location.origin;  
@@ -172,10 +174,7 @@ for(var i =1; i < 50; i++){
 }
 INDEX = KEY_LIST.length;
 
-  var number = function (value,format) {
-      var _format = format || "0,0000"
-      return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
-  }
+
   var buyrate = function(qty,tqty,tcost,min,max){
       //let factor = tqty/qty;
       let avg = tcost/tqty;
@@ -210,20 +209,6 @@ INDEX = KEY_LIST.length;
               _showDetails : false
       }
   }
-
-Vue.filter('capitalize', function (str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-});
-Vue.filter('round5', function (num,places) {
-    let _places = places || 5;
-    let base = Math.pow(10,_places)
-    return Math.round(num*base)/base;
-});
-Vue.filter('round2', function (num,places) {
-    let _places = places || 2;
-    let base = Math.pow(10,_places)
-    return number(Math.round(num*base)/base);
-});
 
 export default {
   name: 'HelloWorld',
@@ -518,7 +503,7 @@ export default {
               let market = balance.currency + "INR";
               if(summary[market]){
                 summary[market].balance = balance;
-                 summary[market].instock_worth= (balance.balance*summary[market].ticker.last_price * 0.999);
+                summary[market].instock_worth= (balance.balance * summary[market].ticker.last_price * 0.999);
               } else if(balance.currency == "INR"){
                 summary.INR = { balance : balance}
               }
