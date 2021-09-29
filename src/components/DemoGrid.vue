@@ -43,7 +43,7 @@
 
 <div v-if="!selected" id="myMarketDiv">
   <Dashboard
-    :items="items" :total="total" :account="nowIndex"
+    :items="sortedItems" :total="total" :account="nowIndex"
   ></Dashboard>
 </div>
 
@@ -335,6 +335,17 @@ export default {
     },
     tab : function(){
       return this.$route.params.currency ? (this.$route.params.tab || 'summary') : null;
+    },
+    sortedItems : function () {
+      return [...this.items].sort(function (a,b) {
+          if(a.balance && b.balance){
+            var aStock = a.balance.balance + a.balance.locked_balance;
+            var bStock = b.balance.balance + b.balance.locked_balance;
+            return b-a;
+          } else {
+            return b.stock-a.stock;
+          }
+      });
     }
   },
   watch: {
