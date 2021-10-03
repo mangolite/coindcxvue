@@ -23,10 +23,10 @@
           </template> 
 
           <template #cell(buy_rate)="row">
-             <span class="float-start text-white fw-bold">
+             <span class="float-start text-primary fw-bold">
                {{row.item.buy_rate | round5}} 
              </span>
-            <small class="float-end text-white fw-bold"> {{row.item.buy_rate_stock | round5}}</small>
+            <small class="float-end text-primary fw-bold"> {{row.item.buy_rate_stock | round5}}</small>
           </template>  
 
 
@@ -146,7 +146,7 @@ export default {
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'now_rate', label : "Rate", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "primary-info"},  
+                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "secondary"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
                   //{ key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
@@ -179,8 +179,5 @@ export default {
     #myMarket.table.b-table.b-table-stacked-sm > tbody > tr > [data-label]::before {
       width: 20%;
     }
-  }
-  .table-primary-info {
-    background: linear-gradient(89deg, #0d6efd 0%, #0dcaf0 100%);
   }
 </style>
