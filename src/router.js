@@ -16,22 +16,43 @@ export default new Router({
           alias: '/trade',
           redirect : '/trade/1',
           name : "default",
-          component: () => import('./components/DemoGrid.vue'),
+          meta : { layout: "old" },
+          component: () => import('./trade/DemoGrid.vue'),
         },
         {
           path: '/trade/:account',
           name : "OnlyAccount",
-          component: () => import('./components/DemoGrid.vue'),
+          meta : { layout: "old" },
+          component: () => import('./trade/DemoGrid.vue'),
         },
         {
           path: '/trade/:account/:currency/',
           name : "OnlyAccountCurrency",
-          component: () => import('./components/DemoGrid.vue'),
+          meta : { layout: "old" },
+          component: () => import('./trade/DemoGrid.vue'),
         },
         {
           path: '/trade/:account/:currency/:tab',
           name : "OnlyAccountCurrencyView",
-          component: () => import('./components/DemoGrid.vue'),
-        }
+          meta : { layout: "old" },
+          component: () => import('./trade/DemoGrid.vue'),
+        },
+
+        {
+          path: '/trade2',
+          redirect : '/trade2/1',
+        },
+        {
+            path : '/trade2/:account',
+            name: 'Dashboard',
+            meta : { layout: "dashboard" },
+            component: () => import(/* webpackChunkName: "dashboard" */ './trade2/Dashboard.vue'),
+        },
+        {
+          path : '/trade2/:account/:symbol',
+          name: 'Dashboard',
+          meta : { layout: "dashboard" },
+          component: () => import(/* webpackChunkName: "dashboard" */ './trade2/Dashboard.vue'),
+      },
     ]
 });

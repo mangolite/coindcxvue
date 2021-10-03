@@ -1,16 +1,23 @@
 <template>
-  <div class="hello">
-
-      <div> Orders </div>
-
-      <b-table small striped :items="myOrders" dark id="myOrders" fixed
+  <a-card :bordered="false" class="dashboard-bar-line header-solid">
+      <b-table small striped :items="myOrders"  id="myOrders" fixed head-dark light
        :fields="fields">
-
         <template v-slot:cell(side)="order">
           <span :data-value="order.value" :class="{
            'text-danger' : (order.value == 'sell'), 
-           'text-danger text-bold fw-bold' : (['24High','wHigh','mHigh'].indexOf(order.value) > -1), 
-           'text-success text-bold fw-bold' : (['24Low','wLow','mLow'].indexOf(order.value) > -1), 
+
+           'text-danger text-bold fw-bold' : ('24High' == order.value), 
+           'text-success text-bold fw-bold' : ('24Low' == order.value), 
+
+           'text-danger-1 text-bold fw-bold' : ('wkHigh' == order.value), 
+           'text-success-1 text-bold fw-bold' : ('wkLow' == order.value), 
+
+            'text-danger-2 text-bold fw-bold' : ('moHigh' == order.value), 
+            'text-success-2 text-bold fw-bold' : ('moLow' == order.value), 
+
+            'text-danger-3 text-bold fw-bold' : ('yrHigh' == order.value), 
+            'text-success-3 text-bold fw-bold' : ('yrLow' == order.value),
+
            'text-success' : (order.value == 'buy'),
            'text-warning' : (order.value == 'Current Rate'),
            'text-info' : (order.value == 'buyRateStock'),
@@ -19,28 +26,28 @@
         </template>
 
         <template v-slot:cell(ppu)="order">
-          <span :data-value="order.value">
+          <span :data-value="order.value" class="fw-bold">
             {{order.item.price_per_unit | round5}}
           </span>
         </template>
 
         <template v-slot:cell(price_per_unit)="order">
-          <span :data-value="order.value">
+          <span :data-value="order.value" class="fw-bold">
             {{order.item.price_per_unit | round5}}
           </span>
         </template>
 
         <template v-slot:cell(total_quantity)="order">
-          <span :data-value="order.value">{{order.value | round5}}</span>
+          <span :data-value="order.value" class="fw-bold">{{order.value | round5}}</span>
         </template>
 
           <template #cell(amount)="order">
-            {{(order.item.price_per_unit * order.item.total_quantity) | round2}}
+            <span class="fw-bold">{{(order.item.price_per_unit * order.item.total_quantity) | round2}}</span>
           </template>
 
       </b-table>
 
-  </div>
+  </a-card>
 </template>
 
 <script>
@@ -53,7 +60,7 @@ export default {
     },
     data: () => ({
         fields : [
-            { key: 'market', label : "Symbol"},
+            { key: 'market', label : "Orders"},
             { key: 'side', label : "Side"},
             { key: 'ppu', label : "Price"},
             { key: 'total_quantity', label : "TQty"},
@@ -64,6 +71,12 @@ export default {
 </script>
   
 
-<style scoped>
-
+<style>
+  #myOrders {
+    border: 1px solid #808080;
+  }
+  #myOrders thead tr th{
+    background-color: rgb(59, 59, 59);
+    color: rgb(255, 255, 255)!important;
+  }
 </style>

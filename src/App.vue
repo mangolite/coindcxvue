@@ -1,29 +1,27 @@
 <template>
   <div id="app"> 
-      <router-view></router-view>
+		<component :is="layout">
+			<router-view />
+		</component>
   </div>
 </template>
 
 <script>
-import Vue from 'vue'
-//import DemoGrid from './components/DemoGrid';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-// Import Bootstrap an BootstrapVue CSS files (order is important)
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'bootstrap-icons/font/bootstrap-icons.css'
-
-import "./assets/style.css";
-
-Vue.use(BootstrapVue);
-Vue.use(IconsPlugin);
 
 export default {
   name: 'App',
+	computed: {
+			// Sets components name based on current route's specified layout, defaults to
+			// <layout-default></layout-default> component.
+		layout() {
+			return "layout-" + ( this.$route.meta.layout || "default" ).toLowerCase() ;
+		}
+	},
   components: {
     //DemoGrid
   },
   mounted : function () {
+    console.log("this.$route.meta.layout",this.$route.meta.layout);
     let recaptchaScript = document.createElement('script')
     recaptchaScript.setAttribute('src', 'https://kit.fontawesome.com/1153462312.js')
     document.head.appendChild(recaptchaScript);

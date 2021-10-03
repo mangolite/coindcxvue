@@ -7,19 +7,29 @@
 
         <b-table small striped hover :items="items" :fields="fields" id="myMarket"
           stacked="sm" selected-variant="active" >
-          <template #cell(buy_rate)="row">
-             <span class="float-start">
-               {{row.item.buy_rate | round5}} 
-             </span> ~
-            <small class="float-end"> {{row.item.buy_rate_stock | round5}}</small>
-          </template>  
+
+          <template #table-colgroup>
+            <col
+              key="symbol"
+              :style="{ width:'120px'}"
+            >
+          </template>
 
           <template #cell(symbol)="row">
               <router-link :to="`/trade/${account}/${row.item.symbol}`" 
-                tag="button" class="btn btn-dark btn-sm">
+                tag="button" class="btn btn-dark btn-sm fw-bold">
                 {{ row.item.symbol}}
               </router-link>
           </template> 
+
+          <template #cell(buy_rate)="row">
+             <span class="float-start text-white fw-bold">
+               {{row.item.buy_rate | round5}} 
+             </span>
+            <small class="float-end text-white fw-bold"> {{row.item.buy_rate_stock | round5}}</small>
+          </template>  
+
+
           <template #cell(now_rate)="row">
             
             <span class="float-start">
@@ -136,7 +146,7 @@ export default {
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'now_rate', label : "Rate", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "warning"},  
+                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "primary-info"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
                   //{ key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
@@ -144,7 +154,7 @@ export default {
                   //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   //{ key: 'efective_rate', label: 'EffRate', variant : "success"},
-                  { key: 'worth', label: 'Worth', variant : "primary"},
+                  { key: 'worth', label: 'Worth INR', variant : "primary"},
                   { key: 'stock', label: 'stock', variant : "danger"},
                   { key: 'profit', label: 'p-n-f', variant : "secondary"}
         ],
@@ -169,5 +179,8 @@ export default {
     #myMarket.table.b-table.b-table-stacked-sm > tbody > tr > [data-label]::before {
       width: 20%;
     }
+  }
+  .table-primary-info {
+    background: linear-gradient(89deg, #0d6efd 0%, #0dcaf0 100%);
   }
 </style>

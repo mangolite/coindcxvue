@@ -63,3 +63,29 @@ th.active .arrow {
     clear: both;
     display: block;
   }
+
+  .text-danger-1 {
+    color: #F5222D;
+  }
+  .text-danger-2 {
+    color: #b81c24;
+  }
+  .text-danger-3 {
+    color: #81060d;
+  }
+  .text-danger-4 {
+    color: #410508;
+  }
+
+  .text-success-1 {
+    color: #52C41A;
+  }
+  .text-success-2 {
+    color: #428a1e;
+  }
+  .text-success-3 {
+    color: #2c680f;
+  }
+  .text-success-4 {
+    color: #173806;
+  }

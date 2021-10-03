@@ -35,7 +35,32 @@ var formatter = {
 			if(!balance) return 0;
 			return round2(balance.balance * summary.ticker.last_price * 0.999);
 		});
-	}
+		Vue.filter('wallet_pending_purchase', function (summary) {
+			let onbuy_amount = summary.order ? summary.order.onbuy_amount : 0;
+			if(!onbuy_amount) return 0;
+			return round2(onbuy_amount);
+		});
+		Vue.filter('wallet_net_worth', function (summary) {
+			let onbuy_amount = summary.order ? summary.order.onbuy_amount : 0;
+			let onsale_amount = summary.order ? summary.order.onsale_amount : 0;
+			let balance = summary.balance;
+			if(!balance) return 0;
+			let balanceCoins = parseFloat(balance.balance) + parseFloat(balance.locked_balance);
+			return round2( 
+				(balanceCoins) * summary.ticker.last_price * 0.999
+			);
+		});
+		Vue.filter('wallet_balance', function (summary) {
+			let balance = summary.balance;
+			if(!balance) return "--";
+			let balanceCoins = parseFloat(balance.balance) + parseFloat(balance.locked_balance);
+			return balanceCoins;
+		});
+	},
+	number : number,
+	round2 :round2,
+	round5 : round5,
+	capitalize : capitalize,
 };
 formatter.init();
 export default formatter;
