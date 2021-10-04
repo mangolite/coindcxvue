@@ -82,7 +82,8 @@
 		<!-- Charts -->
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<a-col :span="24" :lg="10" class="mb-24">
-				<CardCandleChart></CardCandleChart>
+				<History
+  					:selected="selected" :myTrades="$store.getters.trades"></History>
 			</a-col>
 			<a-col :span="24" :lg="14" class="mb-24">
 				<Orders
@@ -93,21 +94,16 @@
 		<!-- / Charts -->
 
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
-			<a-col :span="24" :lg="10" class="mb-24">
-
-				<!-- Active Users Card -->
-				  <History
-  					:selected="selected" :myTrades="$store.getters.trades"></History>
-				<!-- Active Users Card -->
-
+			<a-col :span="24" :lg="24" class="mb-24">
+				<CardCandleChart></CardCandleChart>
 			</a-col>
-			<a-col :span="24" :lg="14" class="mb-24">
-				
-				<!-- Sales Overview Card -->
-				<CardLineChart></CardLineChart>
-				<!-- / Sales Overview Card -->
-
+			<a-col :span="24" :lg="24" class="mb-24">
+				<CardCompareChart></CardCompareChart>
 			</a-col>
+		</a-row>
+
+		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
+
 		</a-row>
 
 		<!-- Charts -->
@@ -194,7 +190,8 @@
 
 	// Line chart for "Sales Overview" card.
 	import CardCandleChart from './CardCandleChart' ;
-
+	import CardCompareChart from './CardCompareChart' ;
+	
 	// Counter Widgets
 	import WidgetCounter from '@/@common/muse/components/Widgets/WidgetCounter' ;
 
@@ -213,6 +210,7 @@
 	import Orders from '@/trade/Orders' ;
 	import History from '@/trade/History' ;
 	import OneView from './OneView' ;
+
 
 	// "Projects" table list of columns and their properties.
 	const tableColumns = [
@@ -324,7 +322,7 @@
 			CardOrderHistory,
 			CardInfo,
 			CardInfo2,
-			Orders,History,OneView
+			Orders,History,OneView,CardCompareChart
 		},
 		data() {
 			return {

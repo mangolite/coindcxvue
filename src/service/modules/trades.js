@@ -104,6 +104,9 @@ const getters = {
   candles (state){
     return state.symbol ? (state.candlesMap[state.symbol] || null) : null;
   },
+  candles_all (state){
+    return Object.values(state.candlesMap || {});
+  },
 	account: (state) => state.account,
   symbol (state){
     return state.symbol;
@@ -184,13 +187,14 @@ const getters = {
     },{
        side : 'buyRate',
        market : symbol,
-       price_per_unit : selected.meta.buy_rate
+       price_per_unit : selected.meta.buy_rate,
+       amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0)
     },{
        side : "buyRateStock",
        market : symbol,
-       price_per_unit : selected.meta.buy_rate_stock
-    },
-    {
+       price_per_unit : selected.meta.buy_rate_stock,
+       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0)
+    },{
        side : "24High",
        market : symbol,
        price_per_unit : selected.ticker.high,
@@ -208,8 +212,7 @@ const getters = {
        side : "wkHigh", order : 100,
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].wHigh : selected.ticker.high
-    },
-    {
+    }, {
        side : "moHigh", order : 1000,
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mHigh : selected.ticker.high
@@ -217,8 +220,7 @@ const getters = {
        side : "moLow", order : -1000,
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mLow : selected.ticker.low
-    },
-    {
+    }, {
       side : "yrHigh", order : 10000,
       market : symbol,
       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yHigh : selected.ticker.high
