@@ -333,7 +333,8 @@ const actions = {
           state.summary = summary;
         }
         commit('summary',state.summary);
-        dispatch('fetchBalance')
+        dispatch('fetchBalance');
+        dispatch('fetchMarketDetails');
     });
   },
   //
