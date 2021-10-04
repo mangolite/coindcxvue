@@ -10,7 +10,7 @@
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
 			<WidgetCounter
 				:title="'Total Worth = '"
-				:icon="'fa fa-rupee-sign bg-dark'"
+				:icon="'fa fa-equals bg-dark'"
 				:status="'stat.status'">
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
@@ -62,7 +62,7 @@
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
 			<WidgetCounter
 				:title="'+ INR Value'"
-				:icon="'fa fa-money-bill-alt bg-primary'"
+				:icon="'fa fa-wallet bg-primary'"
 				:status="'danger'">
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
@@ -185,7 +185,7 @@
 <script>
 
 	// Bar chart for "Active Users" card.
-	import CardBarChart from '@/@common/muse/components/Cards/CardBarChart' ;
+	import CardBarChart from './CardBarChart' ;
 	import CardLineChart from '@/@common/muse/components/Cards/CardLineChart' ;
 
 	// Line chart for "Sales Overview" card.

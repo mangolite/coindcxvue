@@ -13,15 +13,38 @@
 		:class="['ant-layout-sider-' + sidebarColor, 'ant-layout-sider-' + sidebarTheme]"
 		theme="light"
 		:style="{ backgroundColor: 'transparent',}">
-			<div class="brand"><img src="images/logo-ct-black.png" alt=""> <span>{{walletCount}}</span></div>
-			<hr>
+			<div class="brand" hidden><img src="images/logo-ct-black.png" alt=""> <span>{{walletCount}}</span></div>
+			<hr hidden>
 			<!-- Sidebar Navigation Menu -->
 			<a-menu theme="light" mode="inline">
 				<a-menu-item v-for="wallet in wallets" :key="wallet.symbol">
-					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`">
-						<span class="icon fa fa-bitcoin">
+					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`" class="router-anchor">
+						<span class="icon icon-sm" hidden>
+							<span class="fa fa-refresh text-sm text-info"></span>&nbsp;
+							<span class="text-sm text-secondary">%</span>
+							<span class="float-end">
+								{{(wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high*100 | round}}
+							</span>
 						</span>
-						<span class="label">{{wallet.symbol}}</span>
+	
+						<span class="label bold">{{wallet.symbol}}</span>
+
+						<span class="label float-end">
+							 <span class="label float-start fw-bold"
+							 	:class="{
+									 'text-success' : wallet.ticker.change_24_hour>0,
+									 'text-danger' : wallet.ticker.change_24_hour<0
+								 }">
+								{{wallet.ticker | change_percent}}<small class="text-sm">%</small>
+							 </span>&nbsp;&nbsp;&nbsp;
+							<span class=" float-end" style="min-width:40px;display:inline-block">
+								<span class="fa fa-arrows-alt-v text-sm text-info"></span>
+								<span class="text-pink fw-bold" >
+									{{(wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high*100 | round}}
+								</span>
+								<span class="text-sm text-secondary">%</span>
+							</span>
+						</span>
 					</router-link>
 				</a-menu-item>
 			</a-menu>
@@ -98,5 +121,19 @@
 <style scoped>
 	.router-link-active .icon {
 		color: white;
+	}
+	.router-anchor{
+		text-decoration : unset !important;
+	}
+	.icon.icon-sm {
+		width: 36px!important;
+		height: 24px!important;
+		text-decoration : unset !important;
+	}
+	.icon.icon-sm span  {
+		text-decoration : unset !important;
+		text-decoration-style: dotted !important;
+		text-decoration-color: red !important;
+		text-decoration-thickness: auto !important;
 	}
 </style>

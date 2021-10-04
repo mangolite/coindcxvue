@@ -89,3 +89,9 @@ th.active .arrow {
   .text-success-4 {
     color: #173806;
   }
+  .text-pink  {
+    color: #9f16ee;
+  }
+  .text-bold  {
+    font-weight: 600;
+  }

@@ -40,11 +40,15 @@
               type: 'datetime'
             },
             yaxis: {
-				//opposite: false,
+				opposite: true,
+				show : false,
               	tooltip: {
-               		enabled: true
+               		enabled: false
               	}
-            }
+            },
+			legend: {
+				position: 'left'
+			}
           },
 
 
@@ -52,11 +56,16 @@
 		},
 		computed : {
 			series(){
-				return this.$store.getters.candles_all.map(function(candles,i){
-					let factor = 1000/candles[0].high;
+				let all = this.$store.getters.candles_all;
+				return Object.keys(this.$store.getters.candles_all).map(function(key){
 					return {
-						name : "line" + i,
-						data : (candles || []).map(function(item) {
+						symbol : key, candles : all[key]
+					};
+				}).map(function(Dcandles,i){
+					let factor = 1000/Dcandles.candles[0].high;
+					return {
+						name : Dcandles.symbol,
+						data : (Dcandles.candles || []).map(function(item) {
 							return {
 								x : new Date(item.time),
 								y : (item.high-0+item.low)/2*factor

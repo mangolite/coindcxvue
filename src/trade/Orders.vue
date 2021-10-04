@@ -19,9 +19,9 @@
             'text-success-3 text-bold fw-bold' : ('yrLow' == order.value),
 
            'text-success' : (order.value == 'buy'),
-           'text-warning' : (order.value == 'Current Rate'),
-           'text-info' : (order.value == 'buyRateStock'),
-           'text-primary' : (order.value == 'buyRate')
+           'text-dark text-bold' : (order.value == 'Current Rate'),
+           'text-info text-bold' : (order.value == 'buyRateStock'),
+           'text-primary text-bold' : (order.value == 'buyRate')
           }">{{order.value}}</span>
         </template>
 

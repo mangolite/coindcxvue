@@ -105,7 +105,7 @@ const getters = {
     return state.symbol ? (state.candlesMap[state.symbol] || null) : null;
   },
   candles_all (state){
-    return Object.values(state.candlesMap || {});
+    return state.candlesMap || {};
   },
 	account: (state) => state.account,
   symbol (state){
@@ -183,14 +183,16 @@ const getters = {
       side : 'Current Rate',
       market : symbol,
       price_per_unit : selected.ticker.last_price,
-      total_quantity : selected.balance ? num(selected.balance.balance) : 0
+      total_quantity : selected.balance ? num(selected.balance.balance) : 0,
+      _rowVariant : "warning"
     },{
        side : 'buyRate',
        market : symbol,
        price_per_unit : selected.meta.buy_rate,
-       amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0)
+       amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
+       
     },{
-       side : "buyRateStock",
+       side : "buyRateStock", //_rowVariant : "info",
        market : symbol,
        price_per_unit : selected.meta.buy_rate_stock,
        amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0)
@@ -395,6 +397,7 @@ const actions = {
       return;
     }    
     let ranges = state.ranges;
+    let summary = state.summary;
     let endTime = new Date().getTime();
     let startTime = endTime - (1000*60*60*24*365);
     let monthTime = endTime - (1000*60*60*24*31);
@@ -424,7 +427,11 @@ const actions = {
            }
         })
         ranges[state.symbol] = range;
+        if(summary[state.symbol]){
+          summary[state.symbol].range = range;
+        }
         commit('ranges',ranges);
+        commit('summary',summary);
         state.candlesMap[state.symbol] = candles;
         commit('candles',state.candlesMap);
     });
@@ -441,7 +448,6 @@ const actions = {
           if(summary[market]){
             let summItem = summary[market];
             summItem.ticker = ticker;
-
             summItem.meta.stock_worth = summItem.meta.stock*summItem.ticker.last_price * 0.999;
             summItem.meta.now_profit = summItem.meta.stock_worth + summItem.meta.earning;
             summItem.meta.signal_sell = (summItem.ticker.high-summItem.ticker.last_price)/(summItem.ticker.high-summItem.meta.buy_rate_stock)*-100

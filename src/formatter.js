@@ -25,6 +25,11 @@ var round5 = function (n,places) {
 	let base = Math.pow(10,_places)
 	return Math.round(num(n)*base)/base;
 };
+var round = function (n,places) {
+	let _places = places || 0;
+	let base = Math.pow(10,_places)
+	return Math.round(num(n)*base)/base;
+};
 var capitalize = function (str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
@@ -35,6 +40,7 @@ var formatter = {
 		Vue.filter('capitalize', capitalize);
 		Vue.filter('round5',round5);
 		Vue.filter('round2',round2);
+		Vue.filter('round',round);
 
 		Vue.filter('instock_worth', function (summary) {
 			let balance = summary.balance;
@@ -60,10 +66,16 @@ var formatter = {
 			let balanceCoins = num(balance.balance) + num(balance.locked_balance);
 			return balanceCoins;
 		});
+		Vue.filter('change_percent', function (ticker) {
+			return round5(
+				ticker.change_24_hour,2
+			);
+		});
 	},
 	number : number,
 	round2 :round2,
 	round5 : round5,
+	round : round,
 	capitalize : capitalize,
 };
 formatter.init();
