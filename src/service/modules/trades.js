@@ -52,6 +52,11 @@ var buyrate = function(qty,tqty,tcost,min,max){
   }
   return buyrate(qty,hqty, hqty*havg,avg,max);
 }
+function num(str){
+  if(isNaN(str) || !str){
+    return 0;
+  } return parseFloat(str);
+}
 
 var syncHistory = 0, syncTicker=0;
 var newSummary = function(key,symbol){
@@ -110,8 +115,21 @@ const getters = {
     return state.summary;
   },
   wallets (state){
-    return Object.keys(state.summary).map(function(key){
-      return state.summary[key];
+    return Object.values(state.summary).filter(function(value){
+      return !!value.symbol;
+    });
+  },
+  sortedWallets : function () {
+    return Object.values(state.summary).filter(function(value){
+      return !!value.symbol;
+    }).sort(function (a,b) {
+        if(a.balance && b.balance){
+          var aStock = num(a.balance.balance) + num(a.balance.locked_balance);
+          var bStock = num(b.balance.balance) + num(b.balance.locked_balance);
+          return bStock-aStock;
+        } else {
+          return b.stock-a.stock;
+        }
     });
   },
   total(state){
@@ -140,14 +158,15 @@ const getters = {
         return state.summary[key];
       }).reduce(function (total, n) {
       if(n.balance && n.ticker){
-        total.inStockWorth =  total.inStockWorth + n.balance.balance * n.ticker.last_price
-        total.netStockWorth = total.netStockWorth + (1 * n.balance.balance + 1*n.balance.locked_balance) * n.ticker.last_price;
+        let totalCoins = num(n.balance.balance) + num(n.balance.locked_balance);
+        total.inStockWorth =  total.inStockWorth + num(n.balance.balance) * n.ticker.last_price
+        total.netStockWorth = total.netStockWorth + num(totalCoins) * n.ticker.last_price;
       }
       return total;  
     },TOTAL);
 
-    TOTAL.netWorth = (TOTAL.netStockWorth-0) + (TOTAL.netINR-0) + (TOTAL.onBuy-0);
-    TOTAL.afterSellWorth = (TOTAL.afterSell-0) + (TOTAL.inStockWorth-0) + (TOTAL.onBuy-0) + (TOTAL.netINR-0);
+    TOTAL.netWorth = num(TOTAL.netStockWorth) + num(TOTAL.netINR) + num(TOTAL.onBuy);
+    TOTAL.afterSellWorth = num(TOTAL.afterSell) + num(TOTAL.inStockWorth) + num(TOTAL.onBuy) + num(TOTAL.netINR);
 
     return TOTAL;
   },
@@ -161,15 +180,15 @@ const getters = {
       side : 'Current Rate',
       market : symbol,
       price_per_unit : selected.ticker.last_price,
-      total_quantity : selected.balance ? selected.balance.balance : 0
+      total_quantity : selected.balance ? num(selected.balance.balance) : 0
     },{
        side : 'buyRate',
        market : symbol,
-       price_per_unit : selected.buy_rate
+       price_per_unit : selected.meta.buy_rate
     },{
        side : "buyRateStock",
        market : symbol,
-       price_per_unit : selected.buy_rate_stock
+       price_per_unit : selected.meta.buy_rate_stock
     },
     {
        side : "24High",
@@ -280,10 +299,10 @@ const actions = {
     let THIS = state;
     request.post(options, function(error, response, body) {
         for (var k in THIS.summary) {
-          THIS.summary[k].meta = {};
+          THIS.summary[k].meta = newSummary(k,k).meta;
         }
         var summary = THIS.summary;
-        THIS.history = body;
+        THIS.history = body;  
         for(var i in body){
           let deal = body[i];
           //let key = _index + "." + deal.symbol;
@@ -291,12 +310,11 @@ const actions = {
           summary[key] = summary[key] || newSummary(key,deal.symbol);
           let meta = summary[key].meta;
           if(deal.side == "sell"){
-            meta.sell_quantity += (deal.quantity-0);
-            meta.sell_amount += (deal.price * (deal.quantity-0));
-          } else  {
-            meta.buy_quantity+= (deal.quantity-0);
-            meta.buy_amount+= (deal.price * (deal.quantity-0));
-            
+            meta.sell_quantity += num(deal.quantity);
+            meta.sell_amount += num(deal.price * num(deal.quantity));
+          } else if(deal.side == "buy"){
+            meta.buy_quantity+= num(deal.quantity);
+            meta.buy_amount+= (num(deal.price) * num(deal.quantity));
             meta.buy_rate_min = meta.buy_rate_min || 99999999999999;
             meta.buy_rate_min =  Math.min(meta.buy_rate_min,deal.price);
             meta.buy_rate_max = meta.buy_rate_max || 0;
@@ -310,8 +328,14 @@ const actions = {
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
 
-          meta.buy_rate =  (meta.buy_amount)/meta.buy_quantity;
-          meta.sell_rate = meta.sell_amount>0 ? (meta.sell_amount)/meta.sell_quantity : 0;
+          if(meta.buy_quantity && !isNaN(meta.buy_quantity)){
+            meta.buy_rate =  num(meta.buy_amount)/num(meta.buy_quantity);
+            if(isNaN(meta.buy_rate)){
+              console.log("buy_rate:isNaN",meta.buy_amount,meta.buy_quantity);
+            }
+          }
+
+          meta.sell_rate = meta.sell_amount>0 ? num(meta.sell_amount)/num(meta.sell_quantity) : 0;
 
           if(meta.net_debit > meta.net_credit ){
             meta.efective_rate =  (meta.net_debit - meta.net_credit)/meta.stock;
@@ -413,11 +437,13 @@ const actions = {
           var ticker = tickers[i];
           var market = ticker.market
           if(summary[market]){
-            summary[market].ticker = ticker;
-            summary[market].stock_worth = summary[market].stock*summary[market].ticker.last_price * 0.999;
-            summary[market].now_profit = summary[market].stock_worth + summary[market].earning;
-            summary[market].signal_sell = (summary[market].ticker.high-summary[market].ticker.last_price)/(summary[market].ticker.high-summary[market].buy_rate_stock)*-100
-            summary[market].signal_buy = (summary[market].ticker.last_price-summary[market].ticker.low)/(summary[market].buy_rate_stock-summary[market].ticker.low)*100;
+            let summItem = summary[market];
+            summItem.ticker = ticker;
+
+            summItem.meta.stock_worth = summItem.meta.stock*summItem.ticker.last_price * 0.999;
+            summItem.meta.now_profit = summItem.meta.stock_worth + summItem.meta.earning;
+            summItem.meta.signal_sell = (summItem.ticker.high-summItem.ticker.last_price)/(summItem.ticker.high-summItem.meta.buy_rate_stock)*-100
+            summItem.meta.signal_buy = (summItem.ticker.last_price-summItem.ticker.low)/(summItem.meta.buy_rate_stock-summItem.ticker.low)*100;
             //summary[market].signal_sell = summary[market].ticker.high-summary[market].ticker.last_price;
           }
         }
@@ -460,11 +486,16 @@ const actions = {
       for(var i in balances){
         var balance = balances[i];
         let market = balance.currency + "INR";
+        let mytotal = num(balance.balance) + num(balance.locked_balance);
+        balance.total = mytotal;
         if(summary[market]){
           summary[market].balance = balance;
-          //summary[market].instock_worth= (balance.balance * summary[market].ticker.last_price * 0.999);
         } else if(balance.currency == "INR"){
           summary.INR = { balance : balance}
+        } else if(mytotal > 0){
+          console.log("market",market)
+          //summary[market] = summary[market] || newSummary(market,market);
+          //summary[market].balance = balance;
         }
       }
       commit('balances',balances);
@@ -524,8 +555,8 @@ const actions = {
             else 
               summary[key].order.onbuy_amount+=(order.price_per_unit*order.remaining_quantity);
 
-            summary[key].postsale_amount = summary[key].order.onsale_amount * 0.999;
-            summary[key].postsale_profit =  summary[key].postsale_amount + summary[key].earning  
+            summary[key].meta.postsale_amount = summary[key].order.onsale_amount * 0.999;
+            summary[key].meta.postsale_profit =  summary[key].meta.postsale_amount + summary[key].meta.earning  
             //summary[key].postsale_profit =  summary[key].order.onsale_amount * 0.999 + summary[key].earning
           }  
         }

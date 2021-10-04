@@ -80,7 +80,7 @@
 		<!-- / Counter Widgets -->
 
 		<!-- Charts -->
-		<a-row :gutter="24" type="flex" align="stretch">
+		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<a-col :span="24" :lg="10" class="mb-24">
 				<CardCandleChart></CardCandleChart>
 			</a-col>
@@ -92,12 +92,12 @@
 		</a-row>
 		<!-- / Charts -->
 
-		<a-row :gutter="24" type="flex" align="stretch">
+		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<a-col :span="24" :lg="10" class="mb-24">
 
 				<!-- Active Users Card -->
 				  <History
-  :selected="selected" :myTrades="$store.getters.trades"></History>
+  					:selected="selected" :myTrades="$store.getters.trades"></History>
 				<!-- Active Users Card -->
 
 			</a-col>
@@ -112,19 +112,27 @@
 
 		<!-- Charts -->
 		<a-row :gutter="24" type="flex" align="stretch">
-			<a-col :span="24" :lg="10" class="mb-24">
+			<a-col :span="24" :lg="24" class="mb-24">
+				<!-- Active Users Card -->
+	        <OneView
+				:items="$store.getters.sortedWallets" :total="$store.getters.total" :account="$store.getters.account"
+			></OneView>
+				<!-- Active Users Card -->
+			</a-col>
+		</a-row>
+		<!-- / Charts -->
 
+		<!-- Charts -->
+		<a-row :gutter="24" type="flex" align="stretch">
+			<a-col :span="24" :lg="10" class="mb-24">
 				<!-- Active Users Card -->
 				<CardBarChart></CardBarChart>
 				<!-- Active Users Card -->
-
 			</a-col>
 			<a-col :span="24" :lg="14" class="mb-24">
-				
 				<!-- Sales Overview Card -->
 				<CardLineChart></CardLineChart>
 				<!-- / Sales Overview Card -->
-
 			</a-col>
 		</a-row>
 		<!-- / Charts -->
@@ -204,6 +212,7 @@
 
 	import Orders from '@/trade/Orders' ;
 	import History from '@/trade/History' ;
+	import OneView from './OneView' ;
 
 	// "Projects" table list of columns and their properties.
 	const tableColumns = [
@@ -315,7 +324,7 @@
 			CardOrderHistory,
 			CardInfo,
 			CardInfo2,
-			Orders,History
+			Orders,History,OneView
 		},
 		data() {
 			return {

@@ -20,7 +20,7 @@
 				<b-button secondary class="btn-sm fa fa-plus" @click="keyIndex=null; showEditor();"></b-button>&nbsp;
 				<b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=$store.getters.account;showEditor();"></b-button>&nbsp;
 				<b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=$store.getters.account;deleteCurrentKey()"></b-button>&nbsp;
-				<router-link :to="`/trade`"
+				<router-link :to="`/trade/${$route.params.account}`"
 					tag="button" class="btn btn-success btn-sm" active-class="btn-light">
 						V1
 				</router-link>&nbsp;
