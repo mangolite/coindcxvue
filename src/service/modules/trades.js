@@ -261,7 +261,8 @@ const actions = {
     console.log("setAccount",account);
     account = (account || 1);
     account = (account  <= INDEX) ? account : 1;
-    commit('summary',{});
+    state.summary = {};
+    commit('summary',state.summary);
     //commit('items',[]);
   	commit('account',account);
     dispatch('syncTicker');
