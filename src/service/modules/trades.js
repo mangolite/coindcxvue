@@ -70,6 +70,9 @@ return {
             starting_coins : 0,
             efective_rate : 0, now_rate : 0,
           }, 
+          order : {
+            onsale_amount : 0, onbuy_amount : 0
+          },
           _showDetails : false,
           ticker : {},
           balance : {}
@@ -345,7 +348,7 @@ const actions = {
             meta.efective_rate =  (meta.net_debit - meta.net_credit)/meta.stock;
           } else {
             if(meta.stock != 0){
-              meta.efective_rate =  -1*(meta.earning)/meta.stock;
+              meta.efective_rate =  (-1*(meta.earning)/meta.stock);
             } else {
               meta.efective_rate =  0;
             }
@@ -448,7 +451,7 @@ const actions = {
           if(summary[market]){
             let summItem = summary[market];
             summItem.ticker = ticker;
-            summItem.meta.stock_worth = summItem.meta.stock*summItem.ticker.last_price * 0.999;
+            summItem.meta.stock_worth = summItem.meta.stock * summItem.ticker.last_price * 0.999;
             summItem.meta.now_profit = summItem.meta.stock_worth + summItem.meta.earning;
             summItem.meta.signal_sell = (summItem.ticker.high-summItem.ticker.last_price)/(summItem.ticker.high-summItem.meta.buy_rate_stock)*-100
             summItem.meta.signal_buy = (summItem.ticker.last_price-summItem.ticker.low)/(summItem.meta.buy_rate_stock-summItem.ticker.low)*100;
@@ -549,20 +552,21 @@ const actions = {
     request.post(options,function(error, response, body) {
         let orders = body.orders;
         
+        for(var keyi in summary){
+          summary[keyi].order = newSummary(keyi,keyi).order;
+        }
         for(var i in orders){
           var order = orders[i];
           var market = order.market;
           //var key = _index + "." + market;
           var key = market;
           if(summary[key]){
-            summary[key].order = summary[key].order || {
-              onsale_amount : 0, onbuy_amount : 0
-            };
-            if(order.side=='sell')
-              summary[key].order.onsale_amount+=(order.price_per_unit*order.remaining_quantity);
-            else 
-              summary[key].order.onbuy_amount+=(order.price_per_unit*order.remaining_quantity);
-
+            //summary[key].order = summary[key].order;
+            if(order.side=='sell') {
+              summary[key].order.onsale_amount += (order.price_per_unit * order.remaining_quantity);
+           } else {
+              summary[key].order.onbuy_amount += (order.price_per_unit * order.remaining_quantity);
+            }
             summary[key].meta.postsale_amount = summary[key].order.onsale_amount * 0.999;
             summary[key].meta.postsale_profit =  summary[key].meta.postsale_amount + summary[key].meta.earning  
             //summary[key].postsale_profit =  summary[key].order.onsale_amount * 0.999 + summary[key].earning

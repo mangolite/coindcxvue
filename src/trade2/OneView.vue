@@ -12,7 +12,7 @@
           </template>
 
           <template #cell(symbol)="row">
-              <router-link :to="`/trade/${account}/${row.item.symbol}`" 
+              <router-link :to="`/trade2/${account}/${row.item.symbol}`" 
                 tag="button" class="btn btn-dark btn-sm fw-bold">
                 {{ row.item.symbol}}
               </router-link>
