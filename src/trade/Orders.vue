@@ -21,7 +21,8 @@
            'text-success' : (order.value == 'buy'),
            'text-dark text-bold' : (order.value == 'Current Rate'),
            'text-info text-bold' : (order.value == 'buyRateStock'),
-           'text-primary text-bold' : (order.value == 'buyRate')
+           'text-primary text-bold' : (order.value == 'buyRate'),
+           'text-purple text-bold' : (order.value == 'sellRate')
           }">{{order.value}}</span>
         </template>
 

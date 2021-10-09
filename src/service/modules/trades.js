@@ -200,6 +200,11 @@ const getters = {
        price_per_unit : selected.meta.buy_rate_stock,
        amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0)
     },{
+       side : "sellRate", //_rowVariant : "info",
+       market : symbol,
+       price_per_unit : selected.meta.sell_rate,
+       amount : selected.meta.sell_amount,
+    },{
        side : "24High",
        market : symbol,
        price_per_unit : selected.ticker.high,
