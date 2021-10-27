@@ -98,3 +98,10 @@ th.active .arrow {
   .text-bold  {
     font-weight: 600;
   }
+  .bg-yhigh {
+    background-color: #fff3cd;
+  }
+  .btn-round{
+
+    border-radius: 20px;
+  }

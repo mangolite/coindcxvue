@@ -15,11 +15,11 @@
             'text-danger-2 text-bold fw-bold' : ('moHigh' == order.value), 
             'text-success-2 text-bold fw-bold' : ('moLow' == order.value), 
 
-            'text-danger-3 text-bold fw-bold' : ('yrHigh' == order.value), 
+            'text-danger-3 text-bold fw-bold ' : ('yrHigh' == order.value), 
             'text-success-3 text-bold fw-bold' : ('yrLow' == order.value),
 
            'text-success' : (order.value == 'buy'),
-           'text-dark text-bold' : (order.value == 'Current Rate'),
+           'text-dark text-bold ' : (order.value == 'Current Rate'),
            'text-info text-bold' : (order.value == 'buyRateStock'),
            'text-primary text-bold' : (order.value == 'buyRate'),
            'text-purple text-bold' : (order.value == 'sellRate')
