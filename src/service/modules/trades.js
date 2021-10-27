@@ -189,53 +189,54 @@ const getters = {
       total_quantity : selected.balance ? num(selected.balance.balance) : 0,
       _rowVariant : "warning"
     },{
-       side : 'buyRate',
+       side : 'Buy Rate',
        market : symbol,
        price_per_unit : selected.meta.buy_rate,
        amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
-       
+        _rowVariant : "buyRate"
     },{
-       side : "buyRateStock", //_rowVariant : "info",
+       side : "BuyRate Stock", //_rowVariant : "info",
        market : symbol,
        price_per_unit : selected.meta.buy_rate_stock,
-       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0)
+       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
+        _rowVariant : "buyRateStock"
     },{
-       side : "sellRate", //_rowVariant : "info",
+       side : "Sell Rate",_rowVariant : "SellRate",
        market : symbol,
        price_per_unit : selected.meta.sell_rate,
        amount : selected.meta.sell_amount,
     },{
-       side : "24High",
+       side : "24-High", _rowVariant : "24-High",
        market : symbol,
        price_per_unit : selected.ticker.high,
        order : 10
     },{
-       side : "24Low",
+       side : "24-Low", _rowVariant : "24-Low",
        market : symbol,
        price_per_unit : selected.ticker.low,
        order : -10
     },{
-       side : "wkLow", order : -100,
+       side : "Wk-Low", order : -100,  _rowVariant : "Wk-Low",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].wLow : selected.ticker.low,
     },{
-       side : "wkHigh", order : 100,
+       side : "Wk-High", order : 100, _rowVariant : "Wk-High",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].wHigh : selected.ticker.high
     }, {
-       side : "moHigh", order : 1000,
+       side : "Mo-High", order : 1000,  _rowVariant : "Mo-High",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mHigh : selected.ticker.high
     },{
-       side : "moLow", order : -1000,
+       side : "Mo-Low", order : -1000,  _rowVariant : "Mo-Low",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mLow : selected.ticker.low
     }, {
-      side : "yrHigh", order : 10000,
+      side : "Yr-High", order : 10000,  _rowVariant : "Yr-High",
       market : symbol,
       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yHigh : selected.ticker.high
     },{
-        side : "yrLow", order : -10000,
+        side : "Yr-Low", order : -10000,  _rowVariant : "Yr-Low",
         market : symbol,
         price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yLow : selected.ticker.low
     }].filter(function(order){

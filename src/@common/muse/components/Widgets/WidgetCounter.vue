@@ -16,12 +16,12 @@
 				{{prefix}}
 			</slot>	
 		</template>	
-		<template #suffix>
-			<slot name="suffix">
+		<template #suffix  >
+			<slot name="suffix" >
 				{{suffix}}
 			</slot>	
 		</template>	
-		<template #formatter="{value}">
+		<template #formatter="{value}"  >
 			<slot name="formatter">
 				{{value}}
 			</slot>	
@@ -75,8 +75,20 @@
 	})
 
 </script>
-<style scoped>
-	.icon {
-		color: white;
+<style >
+	.widget-1 .icon {
+     width: 35px;
+    height: 35px;
+    margin: 0px; 
+    color: white;
+    right: 0px; 
+
 	}
+	.widget-1 .ant-statistic-content-suffix {
+		margin : -2px;
+	}
+
+	.widget-1 .ant-statistic {
+    margin-right: 0px;
+     }
 </style>

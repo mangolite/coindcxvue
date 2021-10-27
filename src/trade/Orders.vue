@@ -5,24 +5,11 @@
         <template v-slot:cell(side)="order">
           <span :data-value="order.value" :class="{
            'text-danger' : (order.value == 'sell'), 
-
-           'text-danger text-bold fw-bold' : ('24High' == order.value), 
-           'text-success text-bold fw-bold' : ('24Low' == order.value), 
-
-           'text-danger-1 text-bold fw-bold' : ('wkHigh' == order.value), 
-           'text-success-1 text-bold fw-bold' : ('wkLow' == order.value), 
-
-            'text-danger-2 text-bold fw-bold' : ('moHigh' == order.value), 
-            'text-success-2 text-bold fw-bold' : ('moLow' == order.value), 
-
-            'text-danger-3 text-bold fw-bold ' : ('yrHigh' == order.value), 
-            'text-success-3 text-bold fw-bold' : ('yrLow' == order.value),
-
            'text-success' : (order.value == 'buy'),
            'text-dark text-bold ' : (order.value == 'Current Rate'),
-           'text-info text-bold' : (order.value == 'buyRateStock'),
-           'text-primary text-bold' : (order.value == 'buyRate'),
-           'text-purple text-bold' : (order.value == 'sellRate')
+           'text-info text-bold' : (order.value == 'BuyRate Stock'),
+           'text-primary text-bold' : (order.value == 'Buy Rate'),
+           'text-purple text-bold' : (order.value == 'Sell Rate')
           }">{{order.value}}</span>
         </template>
 
@@ -61,11 +48,11 @@ export default {
     },
     data: () => ({
         fields : [
-            { key: 'market', label : "Orders"},
-            { key: 'side', label : "Side"},
-            { key: 'ppu', label : "Price"},
-            { key: 'total_quantity', label : "TQty"},
-            { key: 'amount', label : "Amount"}
+            { key: 'market', label : "Orders", class:"market"},
+            { key: 'side', label : "Side" ,class:"side"},
+            { key: 'ppu', label : "Price", class:"ppu" },
+            { key: 'total_quantity', label : "TQty",class:"total_quantity"},
+            { key: 'amount', label : "Amount",class:"amount"}
         ]
     }),
 }
@@ -80,4 +67,102 @@ export default {
     background-color: rgb(59, 59, 59);
     color: rgb(255, 255, 255)!important;
   }
+
+
+  #myOrders tr.table-Yr-High td {
+    background-color: #27dfaa;
+  }
+   #myOrders tr.table-Yr-High td.market ,
+   #myOrders tr.table-Yr-High td.total_quantity,
+   #myOrders tr.table-Yr-High td.amount{
+    color: #27dfaa;
+   }
+    
+
+   #myOrders tr.table-Mo-High td {
+    background-color: #09bc88;
+  }
+   #myOrders tr.table-Mo-High td.market ,
+   #myOrders tr.table-Mo-High td.total_quantity,
+   #myOrders tr.table-Mo-High td.amount{
+    color: #09bc88;
+   }
+
+   #myOrders tr.table-Wk-High td {
+    background-color: #00825c;
+  }
+   #myOrders tr.table-Wk-High td.market ,
+   #myOrders tr.table-Wk-High td.total_quantity,
+   #myOrders tr.table-Wk-High td.amount{
+    color: #00825c;
+   }
+
+   #myOrders tr.table-Yr-Low td {
+    background-color: #59181b;
+  }
+   #myOrders tr.table-Yr-Low td.market ,
+   #myOrders tr.table-Yr-Low td.total_quantity,
+   #myOrders tr.table-Yr-Low td.amount{
+    color: #59181b;
+   }
+
+   #myOrders tr.table-Mo-Low td {
+    background-color: #59181b;
+  }
+   #myOrders tr.table-Mo-Low td.market ,
+   #myOrders tr.table-Mo-Low td.total_quantity,
+   #myOrders tr.table-Mo-Low td.amount{
+    color: #59181b;
+   }
+
+   #myOrders tr.table-Wk-Low td {
+    background-color: #59181b;
+  }
+   #myOrders tr.table-Wk-Low td.market ,
+   #myOrders tr.table-Wk-Low td.total_quantity,
+   #myOrders tr.table-Wk-Low td.amount{
+    color: #59181b;
+   }
+
+    #myOrders tr.table-24-High td {
+    background-color: #025e43;
+  }
+   #myOrders tr.table-24-High td.market ,
+   #myOrders tr.table-24-High td.total_quantity,
+   #myOrders tr.table-24-High td.amount{
+    color: #025e43;
+   }
+
+
+    #myOrders tr.table-24-Low td {
+    background-color: #59181b;
+  }
+   #myOrders tr.table-Wk-Low td.market ,
+   #myOrders tr.table-Wk-Low td.total_quantity,
+   #myOrders tr.table-Wk-Low td.amount{
+    color: #59181b;
+   }
+
+   
+  
+    #myOrders tr.table-Yr-High td.side,
+    #myOrders tr.table-Mo-High td.side,
+    #myOrders tr.table-Wk-High td.side,
+    #myOrders tr.table-Yr-Low td.side,
+    #myOrders tr.table-Mo-Low td.side,
+    #myOrders tr.table-Wk-Low td.side,
+    #myOrders tr.table-24-High td.side,
+    #myOrders tr.table-24-Low td.side,
+    #myOrders tr.table-Yr-High td.ppu,
+    #myOrders tr.table-Mo-High td.ppu,
+    #myOrders tr.table-Wk-High td.ppu,
+    #myOrders tr.table-Yr-Low td.ppu,
+    #myOrders tr.table-Mo-Low td.ppu,
+    #myOrders tr.table-Wk-Low td.ppu,
+    #myOrders tr.table-24-High td.ppu,
+    #myOrders tr.table-24-Low td.ppu {
+    color: #FFF;
+    font-weight: 600;
+  }
+  
 </style>
