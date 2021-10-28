@@ -84,7 +84,7 @@ export default {
   }
 
   #myOrders tr.table-warning td {
-    background-color: #feffa2;
+    
     color: #7c691b;
     font-weight: 700;
   }
@@ -107,15 +107,15 @@ export default {
   }
 
    #myOrders tr.table-Yr-Low td {
-    background-color: #f86c6c;
+    background-color: #ff7575;
   }
  
    #myOrders tr.table-Mo-Low td {
-    background-color: #9b262b;
+    background-color: #d63940;
   }
   
    #myOrders tr.table-Wk-Low td {
-    background-color:#662b2d;
+    background-color:#981f23;
   }
    
     #myOrders tr.table-24-High td {
@@ -123,7 +123,7 @@ export default {
   }
    
     #myOrders tr.table-24-Low td {
-    background-color: #470e10;
+    background-color: #76060a;
   }
   #myOrders tr.table-SellRate td{
     background-color: #3b50c3;
@@ -133,7 +133,8 @@ export default {
     font-weight: 900!important;
     
   }
-   
+    
+
    #myOrders tr.table-SellRate td.market,
    #myOrders tr.table-buyRateStock td.market,
   #myOrders tr.table-buyRate td.market,
