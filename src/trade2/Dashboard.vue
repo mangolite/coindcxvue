@@ -20,7 +20,7 @@
 				</template>	
 				<template #suffix>
 					<span class="text-sm fa fa-arrow-right"/>&nbsp;
-					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{total.afterSellWorth | round2}}
+					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{total.afterSellWorth | round2}}<br>
 					<span class="text-sm fw-normal">after Sale Worth</span>
 				</template>	
 			</WidgetCounter>
@@ -37,7 +37,7 @@
 					{{total.netStockWorth | round2}}
 				</template>	
 				<template #suffix>
-					<span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.inStockWorth*1) | round2}} 
+					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{(total.inStockWorth*1) | round2}}<br>
 					<span class="text-sm fw-normal">reserve</span>
 				</template>	
 			</WidgetCounter>
@@ -54,7 +54,7 @@
 					<span class="text-success"> {{total.onBuy | round2}}</span>
 				</template>	
 				<template #suffix>
-					<span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.onSell*1) | round2}}&nbsp;&nbsp;
+					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{(total.onSell*1) | round2}}<br>
 					<span class="text-sm fw-normal">current Sale Value</span>
 				</template>	
 			</WidgetCounter>
@@ -71,7 +71,7 @@
 					{{total.netINR | round2}}
 				</template>	
 				<template #suffix>
-					+ <span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.afterSell) | round2}}
+					+ <span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.afterSell) | round2}}<br>
 					<span class="text-sm fw-normal">after Sale INR</span>
 				</template>	
 			</WidgetCounter>

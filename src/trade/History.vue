@@ -2,6 +2,7 @@
   <div class="hello">
 
       <div> Trades History</div>
+      <a-card :bordered="false" class="dashboard-bar-line header-solid">
        <b-table small striped :items="myTrades" id="myTrades" fixed
        :fields="fields">
 
@@ -24,6 +25,7 @@
         </template>
 
        </b-table>
+      </a-card>
 
   </div>
 </template>
@@ -38,7 +40,7 @@ export default {
     },
     data: () => ({
         fields : [
-            { key: 'symbol', label : "Symbol"},
+            { key: 'symbol', label : "Coin"},
             { key: 'side', label : "Side"},
             { key: 'price', label : "Price"},
             { key: 'quantity', label : "TQty"},
@@ -50,6 +52,28 @@ export default {
 </script>
   
 
-<style scoped>
+<style >
+
+    #myTrades tr td{
+    border: 0px!important ;
+  }  
+   
+
+
+    #myTrades   {
+    border: 0px!important ;
+  }  
+
+  #myTrades thead tr th{
+    background-color: white;
+    color: black!important;
+    border: 0px;
+    font-weight: 1000;
+  }
+
+  .table > :not(:first-child) {
+     border-top: 0px solid ;
+}
+
 
 </style>

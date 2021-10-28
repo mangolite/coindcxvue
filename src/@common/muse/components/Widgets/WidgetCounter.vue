@@ -85,10 +85,16 @@
 
 	}
 	.widget-1 .ant-statistic-content-suffix {
-		margin : -2px;
+		margin : 5px;
+		font-weight: 800;
 	}
 
 	.widget-1 .ant-statistic {
     margin-right: 0px;
+     }
+
+     .widget-1 .ant-statistic-content{
+
+     	line-height: 20px;
      }
 </style>

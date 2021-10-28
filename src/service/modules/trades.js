@@ -195,7 +195,7 @@ const getters = {
        amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
         _rowVariant : "buyRate"
     },{
-       side : "BuyRate Stock", //_rowVariant : "info",
+       side : "Buy Rate Stock", //_rowVariant : "info",
        market : symbol,
        price_per_unit : selected.meta.buy_rate_stock,
        amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
