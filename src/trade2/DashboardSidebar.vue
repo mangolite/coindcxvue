@@ -40,7 +40,7 @@
 							<span class=" float-end" style="min-width:40px;display:inline-block">
 								<span class="fa fa-arrows-alt-v text-sm text-info"></span>
 								<span class="text-pink fw-bold" >
-									{{(wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high*100 | round}}
+									{{wallet.volatlity*100 | round}}
 								</span>
 								<span class="text-sm text-secondary">%</span>
 							</span>
@@ -88,7 +88,14 @@
 		},
 		computed : {
 			wallets(){
-				return this.$store.getters.wallets
+				return this.$store.getters.wallets.map(function(wallet){
+					return {
+						...wallet,
+						volatlity : (wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high
+					};
+				}).sort(function(wa,wb){
+					return wb.volatlity - wa.volatlity;
+				});
 			},
 			walletCount(){
 				return this.$store.getters.wallets.length;
