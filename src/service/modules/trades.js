@@ -195,17 +195,20 @@ const getters = {
        market : symbol,
        price_per_unit : selected.meta.buy_rate,
        amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
+       total_quantity : selected.meta.buy_quantity,
         _rowVariant : "buyRate"
     },{
        side : "Buy Rate Stock", //_rowVariant : "info",
        market : symbol,
        price_per_unit : selected.meta.buy_rate_stock,
        amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
+       total_quantity : (selected.balance ? selected.balance.total : 0),
         _rowVariant : "buyRateStock"
     },{
        side : "Sell Rate",_rowVariant : "SellRate",
        market : symbol,
        price_per_unit : selected.meta.sell_rate,
+       total_quantity : selected.meta.sell_quantity,
        amount : selected.meta.sell_amount,
     },{
        side : "onSale",_rowVariant : "onSell",  desc : "Coins you have put on SELL",
