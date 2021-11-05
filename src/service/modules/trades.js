@@ -194,7 +194,7 @@ const getters = {
        side : 'Buy Rate',
        market : symbol,
        price_per_unit : selected.meta.buy_rate,
-       amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
+       amount : selected.meta.buy_rate * selected.meta.buy_quantity,
        total_quantity : selected.meta.buy_quantity,
         _rowVariant : "buyRate"
     },{
