@@ -9,7 +9,7 @@
            'text-success' : (order.value == 'buy'),
            
            
-          }">{{order.value}}</span>
+          }" v-tooltip="order.item.desc" >{{order.value}}</span>
         </template>
 
         <template v-slot:cell(ppu)="order">
