@@ -65,6 +65,7 @@ export default {
   #myOrders  {
     border: 0px ;
   }
+  
   #myOrders thead tr th{
     background-color: white;
     color: black!important;
@@ -94,36 +95,36 @@ export default {
   
 
   #myOrders tr.table-Yr-High td {
-    background-color: #27dfaa;
+    background-color: #025e43;
   }
     
    #myOrders tr.table-Mo-High td {
-    background-color: #09bc88;
+    background-color:  #00825c;
   }
 
 
    #myOrders tr.table-Wk-High td {
-    background-color: #00825c;
+    background-color:#09bc88;
   }
 
    #myOrders tr.table-Yr-Low td {
-    background-color: #ff7575;
+    background-color: #76060a;
   }
  
    #myOrders tr.table-Mo-Low td {
-    background-color: #d63940;
+    background-color: #981f23;
   }
   
    #myOrders tr.table-Wk-Low td {
-    background-color:#981f23;
+    background-color:#d63940;
   }
    
     #myOrders tr.table-24-High td {
-    background-color: #025e43;
+    background-color: #27dfaa
   }
    
     #myOrders tr.table-24-Low td {
-    background-color: #76060a;
+    background-color: #ff7575;
   }
   #myOrders tr.table-SellRate td{
     background-color: #3b50c3;

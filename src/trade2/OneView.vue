@@ -19,10 +19,10 @@
           </template> 
 
           <template #cell(buy_rate)="row">
-             <span v-if="row.item.meta"  class="float-start text-primary fw-bold" :id="row.item.meta.buy_rate">
+             <span v-if="row.item.meta"  class="float-start text-light fw-bold" :id="row.item.meta.buy_rate">
                {{row.item.meta.buy_rate | round5}} 
              </span>
-            <small v-if="row.item.meta"  class="float-end text-primary fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</small>
+             <small v-if="row.item.meta"  class="float-end text-light fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</small>
           </template>  
 
 
@@ -42,8 +42,8 @@
             
 
             <span class="float-end">
-              <small v-if="row.item.ticker" class="text-light fw-normal next-line " style="font-size: 10px">{{row.item.ticker.high | round5}}</small>
-              <small v-if="row.item.meta"  class="text-danger float-end next-line " style="font-size: 8px"
+               <small v-if="row.item.ticker" class="text-light fw-normal next-line " style="font-size: 10px">{{row.item.ticker.high | round5}}</small>
+                <small v-if="row.item.meta"  class="text-danger float-end next-line " style="font-size: 8px"
                 :class="{'bg-light badge fw-bold' : row.item.meta.signal_sell<0}" >{{row.item.meta.signal_sell|round2}}%</small>
             </span>    
           </template>
@@ -129,10 +129,10 @@ export default {
       },
     },
     data: () => ({
-        fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
-                  { key: 'now_rate', label : "Rate", sortable: false,variant : "dark" },  
+        fields: [ { key: 'symbol', label : "Coin  ", sortable: false, variant : "1dark" }, 
+                  { key: 'now_rate', label : "24low Price 24high", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "secondary"},  
+                  { key: 'buy_rate', label: 'Buy-Range',sortable: false, variant : "secondary"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
                   //{ key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
@@ -140,9 +140,10 @@ export default {
                   //{ key: 'sell_amount', label: 'Sell Amount', sortable: false, variant : "info"},
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   //{ key: 'efective_rate', label: 'EffRate', variant : "success"},
-                  { key: 'worth', label: 'Worth INR', variant : "primary"},
-                  { key: 'stock', label: 'stock', variant : "danger"},
-                  { key: 'profit', label: 'p-n-f', variant : "secondary"}
+                  { key: 'stock', label: 'Total coins  ( Stock - Sell )', variant : "danger"},
+                  { key: 'worth', label: ' Worth INR ( Buy - Stk - Sell )', variant : "primary"},
+                  
+                  { key: 'profit', label: ' Profit p-n-f', variant : "1secondary"}
         ],
     }),
     computed: {
@@ -166,4 +167,99 @@ export default {
       width: 20%;
     }
   }
+
+  #myMarket{
+    border-color: transparent;
+  }
+
+   #myMarket thead  th{
+        background-color: white!important;
+    color: #000000!important;
+    font-weight: 900;
+
+   }
+
+  #myMarket .btn-dark {
+        color: #fff;
+    background-color: #2b2927;
+    border-color: #21252900;
+    border-radius: 25px;
+
+}
+
+
+  #myMarket  .table-dark {
+        --bs-table-bg: #e0b361;
+    --bs-table-striped-bg: #e0b361;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #373b3e;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #302a24;
+    --bs-table-hover-color: #fff;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+ #myMarket  .table-1dark {
+        --bs-table-bg: #2b2927;
+    --bs-table-striped-bg: #2b2927;
+    --bs-table-striped-color: #fff;
+    --bs-table-active-bg: #373b3e;
+    --bs-table-active-color: #fff;
+    --bs-table-hover-bg: #2b2927;
+    --bs-table-hover-color: #fff;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+
+  #myMarket .table-secondary {
+    --bs-table-bg: #18c4e8;
+    --bs-table-striped-bg: #18c4e8;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #cbccce;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #17454e;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+ #myMarket .table-primary {
+    --bs-table-bg: #95dad0;
+    --bs-table-striped-bg: #95dad0;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #bacbe6;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #044036;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+
+ #myMarket .table-1secondary {
+    --bs-table-bg: #e0e0e0;
+    --bs-table-striped-bg: #e0e0e0;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #cbccce;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #404040;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+ #myMarket .table-danger {
+    --bs-table-bg: #eccccf;
+    --bs-table-striped-bg: #eccccf;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #dfc2c4;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #301316;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
 </style>
