@@ -18,34 +18,36 @@
               </router-link>
           </template> 
 
-          <template #cell(buy_rate)="row">
-             <span v-if="row.item.meta"  class="float-start text-primary fw-bold" :id="row.item.meta.buy_rate">
-               {{row.item.meta.buy_rate | round5}} 
+          <template #cell(valotile)="row">
+             <span v-if="row.item.ticker"  class="text-primary fw-bold">
+               {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
              </span>
-            <small v-if="row.item.meta"  class="float-end text-primary fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</small>
+             -
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
+             </span>  
+             -
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}
+             </span> 
+             -
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}
+             </span> 
+             -
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}
+             </span> 
           </template>  
 
 
           <template #cell(now_rate)="row">
-            <span class="float-start">
-                <small v-if="row.item.ticker" class="text-light fw-normal next-line " style="font-size: 10px">{{row.item.ticker.low | round5}}</small>
-                <small v-if="row.item.meta"  class="text-success float-start next-line "  style="font-size: 8px;"
-                  :class="{'bg-light badge fw-bold' : row.item.meta.signal_buy >0}" >{{row.item.meta.signal_buy|round2}}%</small>
-            </span>
-
             <span v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
               'fw-bold text-success' : (row.item.ticker.last_price > row.item.meta.buy_rate),
               'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate),
             }">
               {{row.item.ticker.last_price | round5}}
-            </span>
-            
-
-            <span class="float-end">
-              <small v-if="row.item.ticker" class="text-light fw-normal next-line " style="font-size: 10px">{{row.item.ticker.high | round5}}</small>
-              <small v-if="row.item.meta"  class="text-danger float-end next-line " style="font-size: 8px"
-                :class="{'bg-light badge fw-bold' : row.item.meta.signal_sell<0}" >{{row.item.meta.signal_sell|round2}}%</small>
-            </span>    
+            </span>               
           </template>
 
           <template #cell(low_high)="row">
@@ -132,7 +134,7 @@ export default {
         fields: [ { key: 'symbol', label : "Symbol", sortable: false, variant : "dark" }, 
                   { key: 'now_rate', label : "Rate", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'AvBRate',sortable: false, variant : "secondary"},  
+                  { key: 'valotile', label: 'Volatile%',sortable: false, variant : "secondary"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
                   //{ key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},

@@ -75,6 +75,8 @@ return {
             onsale_qty : 0, onbuy_qty : 0,
             onsale_rate : 0, onbuy_rate : 0
           },
+          range : {
+          },
           _showDetails : false,
           ticker : {},
           balance : {}
@@ -293,6 +295,7 @@ const actions = {
     account = (account || 1);
     account = (account  <= INDEX) ? account : 1;
     state.summary = {};
+    state.marketDetails = null;
     commit('summary',state.summary);
     //commit('items',[]);
   	commit('account',account);
@@ -407,11 +410,11 @@ const actions = {
     } else {
       request.get(baseurl + "/exchange/v1/markets_details",function(error, response, markets_details) {
         state.marketDetails = JSON.parse(markets_details);
-        dispatch('updateMarketDetails');
+        dispatch('updateMarketDetails', true);
       });
     }
   },
-  async updateMarketDetails({ commit,dispatch },index){
+  async updateMarketDetails({ commit,dispatch },isFetched){
     console.log("updateMarketDetails",state.symbol);
     let summary = state.summary;
     if(state.symbol){
@@ -420,15 +423,30 @@ const actions = {
     for(var i in state.marketDetails){
         if(summary[state.marketDetails[i].symbol]){
           summary[state.marketDetails[i].symbol].details =  state.marketDetails[i];
+          if(isFetched){
+              dispatch('fetchHigLow',{ 
+                pair : summary[state.marketDetails[i].symbol].details.pair,
+                symbol : state.marketDetails[i].symbol
+             });
+          }
         }
     }
     commit('summary',summary);
-    dispatch('fetchHigLow');
+    dispatch('fetchHigLowSelected');
   },
   //
-  async fetchHigLow({ commit,dispatch,getters },index){
-    console.log("fetchHigLow",state.symbol);
-    if(!state.symbol){
+
+  async fetchHigLowSelected({ commit,dispatch,getters },index){
+      let selected = getters.selected;
+      if(!selected || !selected.details){
+        return;
+      }
+      dispatch('fetchHigLow',{ pair : selected.details.pair, symbol : state.symbol });
+  },
+
+  async fetchHigLow({ commit,dispatch,getters },{pair,symbol}){
+    console.log("fetchHigLow",symbol);
+    if(!symbol){
       return;
     }    
     let ranges = state.ranges;
@@ -439,16 +457,14 @@ const actions = {
     let m3Time = endTime - (1000*60*60*24*31*3);
     let wkTime = endTime - (1000*60*60*24*7);
     let dayTime = endTime - (1000*60*60*24);
-    let selected = getters.selected;
-    
-    if(!selected || !selected.details){
-      return;
-    }
 
-    request.get(baseurlPublic + `/market_data/candles?pair=${selected.details.pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
-        if(!state.symbol) return;
+    request.get(baseurlPublic + `/market_data/candles?pair=${pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
+        if(!symbol){
+            console.log("Cannot find symbol",symbol)
+            return;          
+        } 
         candles = JSON.parse(candles);
-        let range =  ranges[state.symbol] || {
+        let range =  ranges[symbol] || {
           dHigh : null, dLow : null,
           wHigh : null, wLow : null,
           mHigh : null, mLow : null,
@@ -474,8 +490,8 @@ const actions = {
                     
                     //Week Time
                     if(candle.time > wkTime){
-                        range.wkHigh = (range.wkHigh  === null) ? candle.high : Math.max(range.wkHigh,candle.high);
-                        range.wkLow = (range.wkLow  === null) ? candle.low : Math.min(range.wkLow,candle.low);
+                        range.wHigh = (range.wHigh  === null) ? candle.high : Math.max(range.wHigh,candle.high);
+                        range.wLow = (range.wLow  === null) ? candle.low : Math.min(range.wLow,candle.low);
 
                         //Day Time
                         if(candle.time > dayTime){
@@ -486,13 +502,16 @@ const actions = {
                 }
             }
         })
-        ranges[state.symbol] = range;
-        if(summary[state.symbol]){
-          summary[state.symbol].range = range;
+        ranges[symbol] = range;
+        if(summary[symbol]){
+          console.log("Added Range");
+          summary[symbol].range = range;
+        } else {
+          console.log("NotAdded Range");
         }
         commit('ranges',ranges);
         commit('summary',summary);
-        state.candlesMap[state.symbol] = candles;
+        state.candlesMap[symbol] = candles;
         commit('candles',state.candlesMap);
     });
 
