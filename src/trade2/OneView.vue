@@ -130,7 +130,7 @@ export default {
     },
     data: () => ({
         fields: [ { key: 'symbol', label : "Coin  ", sortable: false, variant : "1dark" }, 
-                  { key: 'now_rate', label : "24low Price 24high", sortable: false,variant : "dark" },  
+                  { key: 'now_rate', label : "Price", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
                   { key: 'buy_rate', label: 'Buy-Range',sortable: false, variant : "secondary"},  
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
@@ -141,7 +141,7 @@ export default {
                   //{ key: 'fee_amount', label: 'Fee', sortable: false,variant : "danger"},
                   //{ key: 'efective_rate', label: 'EffRate', variant : "success"},
                   { key: 'stock', label: 'Total coins  ( Stock - Sell )', variant : "danger"},
-                  { key: 'worth', label: ' Worth INR ( Buy - Stk - Sell )', variant : "primary"},
+                  { key: 'worth', label: ' Worth INR ( Buy-Stk-Sell )', variant : "primary"},
                   
                   { key: 'profit', label: ' Profit p-n-f', variant : "1secondary"}
         ],
