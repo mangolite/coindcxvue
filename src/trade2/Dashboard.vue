@@ -98,8 +98,8 @@
 				<CardCandleChart></CardCandleChart>
 			</a-col>
 			<a-col :span="24" :lg="24" class="mb-24">
-				<CardCompareChart></CardCompareChart>
-			</a-col>
+<!-- 				<CardCompareChart></CardCompareChart> -->	
+		</a-col>
 		</a-row>
 
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
@@ -129,7 +129,7 @@
 
 	// Line chart for "Sales Overview" card.
 	import CardCandleChart from './CardCandleChart' ;
-	import CardCompareChart from './CardCompareChart' ;
+	//import CardCompareChart from './CardCompareChart' ;
 	
 	// Counter Widgets
 	import WidgetCounter from '@/@common/muse/components/Widgets/WidgetCounter' ;
@@ -247,7 +247,8 @@
 			CardCandleChart,
 			WidgetCounter,
 
-			Orders,History,OneView,CardCompareChart
+			Orders,History,OneView,
+			//CardCompareChart
 		},
 		data() {
 			return {
