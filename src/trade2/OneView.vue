@@ -149,6 +149,7 @@ export default {
         fields: [ { key: 'symbol', label : "Coin  ", sortable: false, variant : "1dark" }, 
                   { key: 'now_rate', label : "Price", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
+                  //{ key: 'buy_rate', label: 'Buy-Range',sortable: false, variant : "secondary"},  
                   { key: 'valotile', label: 'Volatile%',sortable: false, variant : "secondary"},
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
