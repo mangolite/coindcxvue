@@ -25,6 +25,23 @@
              <small v-if="row.item.meta"  class="float-end text-light fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</small>
           </template>  
 
+          <template #cell(valotile)="row">
+             <span v-if="row.item.ticker"  class="text-primary fw-bold">
+               {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
+              </span>
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
+             </span>  
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}
+             </span> 
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}
+             </span> 
+              <span v-if="row.item.range"  class="text-primary fw-bold">
+               {{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}
+             </span>
+          </template>
 
           <template #cell(now_rate)="row">
             <span class="float-start">
@@ -132,7 +149,7 @@ export default {
         fields: [ { key: 'symbol', label : "Coin  ", sortable: false, variant : "1dark" }, 
                   { key: 'now_rate', label : "Price", sortable: false,variant : "dark" },  
                   //{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-                  { key: 'buy_rate', label: 'Buy-Range',sortable: false, variant : "secondary"},  
+                  { key: 'valotile', label: 'Volatile%',sortable: false, variant : "secondary"},
                   //{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
                   //{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
                   //{ key: 'sell_rate', label: 'Avg Sell Rate', sortable: false, variant : "info"},
