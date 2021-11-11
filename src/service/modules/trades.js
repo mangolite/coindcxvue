@@ -68,10 +68,14 @@ return {
             sell_quantity : 0 , sell_amount : 0,
             fee_amount : 0,
             starting_coins : 0,
-            efective_rate : 0, now_rate : 0,
+            efective_rate : 0, now_rate : 0
           }, 
           order : {
-            onsale_amount : 0, onbuy_amount : 0
+            onsale_amount : 0, onbuy_amount : 0,
+            onsale_qty : 0, onbuy_qty : 0,
+            onsale_rate : 0, onbuy_rate : 0
+          },
+          range : {
           },
           _showDetails : false,
           ticker : {},
@@ -189,53 +193,77 @@ const getters = {
       total_quantity : selected.balance ? num(selected.balance.balance) : 0,
       _rowVariant : "warning"
     },{
-       side : 'buyRate',
+       side : 'Buy Rate',
        market : symbol,
        price_per_unit : selected.meta.buy_rate,
-       amount : selected.meta.buy_rate * (selected.balance ? selected.balance.total : 0),
-       
+       amount : selected.meta.buy_rate * selected.meta.buy_quantity,
+       total_quantity : selected.meta.buy_quantity,
+        _rowVariant : "buyRate"
     },{
-       side : "buyRateStock", //_rowVariant : "info",
+       side : "Buy Rate Stock", //_rowVariant : "info",
        market : symbol,
        price_per_unit : selected.meta.buy_rate_stock,
-       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0)
+       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
+       total_quantity : (selected.balance ? selected.balance.total : 0),
+        _rowVariant : "buyRateStock"
     },{
-       side : "sellRate", //_rowVariant : "info",
+       side : "Sell Rate",_rowVariant : "SellRate",
        market : symbol,
        price_per_unit : selected.meta.sell_rate,
+       total_quantity : selected.meta.sell_quantity,
        amount : selected.meta.sell_amount,
     },{
-       side : "24High",
+       side : "onSale",_rowVariant : "onSell",  desc : "Coins you have put on SELL",
+       market : symbol,
+       price_per_unit : selected.order.onsale_rate,
+       total_quantity : selected.order.onsale_qty,
+       amount : selected.meta.postsale_amount,
+    },{
+       side : "onBuy",_rowVariant : "onBuy", desc : "Coins you have ordered to BUY",
+       market : symbol, 
+       price_per_unit : selected.order.onbuy_rate,
+       total_quantity : selected.order.onbuy_qty,
+       amount : selected.meta.postbuy_amount,
+    },{
+       side : "24-High", _rowVariant : "24-High",
        market : symbol,
        price_per_unit : selected.ticker.high,
        order : 10
     },{
-       side : "24Low",
+       side : "24-Low", _rowVariant : "24-Low",
        market : symbol,
        price_per_unit : selected.ticker.low,
        order : -10
     },{
-       side : "wkLow", order : -100,
+       side : "Wk-Low", order : -100,  _rowVariant : "Wk-Low",
        market : symbol,
-       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].wLow : selected.ticker.low,
+       price_per_unit : Math.min(state.ranges[symbol] ? state.ranges[symbol].wLow : selected.ticker.low,selected.ticker.low),
     },{
-       side : "wkHigh", order : 100,
+       side : "Wk-High", order : 100, _rowVariant : "Wk-High",
        market : symbol,
-       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].wHigh : selected.ticker.high
+       price_per_unit : Math.max(state.ranges[symbol] ? state.ranges[symbol].wHigh : selected.ticker.high,selected.ticker.high)
     }, {
-       side : "moHigh", order : 1000,
+       side : "Mo-High", order : 1000,  _rowVariant : "Mo-High",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mHigh : selected.ticker.high
     },{
-       side : "moLow", order : -1000,
+       side : "Mo-Low", order : -1000,  _rowVariant : "Mo-Low",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mLow : selected.ticker.low
     }, {
-      side : "yrHigh", order : 10000,
+       side : "Mo3-High", order : 5000,  _rowVariant : "Mo3-High", desc : "Three months HIGH",
+       market : symbol,
+       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].m3High : selected.ticker.high
+    },{
+       side : "Mo3-Low", order : -5000,  _rowVariant : "Mo3-Low", desc : "Three months LOW",
+       market : symbol,
+       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].m3Low : selected.ticker.low
+    }, {
+      side : "Yr-High", order : 10000,  _rowVariant : "Yr-High",
       market : symbol,
       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yHigh : selected.ticker.high
     },{
-        side : "yrLow", order : -10000,
+        side : "Yr-Low", order : -10000,  _rowVariant : "Yr-Low",
         market : symbol,
         price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yLow : selected.ticker.low
     }].filter(function(order){
@@ -267,6 +295,7 @@ const actions = {
     account = (account || 1);
     account = (account  <= INDEX) ? account : 1;
     state.summary = {};
+    state.marketDetails = null;
     commit('summary',state.summary);
     //commit('items',[]);
   	commit('account',account);
@@ -381,11 +410,11 @@ const actions = {
     } else {
       request.get(baseurl + "/exchange/v1/markets_details",function(error, response, markets_details) {
         state.marketDetails = JSON.parse(markets_details);
-        dispatch('updateMarketDetails');
+        dispatch('updateMarketDetails', true);
       });
     }
   },
-  async updateMarketDetails({ commit,dispatch },index){
+  async updateMarketDetails({ commit,dispatch },isFetched){
     console.log("updateMarketDetails",state.symbol);
     let summary = state.summary;
     if(state.symbol){
@@ -394,34 +423,52 @@ const actions = {
     for(var i in state.marketDetails){
         if(summary[state.marketDetails[i].symbol]){
           summary[state.marketDetails[i].symbol].details =  state.marketDetails[i];
+          if(isFetched){
+              dispatch('fetchHigLow',{ 
+                pair : summary[state.marketDetails[i].symbol].details.pair,
+                symbol : state.marketDetails[i].symbol
+             });
+          }
         }
     }
     commit('summary',summary);
-    dispatch('fetchHigLow');
+    dispatch('fetchHigLowSelected');
   },
   //
-  async fetchHigLow({ commit,dispatch,getters },index){
-    console.log("fetchHigLow",state.symbol);
-    if(!state.symbol){
+
+  async fetchHigLowSelected({ commit,dispatch,getters },index){
+      let selected = getters.selected;
+      if(!selected || !selected.details){
+        return;
+      }
+      dispatch('fetchHigLow',{ pair : selected.details.pair, symbol : state.symbol });
+  },
+
+  async fetchHigLow({ commit,dispatch,getters },{pair,symbol}){
+    console.log("fetchHigLow",symbol);
+    if(!symbol){
       return;
     }    
     let ranges = state.ranges;
     let summary = state.summary;
-    let endTime = new Date().getTime();
+    let endTime = Date.now();
     let startTime = endTime - (1000*60*60*24*365);
     let monthTime = endTime - (1000*60*60*24*31);
-    let selected = getters.selected;
-    
-    if(!selected || !selected.details){
-      return;
-    }
+    let m3Time = endTime - (1000*60*60*24*31*3);
+    let wkTime = endTime - (1000*60*60*24*7);
+    let dayTime = endTime - (1000*60*60*24);
 
-    request.get(baseurlPublic + `/market_data/candles?pair=${selected.details.pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
-        if(!state.symbol) return;
+    request.get(baseurlPublic + `/market_data/candles?pair=${pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
+        if(!symbol){
+            console.log("Cannot find symbol",symbol)
+            return;          
+        } 
         candles = JSON.parse(candles);
-        let range =  ranges[state.symbol] || {
+        let range =  ranges[symbol] || {
+          dHigh : null, dLow : null,
           wHigh : null, wLow : null,
           mHigh : null, mLow : null,
+          m3High : null, m3Low : null,
           yHigh : null, yLow : null,
           highest : null, lowest : null
         };
@@ -430,18 +477,41 @@ const actions = {
         candles.map(function (candle) {
            range.yHigh = (range.yHigh  === null) ? candle.high : Math.max(range.yHigh,candle.high);
            range.yLow = (range.yLow  === null) ? candle.low : Math.min(range.yLow,candle.low);
-           if(candle.time > monthTime){
-            range.mHigh = (range.mHigh  === null) ? candle.high : Math.max(range.mHigh,candle.high);
-            range.mLow = (range.mLow  === null) ? candle.low : Math.min(range.mLow,candle.low);
-           }
+          
+            //Three Months Time
+           if(candle.time > m3Time){
+              range.m3High = (range.m3High  === null) ? candle.high : Math.max(range.m3High,candle.high);
+              range.m3Low = (range.m3Low  === null) ? candle.low : Math.min(range.m3Low,candle.low);
+
+                 //Month Time
+                 if(candle.time > monthTime){
+                    range.mHigh = (range.mHigh  === null) ? candle.high : Math.max(range.mHigh,candle.high);
+                    range.mLow = (range.mLow  === null) ? candle.low : Math.min(range.mLow,candle.low);
+                    
+                    //Week Time
+                    if(candle.time > wkTime){
+                        range.wHigh = (range.wHigh  === null) ? candle.high : Math.max(range.wHigh,candle.high);
+                        range.wLow = (range.wLow  === null) ? candle.low : Math.min(range.wLow,candle.low);
+
+                        //Day Time
+                        if(candle.time > dayTime){
+                            range.dHigh = (range.dHigh  === null) ? candle.high : Math.max(range.dHigh,candle.high);
+                            range.dLow = (range.dLow  === null) ? candle.low : Math.min(range.dLow,candle.low);
+                        }
+                    }
+                }
+            }
         })
-        ranges[state.symbol] = range;
-        if(summary[state.symbol]){
-          summary[state.symbol].range = range;
+        ranges[symbol] = range;
+        if(summary[symbol]){
+          console.log("Added Range");
+          summary[symbol].range = range;
+        } else {
+          console.log("NotAdded Range");
         }
         commit('ranges',ranges);
         commit('summary',summary);
-        state.candlesMap[state.symbol] = candles;
+        state.candlesMap[symbol] = candles;
         commit('candles',state.candlesMap);
     });
 
@@ -569,13 +639,22 @@ const actions = {
           if(summary[key]){
             //summary[key].order = summary[key].order;
             if(order.side=='sell') {
+              summary[key].order.onsale_qty += order.remaining_quantity;
               summary[key].order.onsale_amount += (order.price_per_unit * order.remaining_quantity);
            } else {
+              summary[key].order.onbuy_qty += order.remaining_quantity;
               summary[key].order.onbuy_amount += (order.price_per_unit * order.remaining_quantity);
             }
+
+            summary[key].meta.postbuy_amount = summary[key].order.onbuy_amount * 0.999;
             summary[key].meta.postsale_amount = summary[key].order.onsale_amount * 0.999;
             summary[key].meta.postsale_profit =  summary[key].meta.postsale_amount + summary[key].meta.earning  
             //summary[key].postsale_profit =  summary[key].order.onsale_amount * 0.999 + summary[key].earning
+
+
+            summary[key].order.onsale_rate = summary[key].meta.postsale_amount/summary[key].order.onsale_qty;
+            summary[key].order.onbuy_rate = summary[key].meta.postbuy_amount/summary[key].order.onbuy_qty;
+
           }  
         }
         commit('orders',orders);

@@ -5,6 +5,7 @@ import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import App from './App.vue'
 import store from './service/store';
+import VTooltip from 'v-tooltip'
 
 import OldLayout from '@/trade/OldLayout.vue'
 import DefaultLayout from '@/@common/muse/layouts/Default.vue'
@@ -16,6 +17,10 @@ import router from './router';
 import '@/@common/muse/scss/app.scss';
 
 Vue.use(Antd);
+Vue.use(VTooltip);
+VTooltip.options.defaultClass = 'my-tooltip';
+VTooltip.options.defaultTemplate =
+  '<div class="foo" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>';
 
 Vue.config.productionTip = false
 
