@@ -19,10 +19,10 @@
           </template> 
 
           <template #cell(buy_rate)="row">
-             <span v-if="row.item.meta"  class="float-start text-light fw-bold" :id="row.item.meta.buy_rate">
+             <div v-if="row.item.meta"  class="text-light fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</div>
+              <div v-if="row.item.meta"  class="text-light fw-bold text-sm" :id="row.item.meta.buy_rate">
                {{row.item.meta.buy_rate | round5}} 
-             </span>
-             <small v-if="row.item.meta"  class="float-end text-light fw-bold"> {{row.item.meta.buy_rate_stock | round5}}</small>
+             </div>
           </template>  
 
           <template #cell(now_rate)="row">

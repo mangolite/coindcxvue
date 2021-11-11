@@ -81,14 +81,14 @@
 
 		<!-- Charts -->
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
-			<a-col :span="24" :lg="10" class="mb-24">
-				<History
-  					:selected="selected" :myTrades="$store.getters.trades"></History>
-			</a-col>
 			<a-col :span="24" :lg="14" class="mb-24">
 				<Orders
 				:selected="selected" :myOrders="orders"
 				></Orders>
+			</a-col>
+			<a-col :span="24" :lg="10" class="mb-24">
+				<History
+  					:selected="selected" :myTrades="$store.getters.trades"></History>
 			</a-col>
 		</a-row>
 		<!-- / Charts -->
