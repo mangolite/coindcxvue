@@ -27,7 +27,7 @@
 							</span>
 						</span>
 	
-						<span class="label bold">{{wallet.symbol}}</span>
+						<span class="label text-white bold">{{wallet.symbol}}</span>
 
 						<span class="label float-end">
 							 <span class="label float-start fw-bold"
@@ -39,7 +39,7 @@
 							 </span>&nbsp;&nbsp;&nbsp;
 							<span class=" float-end" style="min-width:40px;display:inline-block">
 								<span class="fa fa-arrows-alt-v text-sm text-info"></span>
-								<span class="text-pink fw-bold" >
+								<span class="d-d fw-bold" >
 									{{wallet.volatlity*100 | round}}
 								</span>
 								<span class="text-sm text-secondary">%</span>
@@ -122,4 +122,22 @@
 		text-decoration-color: red !important;
 		text-decoration-thickness: auto !important;
 	}
+
+   @media (min-width: 992px) {
+
+  .layout-dashboard .ant-layout-sider.sider-primary {
+    margin: 0 0 0 0;
+    padding: 13px 20px;
+    height: calc(100vh - 20px);
+    background: transparent !important;
+  }
+}
+
+
+
+   .d-d{
+   	color: orange;
+   }
+
+	
 </style>

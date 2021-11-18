@@ -282,4 +282,19 @@ export default {
    
     color:#967f39;
   }
+ 
+    @media (max-width: 575px){
+      #myMarket  .table-1dark {
+
+        border-radius: 25px 25px 0px 0px ;
+      }
+      #myMarket .table-1secondary{
+
+        border-radius: 0px 0px 25px 25px ;
+      }
+
+}
+    
+   
+
 </style>

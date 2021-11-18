@@ -1,9 +1,9 @@
 <template>
 	
-		<b-navbar toggleable="lg" type="dark" variant="light" sticky small>
-			<b-navbar-brand class="text-dark"
+		<b-navbar toggleable="lg" type="dark" variant="light" sticky small class="headbar main" >
+			<b-navbar-brand class="text-white"
 				:to="`/trade2/${$store.getters.account}`" 
-			> &nbsp;<i class="fa fa-home ">&nbsp;{{$store.getters.account}}/{{$store.getters.INDEX}}</i>
+			> &nbsp;<i class="fa fa-home home  ">&nbsp;{{$store.getters.account}}/{{$store.getters.INDEX}}</i>
 				&nbsp;{{$store.getters.symbol}}
 			</b-navbar-brand>
 
@@ -13,7 +13,7 @@
 			<b-navbar-nav class="ml-auto" small>
 				<span v-for="KEY in $store.getters.KEY_LIST"  v-bind:key="KEY.key"  >
 					<router-link :to="`/trade2/${KEY.id}`"
-						tag="button" class="btn btn-secondary btn-sm" active-class="btn-light">
+						tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
 						{{KEY.name}}
 					</router-link>&nbsp;
 				</span>
@@ -227,3 +227,59 @@
 	})
 
 </script>
+<style >
+
+	.headbar.main {
+		background-color: black!important;
+	}
+
+
+	.fa-plus , .fa-edit , .fa-trash {
+
+		background-color: transparent;
+		border-color: transparent;
+		color: white;
+
+	}
+
+	 .fa-edit:hover,.fa-plus:hover,.fa-trash:hover{
+		color: orange!important;
+		background-color: transparent;
+		border-color: transparent;
+	}
+
+	.fa-edit:focus,.fa-plus:focus,.fa-trash:focus {
+		color: white;
+		background-color: transparent;
+		border-color: transparent;
+		box-shadow: none;
+	} 
+
+	.fa-edit:checked,.fa-plus:checked,.fa-trash:checked {
+		color: white;
+		background-color: transparent;
+		border-color: transparent;
+		box-shadow: none;
+	}
+
+    .btn-acc{
+    	border-color: white;
+    	color: white;
+    }
+    .btn-acc:hover{
+    	color: orange;
+    }
+
+    .btn-acc1{
+    	color: black;
+    	background-color: white;
+    }
+    .btn-acc1:hover{
+    	color: black;
+    }
+
+
+
+	
+	
+</style>
