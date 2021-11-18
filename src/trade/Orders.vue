@@ -28,9 +28,9 @@
           <span :data-value="order.value" class="fw-bold">{{order.value | round5}}</span>
         </template>
 
-          <template #cell(amount)="order">
-            <span class="fw-bold">{{(order.item.amount || (order.item.price_per_unit * order.item.total_quantity)) | round2}}</span>
-          </template>
+        <template #cell(amount)="order">
+          <span class="fw-bold">{{(order.item.amount || (order.item.price_per_unit * order.item.total_quantity)) | round2}}</span>
+        </template>
 
       </b-table>
 
@@ -84,6 +84,17 @@ export default {
 
   }
 
+  #myOrders tr.table-OnBuy{
+    border: 5px solid #025e43;
+
+  }
+
+
+  #myOrders tr.table-OnSell{
+    border: 5px solid #b4181d ;
+
+  }
+
   #myOrders tr.table-warning td {
     
     color: #7c691b;
@@ -95,24 +106,30 @@ export default {
   
 
   #myOrders tr.table-Yr-High td {
-    background-color: #025e43;
+    background-color: #03261c;
   }
     
    #myOrders tr.table-Mo-High td {
     background-color:  #00825c;
   }
-
+ 
+  #myOrders tr.table-3Mo-High td {
+    background-color: #025e43;
+  }
 
    #myOrders tr.table-Wk-High td {
     background-color:#09bc88;
   }
 
    #myOrders tr.table-Yr-Low td {
-    background-color: #76060a;
+    background-color: #420406;
   }
  
    #myOrders tr.table-Mo-Low td {
-    background-color: #981f23;
+    background-color: #b4181d;
+  }
+   #myOrders tr.table-3Mo-Low td {
+    background-color: #76060a;
   }
   
    #myOrders tr.table-Wk-Low td {
@@ -145,6 +162,9 @@ export default {
    #myOrders tr.table-Mo-High td.market ,
    #myOrders tr.table-Mo-High td.total_quantity,
    #myOrders tr.table-Mo-High td.amount,
+    #myOrders tr.table-3Mo-High td.market ,
+   #myOrders tr.table-3Mo-High td.total_quantity,
+   #myOrders tr.table-3Mo-High td.amount,
    #myOrders tr.table-Wk-High td.market ,
    #myOrders tr.table-Wk-High td.total_quantity,
    #myOrders tr.table-Wk-High td.amount,
@@ -154,6 +174,9 @@ export default {
    #myOrders tr.table-Mo-Low td.market ,
    #myOrders tr.table-Mo-Low td.total_quantity,
    #myOrders tr.table-Mo-Low td.amount,
+   #myOrders tr.table-3Mo-Low td.market ,
+   #myOrders tr.table-3Mo-Low td.total_quantity,
+   #myOrders tr.table-3Mo-Low td.amount,
    #myOrders tr.table-Wk-Low td.market ,
    #myOrders tr.table-Wk-Low td.total_quantity,
    #myOrders tr.table-Wk-Low td.amount,
@@ -172,16 +195,20 @@ export default {
     #myOrders tr.table-buyRate td,
     #myOrders tr.table-Yr-High td.side,
     #myOrders tr.table-Mo-High td.side,
+    #myOrders tr.table-3Mo-High td.side,
     #myOrders tr.table-Wk-High td.side,
     #myOrders tr.table-Yr-Low td.side,
     #myOrders tr.table-Mo-Low td.side,
+    #myOrders tr.table-3Mo-Low td.side,
     #myOrders tr.table-Wk-Low td.side,
     #myOrders tr.table-24-High td.side,
     #myOrders tr.table-24-Low td.side,
     #myOrders tr.table-Yr-High td.ppu,
     #myOrders tr.table-Mo-High td.ppu,
+    #myOrders tr.table-3Mo-High td.ppu,
     #myOrders tr.table-Wk-High td.ppu,
     #myOrders tr.table-Yr-Low td.ppu,
+    #myOrders tr.table-3Mo-Low td.ppu,
     #myOrders tr.table-Mo-Low td.ppu,
     #myOrders tr.table-Wk-Low td.ppu,
     #myOrders tr.table-24-High td.ppu,

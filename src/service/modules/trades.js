@@ -213,13 +213,13 @@ const getters = {
        total_quantity : selected.meta.sell_quantity,
        amount : selected.meta.sell_amount,
     },{
-       side : "onSale",_rowVariant : "onSell",  desc : "Coins you have put on SELL",
+       side : "OnSale",_rowVariant : "OnSell",  desc : "Coins you have put on SELL",
        market : symbol,
        price_per_unit : selected.order.onsale_rate,
        total_quantity : selected.order.onsale_qty,
        amount : selected.meta.postsale_amount,
     },{
-       side : "onBuy",_rowVariant : "onBuy", desc : "Coins you have ordered to BUY",
+       side : "OnBuy",_rowVariant : "OnBuy", desc : "Coins you have ordered to BUY",
        market : symbol, 
        price_per_unit : selected.order.onbuy_rate,
        total_quantity : selected.order.onbuy_qty,
@@ -242,7 +242,7 @@ const getters = {
        side : "Wk-High", order : 100, _rowVariant : "Wk-High",
        market : symbol,
        price_per_unit : Math.max(state.ranges[symbol] ? state.ranges[symbol].wHigh : selected.ticker.high,selected.ticker.high)
-    }, {
+    },{
        side : "Mo-High", order : 1000,  _rowVariant : "Mo-High",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mHigh : selected.ticker.high
@@ -250,15 +250,15 @@ const getters = {
        side : "Mo-Low", order : -1000,  _rowVariant : "Mo-Low",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].mLow : selected.ticker.low
-    }, {
-       side : "Mo3-High", order : 5000,  _rowVariant : "Mo3-High", desc : "Three months HIGH",
+    },{
+       side : "3Mo-High", order : 5000,  _rowVariant : "3Mo-High", desc : "Three months HIGH",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].m3High : selected.ticker.high
     },{
-       side : "Mo3-Low", order : -5000,  _rowVariant : "Mo3-Low", desc : "Three months LOW",
+       side : "3Mo-Low", order : -5000,  _rowVariant : "3Mo-Low", desc : "Three months LOW",
        market : symbol,
        price_per_unit : state.ranges[symbol] ? state.ranges[symbol].m3Low : selected.ticker.low
-    }, {
+    },{
       side : "Yr-High", order : 10000,  _rowVariant : "Yr-High",
       market : symbol,
       price_per_unit : state.ranges[symbol] ? state.ranges[symbol].yHigh : selected.ticker.high
