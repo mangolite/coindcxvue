@@ -43,19 +43,19 @@
             </div>
 
             <small>
-                 <span v-if="row.item.ticker"  class="text-primary fw-bold  badge">
+                 <span v-if="row.item.ticker"  class=" fw-bold  badge p-range">
                    {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}<small>%</small>
                   </span>
-                  <span v-if="row.item.range"  class="text-primary fw-bold badge">
+                  <span v-if="row.item.range"  class=" fw-bold badge p-range">
                    {{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}<small>%</small>
                  </span>  
-                  <span v-if="row.item.range"  class="text-primary fw-bold badge">
+                  <span v-if="row.item.range"  class=" fw-bold badge p-range">
                    {{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}<small>%</small>
                  </span> 
-                  <span v-if="row.item.range"  class="text-primary fw-bold badge">
+                  <span v-if="row.item.range"  class="fw-bold badge p-range">
                    {{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}<small>%</small>
                  </span> 
-                  <span v-if="row.item.range"  class="text-primary fw-bold badge">
+                  <span v-if="row.item.range"  class="fw-bold badge p-range">
                    {{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}<small>%</small>
                  </span>
               </small>
@@ -195,7 +195,7 @@ export default {
 
   #myMarket .btn-dark {
         color: #fff;
-    background-color: #2b2927;
+    background-color: #000000;
     border-color: #21252900;
     border-radius: 25px;
 
@@ -208,19 +208,19 @@ export default {
     --bs-table-striped-color: #fff;
     --bs-table-active-bg: #373b3e;
     --bs-table-active-color: #fff;
-    --bs-table-hover-bg: #302a24;
+    --bs-table-hover-bg: #000000;
     --bs-table-hover-color: #fff;
     color: #ffffff;
     border-color: #ffffff;
 }
 
  #myMarket  .table-1dark {
-        --bs-table-bg: #2b2927;
-    --bs-table-striped-bg: #2b2927;
+        --bs-table-bg: #000000;
+    --bs-table-striped-bg: #000000;
     --bs-table-striped-color: #fff;
     --bs-table-active-bg: #373b3e;
     --bs-table-active-color: #fff;
-    --bs-table-hover-bg: #2b2927;
+    --bs-table-hover-bg: #000000;
     --bs-table-hover-color: #fff;
     color: #ffffff;
     border-color: #ffffff;
@@ -276,4 +276,10 @@ export default {
     border-color: #ffffff;
 }
 
+
+
+  .p-range{
+   
+    color:#967f39;
+  }
 </style>
