@@ -161,7 +161,7 @@
 
     .router-link-active:visited  .d-d{
       color: #da7e1a!important;
-      font-size: 50px;
+      
 
     }
 
@@ -173,6 +173,7 @@
     background-color: #FFFFFF;
     box-shadow: 0px 20px 27px rgb(0 0 0 / 5%);
     font-size: 18px;
+    border-radius: 25px;
   }
       
 	
