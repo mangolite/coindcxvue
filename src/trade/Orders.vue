@@ -185,7 +185,9 @@ export default {
    #myOrders tr.table-24-High td.amount,
    #myOrders tr.table-24-Low td.market ,
    #myOrders tr.table-24-Low td.total_quantity,
-   #myOrders tr.table-24-Low td.amount{
+   #myOrders tr.table-24-Low td.amount,
+   #myOrders tr.table-warning td.amount,
+   #myOrders tr.table-warning td.total_quantity{
     color:#9b262b00 !important;
    }
 

@@ -6,7 +6,7 @@
 		class="sider-primary"
 		breakpoint="lg"
 		collapsed-width="0"
-		width="250px"
+		width="300px"
 		:collapsed="sidebarCollapsed"
 		@collapse="$emit('toggleSidebar', ! sidebarCollapsed)"
 		:trigger="null"
@@ -27,7 +27,7 @@
 							</span>
 						</span>
 	
-						<span class="label text-white bold">{{wallet.symbol}}</span>
+						<span class="label coin-n text-white fw-bold">{{wallet.symbol}}</span>
 
 						<span class="label float-end">
 							 <span class="label float-start fw-bold"
@@ -138,6 +138,12 @@
    .d-d{
    	color: orange;
    }
+   
+      .router-link-active:visited .coin-n{
+      	
+      	color: #da7e1a!important;
+      	font-weight:800!important;
+      }
 
 	
 </style>
