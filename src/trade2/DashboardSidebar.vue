@@ -141,8 +141,11 @@
    
       .router-link-active:visited .coin-n{
       	
-      	color: #da7e1a!important;
+      	color: black!important;
       	font-weight:800!important;
+      }
+      .fw-bold{
+      	font-weight: 700;
       }
 
 	
