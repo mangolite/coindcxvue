@@ -8,19 +8,29 @@
 			</b-navbar-brand>
 
 			<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-			<b-collapse id="nav-collapse" is-nav class="justify-content-end">
+
+			<b-collapse id="nav-collapse" is-nav class="justify-content-end ">
 			<!-- Right aligned nav items "  -->
-			<b-navbar-nav class="ml-auto" small>
-				<span v-for="KEY in $store.getters.KEY_LIST"  v-bind:key="KEY.key"  >
-					<router-link :to="`/trade2/${KEY.id}`"
-						tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
-						{{KEY.name}}
-					</router-link>&nbsp;
-				</span>
-				<b-button secondary class="btn-sm fa fa-plus" @click="keyIndex=null; showEditor();"></b-button>&nbsp;
-				<b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=$store.getters.account;showEditor();"></b-button>&nbsp;
-				<b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=$store.getters.account;deleteCurrentKey()"></b-button>&nbsp;
-			</b-navbar-nav>
+					<b-navbar-nav class="ml-auto  " small>
+						<div >
+
+		
+						<div class="  edit">	
+							<b-button secondary class=" btn-sm fa fa-plus" @click="keyIndex=null; showEditor();"></b-button>&nbsp;
+							<b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=$store.getters.account;showEditor();"></b-button>&nbsp;
+							<b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=$store.getters.account;deleteCurrentKey()"></b-button>&nbsp;
+							</div>
+
+							<div class="accs" >	
+								<span v-for="KEY in $store.getters.KEY_LIST"  v-bind:key="KEY.key"  >
+										<router-link :to="`/trade2/${KEY.id}`"
+											tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
+											{{KEY.name}}
+										</router-link>&nbsp;
+									</span>
+							</div>
+						</div>	
+					</b-navbar-nav>
 			</b-collapse>
 
    <b-modal
@@ -30,14 +40,17 @@
       @show="resetModal"
       @hidden="resetModal"
       @ok="handleOk"
+      
+      
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
 
         <b-form-group
-          label="Api Name"
+          label="API Name"
           label-for="api-name-input"
           invalid-feedback="ApiName is required"
           :state="apiNameState"
+          class="acc-modal"
         >
           <b-form-input
             id="api-key-input"
@@ -49,7 +62,7 @@
         </b-form-group>
 
         <b-form-group
-          label="Api Key"
+          label="API Key"
           label-for="api-key-input"
           invalid-feedback="ApiKey is required"
           :state="apiKeyState"
@@ -64,7 +77,7 @@
         </b-form-group>
 
       <b-form-group
-          label="Api Secret"
+          label="API Secret"
           label-for="api-secret-input"
           invalid-feedback="ApiSecret is required"
           :state="apiSecretState"
@@ -232,6 +245,21 @@
 	.headbar.main {
 		background-color: black!important;
 	}
+    
+    .home:hover{
+    	color: orange;
+    
+     }
+
+
+   .edit{
+   	margin-bottom: 10px;
+   	text-align: right;
+   	margin-right: 20px;
+   }
+   .accs{
+   	margin-right: 20px;
+   }
 
 
 	.fa-plus , .fa-edit , .fa-trash {
@@ -245,21 +273,21 @@
 	 .fa-edit:hover,.fa-plus:hover,.fa-trash:hover{
 		color: orange!important;
 		background-color: transparent;
-		border-color: transparent;
+		border-color: transparent!important;
 	}
 
 	.fa-edit:focus,.fa-plus:focus,.fa-trash:focus {
 		color: white;
 		background-color: transparent;
 		border-color: transparent;
-		box-shadow: none;
+		box-shadow: none!important;
 	} 
 
 	.fa-edit:checked,.fa-plus:checked,.fa-trash:checked {
 		color: white;
 		background-color: transparent;
 		border-color: transparent;
-		box-shadow: none;
+		box-shadow: none!important;
 	}
 
     .btn-acc{
@@ -267,7 +295,7 @@
     	color: white;
     }
     .btn-acc:hover{
-    	color: orange;
+    	color: #da7e1a;
     }
 
     .btn-acc1{
@@ -275,8 +303,76 @@
     	background-color: white;
     }
     .btn-acc1:hover{
-    	color: black;
+    	color: white;
+    	background-color: #da7e1a;
     }
+
+
+   @media (max-width:991px){
+
+     .edit {
+    align-self: flex-end !important;
+    text-align-last: center;
+     margin-right: 70px;
+     margin-left: 70px;
+    margin-bottom: 20px;
+    margin-top: -35px
+  }
+  .accs{
+   	margin-left: 20px;
+   }
+}
+  .navbar-toggler-icon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    border-color: transparent;
+      color: #454342;
+    border: solid;
+    border-radius: 6px;
+
+
+}
+
+   .navbar-toggler-icon:hover{
+   	color: #b65e0e;
+   }
+.navbar-toggler:focus{
+	    box-shadow: none;
+}
+.navbar-toggler{
+	border: none;
+}
+          
+                                               /* Modal editing*/
+
+
+      .modal-content{
+      	border-radius: 20px;
+      }
+
+
+      .modal-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+    font-weight: 800;
+     }
+
+
+   .close{
+   	color: #2e2e2e;
+    font-size: 35px;
+    border: none;
+    
+    background-color: transparent;
+    line-height: 30px;
+    font-weight: 700;
+   }
+
+   .close:hover{
+   	color: orange;
+   }
 
 
 

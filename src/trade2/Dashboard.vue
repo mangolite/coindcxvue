@@ -9,53 +9,56 @@
 		<a-row :gutter="24">
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
 			<WidgetCounter
-				:title="'Total Worth = '"
-				:icon="'fa fa-equals bg-dark'"
+				:title="'Total  Worth '"
+				:icon="'fa fa-equals '"
 				:status="'stat.status'">
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
 				</template>	
 				<template #formatter>
-					{{total.netWorth | round2}}
+					<span class="t-w"> {{total.netWorth | round2}}</span>
+					<br>
 				</template>	
 				<template #suffix>
 					<span class="text-sm fa fa-arrow-right"/>&nbsp;
 					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{total.afterSellWorth | round2}}<br>
-					<span class="text-sm fw-normal">after Sale Worth</span>
+					<span class="text-sm font-semibold">After Sale Worth</span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
 			<WidgetCounter
-				:title="'+ Coins Worth'"
-				:icon="'fa fa-coins bg-info'"
+				:title="' +  Coins Worth'"
+				:icon="'fa fa-coins '"
 				:status="'primary'">
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
 				</template>	
 				<template #formatter>
-					{{total.netStockWorth | round2}}
+					<span class="c-w"> {{total.netStockWorth | round2}}</span>
+					<br>
 				</template>	
 				<template #suffix>
-					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{(total.inStockWorth*1) | round2}}<br>
-					<span class="text-sm fw-normal">reserve</span>
+					<span class="text-sm fa fa-rupee-sign "></span>&nbsp;{{(total.inStockWorth*1) | round2}}<br>
+					<span class="text-sm font-semibold ">Reserve coins worth </span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
 			<WidgetCounter
 				:title="'+ New Orders'"
-				:icon="'fa fa-shopping-cart bg-success'"
+				:icon="'fa fa-shopping-cart '"
 				:status="'danger'">
 				<template #prefix>
-					<span class="fa fa-rupee-sign text-success"/>
+					<span class="fa fa-rupee-sign "/>
 				</template>	
 				<template #formatter>
-					<span class="text-success"> {{total.onBuy | round2}}</span>
+					<span class="text-success n-o"> {{total.onBuy | round2}}</span>
+					<br>
 				</template>	
 				<template #suffix>
 					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{(total.onSell*1) | round2}}<br>
-					<span class="text-sm fw-normal">current Sale Value</span>
+					<span class="text-sm font-semibold">current Sale Value</span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
@@ -68,11 +71,14 @@
 					<span class="fa fa-rupee-sign"/>
 				</template>	
 				<template #formatter>
-					{{total.netINR | round2}}
+					<span class="inr">{{total.netINR | round2}}</span>
+					<br>
 				</template>	
+				
+
 				<template #suffix>
 					+ <span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.afterSell) | round2}}<br>
-					<span class="text-sm fw-normal">after Sale INR</span>
+					<span class="text-sm font-semibold">after Sale INR</span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
@@ -273,6 +279,47 @@
 
 </script>
 
-<style lang="scss">
+<style >
+
+	.fa-equals{
+		background-color: #da7e1a!important;
+		
+	}
+
+
+	.fa-coins{
+		background-color:#39bed5!important ;
+	}
+
+	.fa-wallet{
+		background-color:#996c44!important;
+	}
+
+	.fa-shopping-cart{
+		background-color: #02a66f!important;
+	}
+    
+
+    .n-o{
+    	color: #02a66f!important;
+    }
+	.t-w{
+		color: #da7e1a!important;
+	}
+
+	.c-w{
+		color: #39bed5!important;
+	}
+    
+    .inr{
+    	color: #996c44!important;
+    }
+
+
+
+
+
+
+
 
 </style>

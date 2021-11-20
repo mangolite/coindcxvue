@@ -87,6 +87,14 @@
 	.widget-1 .ant-statistic-content-suffix {
 		margin : 5px;
 		font-weight: 800;
+	  
+
+	}
+	.widget-1 .ant-statistic-content-suffix {
+		color: #8C8C8C!important;
+		
+	  
+
 	}
 
 	.widget-1 .ant-statistic {
@@ -97,4 +105,18 @@
 
      	line-height: 20px;
      }
+    
+
+    .widget-1 .ant-statistic-content-value {
+		margin : 5px;
+		font-weight: 800;
+	   
+      font-family: revert;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px #505050;
+      font-size: 40px;
+
+	}
+
+     
 </style>
