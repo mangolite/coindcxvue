@@ -157,13 +157,13 @@
 </script>
 <style >
 	
-	@media (min-width: 992px){}
+	@media (min-width: 992px){
 
    .layout-dashboard .ant-layout {
     width: auto;
     flex-shrink: 1;
     margin-left: 300px!important;
     }
-
+}
 
 </style>

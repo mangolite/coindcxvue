@@ -32,13 +32,13 @@
 						<span class="label float-end">
 							 <span class="label float-start fw-bold"
 							 	:class="{
-									 'text-success' : wallet.ticker.change_24_hour>0,
-									 'text-danger' : wallet.ticker.change_24_hour<0
+									 'text-success buy ' : wallet.ticker.change_24_hour>0,
+									 'text-danger sell ' : wallet.ticker.change_24_hour<0
 								 }">
 								{{wallet.ticker | change_percent}}<small class="text-sm">%</small>
 							 </span>&nbsp;&nbsp;&nbsp;
 							<span class=" float-end" style="min-width:40px;display:inline-block">
-								<span class="fa fa-arrows-alt-v text-sm text-info"></span>
+								<span class="fa fa-arrows-alt-v  text-sm text-info"></span>
 								<span class="d-d fw-bold" >
 									{{wallet.volatlity*100 | round}}
 								</span>
@@ -142,12 +142,38 @@
       .router-link-active:visited .coin-n{
       	
       	color: black!important;
-      	
-      	
       }
+
+      .
+
+      .router-link-active:visited .label .buy{
+      color: #1dc38b!important;
+      
+     
+      }
+
+      .router-link-active:visited .label .sell{
+      color: #f45b5b!important;
+          
+
+    }
+
+
+    .router-link-active:visited  .d-d{
+      color: #da7e1a!important;
+      font-size: 50px;
+
+    }
+
       .fw-bold{
       	font-weight: 700!important;
       }
 
+      .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item.ant-menu-item-selected .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu.ant-menu-item-selected .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu .router-link-active {
+    background-color: #FFFFFF;
+    box-shadow: 0px 20px 27px rgb(0 0 0 / 5%);
+    font-size: 18px;
+  }
+      
 	
 </style>

@@ -3,7 +3,7 @@
 	<a-card :bordered="false" class="dashboard-bar-line header-solid font-type" >
         <b-table small striped hover :items="items" :fields="fields" id="myMarket" class="text-center"
           stacked="sm" selected-variant="active" >
-       
+         
           <template #table-colgroup>
             <col
               key="symbol"
