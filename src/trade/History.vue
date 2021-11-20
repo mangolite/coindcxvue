@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
 
-      <div> Trades History</div>
+      <div class="title"> Trades History</div>
       <a-card :bordered="false" class="dashboard-bar-line header-solid">
        <b-table small striped :items="myTrades" id="myTrades" fixed
        :fields="fields">
@@ -82,6 +82,16 @@ export default {
   .table > :not(:first-child) {
      border-top: 0px solid ;
 }
+    
+
+    .title{
+
+    color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 15px;
+    text-shadow: 0px 1px 7px #232121;
+  }
 
 
 </style>

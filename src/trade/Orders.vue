@@ -1,5 +1,7 @@
 <template>
+ 
   <a-card :bordered="false" class="dashboard-bar-line header-solid">
+    <div class=" title"> ORDERS & HIGHLIGHTS</div>
       <b-table small striped :items="myOrders"  id="myOrders" fixed head-dark light
        :fields="fields">
 
@@ -243,7 +245,17 @@ export default {
     
     border: 4px solid whitesmoke;
   }
+  
 
+
+  .title{
+
+    color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 15px;
+    text-shadow: 0px 1px 7px #232121;
+  }
    
   
 </style>
