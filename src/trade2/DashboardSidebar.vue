@@ -142,10 +142,11 @@
       .router-link-active:visited .coin-n{
       	
       	color: black!important;
-      	font-weight:800!important;
+      	
+      	
       }
       .fw-bold{
-      	font-weight: 700;
+      	font-weight: 700!important;
       }
 
 	
