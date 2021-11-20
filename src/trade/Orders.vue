@@ -255,6 +255,8 @@ export default {
     text-align: center;
     font-size: 15px;
     text-shadow: 0px 1px 7px #232121;
+    margin-top: -6px;
+    margin-bottom: 6px;
   }
    
   

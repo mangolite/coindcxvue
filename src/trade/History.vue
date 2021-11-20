@@ -1,8 +1,9 @@
 <template>
   <div class="hello">
 
-      <div class="title"> Trades History</div>
+      
       <a-card :bordered="false" class="dashboard-bar-line header-solid">
+        <div class="title"> Trades History</div>
        <b-table small striped :items="myTrades" id="myTrades" fixed
        :fields="fields">
 
@@ -91,6 +92,8 @@ export default {
     text-align: center;
     font-size: 15px;
     text-shadow: 0px 1px 7px #232121;
+    margin-top: -6px;
+    margin-bottom: 6px;
   }
 
 
