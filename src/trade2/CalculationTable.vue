@@ -1,6 +1,7 @@
 <template>
 	<b-table
-	:items="items" :fields="fields">
+	:items="items" :fields="fields"
+	stacked="sm">
 		
 	<template #cell(symbol)="row">
 		<router-link :to="`/trade2/${account}/${row.item.symbol}`" 

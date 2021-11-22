@@ -30,7 +30,7 @@
 						<span class="label coin-n text-white fw-bold">{{wallet.symbol}}</span>
 
 						<span class="label float-end">
-							 <span class="label float-start fw-bold"
+							 <span class="label float-start fw-bold" :data-change="wallet.ticker.change_24_hour"
 							 	:class="{
 									 'text-success buy ' : wallet.ticker.change_24_hour>0,
 									 'text-danger sell ' : wallet.ticker.change_24_hour<0

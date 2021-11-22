@@ -78,7 +78,7 @@ var formatter = {
 			return balanceCoins;
 		});
 		Vue.filter('change_percent', function (ticker) {
-			return round5(
+			return round(
 				ticker.change_24_hour,2
 			);
 		});
