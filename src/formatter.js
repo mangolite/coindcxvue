@@ -14,6 +14,15 @@ var number = function (value,format) {
   return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
 }
 
+var roundA = function (n,places) {
+	let _places = places || 0;
+	let numb = num(n);
+	let baseLen = Math.round(Math.log10(numb))
+	_places = (numb > 999) ? Math.min(2,_places) : Math.min(5,_places-baseLen-1);
+	let base = Math.pow(10,_places)
+	return Math.round(numb*base)/base;
+};
+
 var round2 = function (n,places) {
 	let _places = places || 2;
 	let base = Math.pow(10,_places)
@@ -21,9 +30,10 @@ var round2 = function (n,places) {
 }
 
 var round5 = function (n,places) {
-	let _places = places || 5;
-	let base = Math.pow(10,_places)
-	return Math.round(num(n)*base)/base;
+	return roundA(n,places || 5);
+	// let _places = places || 5;
+	// let base = Math.pow(10,_places)
+	// return Math.round(num(n)*base)/base;
 };
 var round = function (n,places) {
 	let _places = places || 0;
@@ -41,6 +51,7 @@ var formatter = {
 		Vue.filter('round5',round5);
 		Vue.filter('round2',round2);
 		Vue.filter('round',round);
+		Vue.filter('roundA',roundA);
 
 		Vue.filter('instock_worth', function (summary) {
 			let balance = summary.balance;
@@ -76,6 +87,7 @@ var formatter = {
 	round2 :round2,
 	round5 : round5,
 	round : round,
+	roundA : roundA,
 	capitalize : capitalize,
 };
 formatter.init();

@@ -85,6 +85,13 @@
 		</a-row>
 		<!-- / Counter Widgets -->
 
+		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
+			<calculation-table
+				:items="[selected]" 
+				:total="$store.getters.total" 
+				:account="$store.getters.account">
+			</calculation-table>
+		</a-row>	
 		<!-- Charts -->
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<a-col :span="24" :lg="14" class="mb-24">
@@ -123,7 +130,13 @@
 			</a-col>
 		</a-row>
 		<!-- / Charts -->
-
+		<a-row :gutter="24" type="flex" align="stretch">
+			<calculation-table
+				:items="$store.getters.sortedWallets" 
+				:total="$store.getters.total" 
+				:account="$store.getters.account">
+			</calculation-table>
+		</a-row>
 		
 
 
@@ -144,6 +157,7 @@
 	import Orders from '@/trade/Orders' ;
 	import History from '@/trade/History' ;
 	import OneView from './OneView' ;
+	import CalculationTable from './CalculationTable' ;
 
 
 	// "Projects" table list of columns and their properties.
@@ -254,7 +268,8 @@
 			WidgetCounter,
 
 			Orders,History,OneView,
-			//CardCompareChart
+			//CardCompareChart,
+			CalculationTable
 		},
 		data() {
 			return {

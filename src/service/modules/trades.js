@@ -59,7 +59,7 @@ function num(str){
 }
 
 var syncHistory = 0, syncTicker=0;
-var newSummary = function(key,symbol){
+var newSummary = function(key,symbol, oldSummary){
 return {
           key : key, 
           symbol : symbol,
@@ -68,7 +68,12 @@ return {
             sell_quantity : 0 , sell_amount : 0,
             fee_amount : 0,
             starting_coins : 0,
-            efective_rate : 0, now_rate : 0
+            buy_rate : 0, sell_rate : 0,
+            efective_rate : 0, now_rate : 0,
+            stock : oldSummary?.meta?.stock,
+            stock_worth : oldSummary?.meta?.stock_worth,
+            postsale_profit : oldSummary?.meta?.postsale_profit,
+            postsale_amount : 0 // has to be ZERO in the start,, otherwise new value will be added old value
           }, 
           order : {
             onsale_amount : 0, onbuy_amount : 0,
@@ -341,7 +346,7 @@ const actions = {
     let THIS = state;
     request.post(options, function(error, response, body) {
         for (var k in THIS.summary) {
-          THIS.summary[k].meta = newSummary(k,k).meta;
+          THIS.summary[k].meta = newSummary(k,k,THIS.summary[k] || {}).meta;
         }
         var summary = THIS.summary;
         THIS.history = body;  
@@ -349,7 +354,7 @@ const actions = {
           let deal = body[i];
           //let key = _index + "." + deal.symbol;
           let key = deal.symbol;
-          summary[key] = summary[key] || newSummary(key,deal.symbol);
+          summary[key] = summary[key] || newSummary(key,deal.symbol,{});
           let meta = summary[key].meta;
           if(deal.side == "sell"){
             meta.sell_quantity += num(deal.quantity);

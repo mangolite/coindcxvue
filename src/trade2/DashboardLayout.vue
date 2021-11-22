@@ -70,15 +70,28 @@
 <script>
 
 	import Vue from 'vue';
+
+	import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+	// Import Bootstrap an BootstrapVue CSS files (order is important)
+	import 'bootstrap/dist/css/bootstrap.css'
+	import 'bootstrap-vue/dist/bootstrap-vue.css'
+	import 'bootstrap-icons/font/bootstrap-icons.css'
+
+
 	import DashboardSidebar from './DashboardSidebar' ;
 	import DashboardHeader from './DashboardHeader' ;
 	import DashboardFooter from '@/@common/muse/components/Footers/DashboardFooter' ;
 	import DashboardSettingsDrawer from '@/@common/muse/components/Sidebars/DashboardSettingsDrawer' ;
 
-
 	import VueApexCharts from 'vue-apexcharts'
 	Vue.use(VueApexCharts);
 	Vue.component('apexchart', VueApexCharts);
+
+
+	Vue.use(BootstrapVue);
+	Vue.use(IconsPlugin);
+
+	import "@/assets/style.css";
 
 	export default ({
 		components: {

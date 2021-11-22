@@ -189,7 +189,8 @@ export default {
    #myOrders tr.table-24-Low td.total_quantity,
    #myOrders tr.table-24-Low td.amount,
    #myOrders tr.table-warning td.amount,
-   #myOrders tr.table-warning td.total_quantity{
+   #myOrders tr.table-warning td.total_quantity
+   {
     color:#9b262b00 !important;
    }
 
@@ -259,5 +260,10 @@ export default {
     margin-bottom: 6px;
   }
    
-  
+  #myOrders tr.table-warning td.total_quantity,
+  #myOrders tr.table-warning td.amount {
+    color:#dd9612a1 !important;
+    font-weight: 100!important;
+   }
+
 </style>

@@ -87,11 +87,21 @@ $neutral-colors: (
 .font-bold {
 	font-weight: $fw-bold !important;
 }
+.text-xxs {
+	//font-size: 10px;
+	font-size: .6em;
+}
+.text-xs {
+	//font-size: 10px;
+	font-size: .8em;
+}
 .text-sm {
-	font-size: 12px;
+	//font-size: 12px;
+	font-size: .9em;
 }
 .text-md {
-	font-size: 14px;
+	//font-size: 14px;
+	font-size: 1em;
 }
 .text-lg {
 	font-size: 16px;

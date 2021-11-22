@@ -15,29 +15,8 @@ export default new Router({
           path: '/',
           alias: '/trade',
           redirect : '/trade2/1',
-          name : "default",
-          meta : { layout: "old" },
-          component: () => import('./trade/DemoGrid.vue'),
+          name : "default"
         },
-        {
-          path: '/trade/:account',
-          name : "OnlyAccount",
-          meta : { layout: "old" },
-          component: () => import('./trade/DemoGrid.vue'),
-        },
-        {
-          path: '/trade/:account/:currency/',
-          name : "OnlyAccountCurrency",
-          meta : { layout: "old" },
-          component: () => import('./trade/DemoGrid.vue'),
-        },
-        {
-          path: '/trade/:account/:currency/:tab',
-          name : "OnlyAccountCurrencyView",
-          meta : { layout: "old" },
-          component: () => import('./trade/DemoGrid.vue'),
-        },
-
         {
           path: '/trade2',
           redirect : '/trade2/1',
