@@ -123,7 +123,6 @@
           <template #cell(worth)="row">
             <span v-if="row.item" class="float-start stk fw-bold text-center t-size" >{{row.item | instock_worth}}</span><br>
             <span v-if="row.item.order" class="float-none buy fw-bold t-size">{{row.item.order.onbuy_amount | round2}}</span><br>
-            
             <span v-if="row.item.order" class="float-end sell fw-bold t-size">{{row.item.order.onsale_amount | round2}}</span>
           </template>
 

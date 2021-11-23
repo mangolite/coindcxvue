@@ -89,6 +89,7 @@ var formatter = {
 	round : round,
 	roundA : roundA,
 	capitalize : capitalize,
+	num : num
 };
 formatter.init();
 export default formatter;

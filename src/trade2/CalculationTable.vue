@@ -15,7 +15,7 @@
               </span> 
 		</router-link>
     </template> 
-		<template #cell(purchase)="row">
+		<template #cell(buy_amount)="row">
 				<div class="text-bold float-start-x">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.meta.buy_amount | round2}}
@@ -30,7 +30,7 @@
 					</div> 
 				</div>
 		</template>
-		<template #cell(sale)="row">
+		<template #cell(sell_amount)="row">
 				<div class="text-bold float-start-x">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.meta.sell_amount | round2}}
@@ -57,6 +57,21 @@
 						'fw-bold text-danger price-d' : (row.item.ticker.last_price < row.item.meta.sell_rate),
 					}">
 						@&nbsp;{{row.item.order.onsale_rate | round5}}
+					</div> 
+				</div>
+		</template>
+		<template #cell(nonsale)="row">
+				<div class="text-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+					{{row.value | round2}}
+				</div>
+				<div class="text-xs text-primary">{{row.item.balance.balance | round5}}</div>
+				<div class="text-sm text-primary float-start">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
+						'fw-bold text-success price-u' : (row.item.ticker.last_price > row.item.meta.sell_rate),
+						'fw-bold text-danger price-d' : (row.item.ticker.last_price < row.item.meta.sell_rate),
+					}">
+						@&nbsp;{{row.item.ticker.last_price | round5}}
 					</div> 
 				</div>
 		</template>
@@ -118,7 +133,7 @@
 					}">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
 					<b v-if="row.item.meta && row.item.ticker" >
-						{{row.item.meta.stock*row.item.ticker.last_price * 0.999 + row.item.meta.earning | round2}}
+						{{row.value | round2}}
 					</b>
 				</div>
 		</template>
@@ -137,6 +152,7 @@
 </template>
 
 <script>
+	import formatter from "./../formatter";
 	export default ({
 		props: {
 			account : {
@@ -147,16 +163,25 @@
 			},
 		},
 		data: () => ({
-			fields: [ { key: 'symbol', label : "Coin   ", sortable: false, variant : "1dark" }, 
+			fields: [ { key: 'symbol', label : "Coin   ", sortable: true, variant : "1dark" }, 
 					//{ key: 'now_rate', label : "PRICE", sortable: false,variant : "dark" },  
 					//{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
-					{ key: 'purchase', label: 'Purchases',sortable: false, variant : "success"},  
-					{ key: 'sale', label: 'Sale',sortable: false, variant : "danger"},
-					{ key: 'profit', label: ' PNL', variant : "dark"},
-					{ key: 'stock', label: ' Stock', variant : "light"},
-					{ key: 'profit_presale', label: 'PreSalePNL', variant : "dark"},
-					{ key: 'onsale', label: ' OnSale', variant : "danger"},
-					{ key: 'profit_postsale', label: ' PostSalePNL', variant : "dark"}
+					{ key: 'buy_amount', label: 'Purchases',sortable: true, variant : "success",sortByFormatted:true, 
+						formatter: (v,k,item) => item.meta.buy_amount},  
+					{ key: 'sell_amount', label: 'Sale',sortable: true, variant : "danger",sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.sell_amount},
+					{ key: 'profit', label: ' PNL', sortable: true, variant : "dark",sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.earning},
+					{ key: 'stock', label: ' Stock', sortable: true, variant : "light",sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.stock_worth},
+					{ key: 'profit_presale', label: 'PreSalePNL', sortable: true, variant : "dark", sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.stock*item.ticker.last_price * 0.999 + item.meta.earning },
+					{ key: 'onsale', label: ' OnSale', sortable: true, variant : "danger",sortByFormatted:true,
+						formatter: (v,k,item) => item.order.onsale_amount },
+					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info",sortByFormatted:true,
+						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
+					{ key: 'profit_postsale', label: ' PostSalePNL', sortable: true, variant : "dark",sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.postsale_profit },
 					//{ key: 'valotile', label: 'Volatile%',sortable: false, variant : "secondary"},
 					//{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
 					//{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
