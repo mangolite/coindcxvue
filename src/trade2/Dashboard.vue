@@ -58,7 +58,7 @@
 				</template>	
 				<template #suffix>
 					<span class="text-sm fa fa-rupee-sign"></span>&nbsp;{{(total.onSell*1) | round2}}<br>
-					<span class="text-sm font-semibold">current Sale Value</span>
+					<span class="text-sm font-semibold">Current Sale Value</span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
@@ -78,7 +78,7 @@
 
 				<template #suffix>
 					+ <span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.afterSell) | round2}}<br>
-					<span class="text-sm font-semibold">after Sale INR</span>
+					<span class="text-sm font-semibold">After Sale INR</span>
 				</template>	
 			</WidgetCounter>
 			</a-col>
@@ -135,7 +135,7 @@
 				:items="$store.getters.sortedWallets" 
 				:total="$store.getters.total" 
 				:account="$store.getters.account">
-			</calculation-table>
+		    </calculation-table>
 		</a-row>
 		
 
@@ -329,12 +329,5 @@
     .inr{
     	color: #996c44!important;
     }
-
-
-
-
-
-
-
 
 </style>

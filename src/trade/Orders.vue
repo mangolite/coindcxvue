@@ -82,26 +82,36 @@ export default {
   
 
   #myOrders tr.table-warning{
-    border: 5px solid #dea520;
-
+    border: 10px solid black;
+    
   }
 
   #myOrders tr.table-OnBuy{
-    border: 5px solid #025e43;
+    border: 5px solid #6da896;
 
   }
 
 
   #myOrders tr.table-OnSell{
-    border: 5px solid #b4181d ;
-
+    border: 5px solid #c47878 ;
+   
   }
 
   #myOrders tr.table-warning td {
-    
-    color: #7c691b;
+    background-color: black!important;
+    color: #ffc338;
     font-weight: 700;
   }
+
+  #myOrders tr.table-warning td.ppu{
+    font-size: 15px;
+  }
+
+  .table-warning {
+    --bs-table-bg: #000000;
+    --bs-table-striped-bg: #000000;
+  }
+ 
   #myOrders tr.table-warning td.ppu .fw-bold {
     font-weight: 900!important;
   }
@@ -187,9 +197,8 @@ export default {
    #myOrders tr.table-24-High td.amount,
    #myOrders tr.table-24-Low td.market ,
    #myOrders tr.table-24-Low td.total_quantity,
-   #myOrders tr.table-24-Low td.amount,
-   #myOrders tr.table-warning td.amount,
-   #myOrders tr.table-warning td.total_quantity
+   #myOrders tr.table-24-Low td.amount
+  
    {
     color:#9b262b00 !important;
    }
@@ -260,10 +269,6 @@ export default {
     margin-bottom: 6px;
   }
    
-  #myOrders tr.table-warning td.total_quantity,
-  #myOrders tr.table-warning td.amount {
-    color:#dd9612a1 !important;
-    font-weight: 100!important;
-   }
+ 
 
 </style>

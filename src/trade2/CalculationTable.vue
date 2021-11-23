@@ -170,7 +170,7 @@
 					//{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
 					{ key: 'buy_amount', label: 'Purchases',sortable: true, variant : "success",sortByFormatted:true, 
 						formatter: (v,k,item) => item.meta.buy_amount},  
-					{ key: 'sell_amount', label: 'Sale',sortable: true, variant : "danger",sortByFormatted:true,
+					{ key: 'sell_amount', label: 'Sold',sortable: true, variant : "danger",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.sell_amount},
 					{ key: 'profit', label: ' PNL', sortable: true, variant : "dark",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.earning},

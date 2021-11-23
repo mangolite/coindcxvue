@@ -314,12 +314,12 @@ export default {
 
 
  #myMarket .table-1secondary {
-    --bs-table-bg: #cecece;
-    --bs-table-striped-bg: #cecece;
+    --bs-table-bg: #34001c;
+    --bs-table-striped-bg: #34001c;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #cbccce;
     --bs-table-active-color: #000;
-    --bs-table-hover-bg: #000000ad;
+    --bs-table-hover-bg: #00000082;
     --bs-table-hover-color: #000;
     color: #ffffff;
     border-color: #ffffff;

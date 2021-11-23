@@ -195,7 +195,7 @@ const getters = {
       side : 'Current Rate',
       market : symbol,
       price_per_unit : selected.ticker.last_price,
-      total_quantity : selected.balance ? num(selected.balance.balance) : 0,
+      total_quantity : (selected.balance ? selected.balance.total : 0),
       _rowVariant : "warning"
     },{
        side : 'Buy Rate',

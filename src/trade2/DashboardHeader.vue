@@ -41,7 +41,6 @@
       @hidden="resetModal"
       @ok="handleOk"
       
-      
     >
       <form ref="form" @submit.stop.prevent="handleSubmit">
 
