@@ -5,7 +5,7 @@
 
 	<template #cell(symbol)="row">
 		<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
-			tag="span">
+			tag="b" style="cursor:pointer">
 			{{ row.item.symbol}}<br/>
             <span v-if="row.item.ticker && row.item.meta" class="text-left text-right next-line" :class="{
                 'fw-bold text-success' : (row.item.ticker.last_price > row.item.meta.buy_rate),
@@ -14,6 +14,19 @@
                 @{{row.item.ticker.last_price | round5}}
               </span> 
 		</router-link>
+            <small class="fw-bold  badge p-range text-xxs">
+                <span v-if="row.item.ticker">
+                   {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
+        		</span>-<span v-if="row.item.range">
+                   {{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
+                 </span>-<span v-if="row.item.range">
+                   {{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}
+                 </span>-<span v-if="row.item.range" >
+                   {{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}
+                 </span>-<span v-if="row.item.range">
+                   {{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}<small>%</small>
+                 </span>
+              </small>
     </template> 
 		<template #cell(buy_amount)="row">
 				<div class="text-bold float-start-x">
