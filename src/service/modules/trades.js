@@ -136,7 +136,11 @@ const getters = {
   },
   sortedWallets : function () {
     return Object.values(state.summary).filter(function(value){
-      return !!value.symbol;
+      return !!value.symbol 
+        && (
+            !!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
+            !!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
+          );
     }).sort(function (a,b) {
         if(a.balance && b.balance){
           var aStock = (num(a.balance.balance) + num(a.balance.locked_balance))*a.ticker.last_price;
