@@ -3,8 +3,6 @@
 	:items="items" :fields="fields"
 	stacked="sm">
 
-
-
 	<template #cell(symbol)="row">
 		<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
 			tag="span">
@@ -77,15 +75,22 @@
 					</div> 
 				</div>
 		</template>
-		<template #cell(profit)="row">
-				<div class="text-bold float-start-x" :class="{
-					'fw-bold sell ' : row.item.meta.earning<0,
-					'fw-bold buy ' : row.item.meta.earning>0
+		<template #cell(onbuy)="row">
+				<div class="text-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+					{{row.item.order.onbuy_amount | round2}}
+				</div>
+				<div class="text-xs text-primary">{{row.item.order.onbuy_qty | round5}}</div>
+				<div class="text-sm text-primary float-start">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
+						'fw-bold text-success price-u' : (row.item.ticker.last_price > row.item.meta.sell_rate),
+						'fw-bold text-danger price-d' : (row.item.ticker.last_price < row.item.meta.sell_rate),
 					}">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
-					<b v-if="row.item.meta"  >{{row.item.meta.earning | round2}}</b>
+						@&nbsp;{{row.item.order.onbuy_rate | round5}}
+					</div> 
 				</div>
 		</template>
+
 		<template #head(stock)="data">
 				<div class="text-bold text-center text-info">
 					<div class="float-start text-xs">
@@ -128,25 +133,53 @@
 					</div> 
 				</div>
 		</template>
-		<template #cell(profit_presale)="row">
-				<div class="text-bold float-start-x" :class="{
-                	'fw-bold sell ' : row.item.meta.efective_rate>row.item.ticker.last_price,
-                  	'fw-bold buy ' : row.item.meta.efective_rate<row.item.ticker.last_price
+
+		<template #cell(profit)="row">
+				<div class="float-start-x" :class="{
+					'sell ' : row.item.meta.earning<0,
+					'buy ' : row.item.meta.earning>0
 					}">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
-					<b v-if="row.item.meta && row.item.ticker" >
+					<small v-if="row.item.meta"  >{{row.item.meta.earning | round2}}</small>
+				</div>
+				<div class="fw-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<b v-if="row.item.meta">
+						{{row.value | round2}}
+					</b>
+				</div>
+		</template>
+		<template #cell(profit_presale)="row">
+				<div class="float-start-x" :class="{
+                	'sell ' : row.item.meta.efective_rate>row.item.ticker.last_price,
+                  	'buy ' : row.item.meta.efective_rate<row.item.ticker.last_price
+					}">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<small v-if="row.item.meta && row.item.ticker" >
+						{{row.item.meta.stock*row.item.ticker.last_price * 0.999 + row.item.meta.earning  | round2}}
+					</small>
+				</div>
+				<div class="fw-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<b v-if="row.item.meta">
 						{{row.value | round2}}
 					</b>
 				</div>
 		</template>
 		<template #cell(profit_postsale)="row">
-				<div class="text-bold float-start-x" :class="{
-					'fw-bold sell' : row.item.meta.now_profit>row.item.meta.postsale_profit,
-					'fw-bold buy' : row.item.meta.now_profit<row.item.meta.postsale_profit
+				<div class="float-start-x" :class="{
+					'sell' : row.item.meta.now_profit>row.item.meta.postsale_profit,
+					'buy' : row.item.meta.now_profit<row.item.meta.postsale_profit
 					}">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
-					<b v-if="row.item.meta" >
+					<small v-if="row.item.meta" >
 						{{row.item.meta.postsale_profit | round2}}
+					</small>
+				</div>
+				<div class="fw-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<b v-if="row.item.meta">
+						{{row.value | round2}}
 					</b>
 				</div>
 		</template>
@@ -173,17 +206,19 @@
 					{ key: 'sell_amount', label: 'Sold',sortable: true, variant : "danger",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.sell_amount},
 					{ key: 'profit', label: ' PNL', sortable: true, variant : "dark",sortByFormatted:true,
-						formatter: (v,k,item) => item.meta.earning},
+						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
 					{ key: 'stock', label: ' Stock', sortable: true, variant : "light",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
-					{ key: 'profit_presale', label: 'PreSalePNL', sortable: true, variant : "dark", sortByFormatted:true,
-						formatter: (v,k,item) => item.meta.stock*item.ticker.last_price * 0.999 + item.meta.earning },
+					{ key: 'profit_presale', label: 'NowPNL', sortable: true, variant : "dark", sortByFormatted:true,
+						formatter: (v,k,item) => item.meta.stock*(item.ticker.last_price-item.meta.buy_rate_stock) * 0.999 },
 					{ key: 'onsale', label: ' OnSale', sortable: true, variant : "danger",sortByFormatted:true,
 						formatter: (v,k,item) => item.order.onsale_amount },
 					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
-					{ key: 'profit_postsale', label: ' PostSalePNL', sortable: true, variant : "dark",sortByFormatted:true,
-						formatter: (v,k,item) => item.meta.postsale_profit },
+					{ key: 'profit_postsale', label: ' FuturePNL', sortable: true, variant : "dark",sortByFormatted:true,
+						formatter: (v,k,item) => item.order.onsale_qty*(item.order.onsale_rate-item.meta.buy_rate_stock) * 0.999},
+					{ key: 'onbuy', label: ' OnBuy', sortable: true, variant : "success",sortByFormatted:true,
+						formatter: (v,k,item) => item.order.onbuy_amount },
 					//{ key: 'valotile', label: 'Volatile%',sortable: false, variant : "secondary"},
 					//{ key: 'buy_quantity', label: 'Buy Quantity',sortable: true, variant : "warning"}, 
 					//{ key: 'buy_amount', label: 'Buy Amount', sortable: true, variant : "warning" }, 
