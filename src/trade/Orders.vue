@@ -66,6 +66,7 @@ export default {
   }
   #myOrders  {
     border: 0px ;
+    line-height: 1.7em;
   }
   
   #myOrders thead tr th{
@@ -82,19 +83,19 @@ export default {
   
 
   #myOrders tr.table-warning{
-    border: 10px solid black;
+    border: 5px solid black;
     
   }
 
   #myOrders tr.table-OnBuy{
-    border: 5px solid #6da896;
-
+    border: 1px solid #6da896;
+    background-color: #6da89673;
   }
 
 
   #myOrders tr.table-OnSell{
-    border: 5px solid #c47878 ;
-   
+    border: 1px solid #d79898;
+    background-color: #c4787881;
   }
 
   #myOrders tr.table-warning td {
@@ -104,7 +105,7 @@ export default {
   }
 
   #myOrders tr.table-warning td.ppu{
-    font-size: 15px;
+    font-size: 18px;
   }
 
   .table-warning {
@@ -229,6 +230,8 @@ export default {
     #myOrders tr.table-24-Low td.ppu {
     color: #FFF!important;
     font-weight: 600;
+    font-size: .8em;
+    padding-bottom: 0px;
   }
     
 
@@ -253,7 +256,7 @@ export default {
     #myOrders tr.table-24-High,
     #myOrders tr.table-24-Low  {
     
-    border: 4px solid whitesmoke;
+    border: 2px solid whitesmoke;
   }
   
 
