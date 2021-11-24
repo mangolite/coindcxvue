@@ -93,7 +93,7 @@
 			</calculation-table>
 		</a-row>	
 		<!-- Charts -->
-		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
+		<a-row :gutter="24" type="flex" align="stretch" v-if="selected" style="margin-top: 20px;">
 			<a-col :span="24" :lg="14" class="mb-24">
 				<Orders
 				:selected="selected" :myOrders="orders"

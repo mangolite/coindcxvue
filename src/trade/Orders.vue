@@ -92,10 +92,19 @@ export default {
     background-color: #6da89673;
   }
 
+  #myOrders tr.table-OnBuy td.side{
+         color: green;
+  }
+
 
   #myOrders tr.table-OnSell{
     border: 1px solid #d79898;
     background-color: #c4787881;
+    color: ;
+  }
+
+  #myOrders tr.table-OnSell td.side{
+    color: #b22626;
   }
 
   #myOrders tr.table-warning td {
