@@ -122,15 +122,7 @@
 		</a-row>
 
 		<!-- Charts -->
-		<a-row :gutter="24" type="flex" align="stretch">
-			<a-col :span="24" :lg="24" class="mb-24">
-				
-	        <OneView
-				:items="$store.getters.sortedWallets" :total="$store.getters.total" :account="$store.getters.account"
-			></OneView>
-				
-			</a-col>
-		</a-row>
+		>
 		<!-- / Charts -->
 		<a-row :gutter="24" type="flex" align="stretch">
 			<calculation-table
@@ -158,7 +150,7 @@
 
 	import Orders from '@/trade/Orders' ;
 	import History from '@/trade/History' ;
-	import OneView from './OneView' ;
+	
 	import CalculationTable from './CalculationTable' ;
 
 
@@ -269,7 +261,7 @@
 			CardCandleChart,
 			WidgetCounter,
 
-			Orders,History,OneView,
+			Orders,History,
 			//CardCompareChart,
 			CalculationTable
 		},
