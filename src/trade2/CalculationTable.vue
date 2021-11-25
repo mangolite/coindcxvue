@@ -2,9 +2,8 @@
 
 	<a-card :bordered="false" class="dashboard-bar-line header-solid ant-col-24 b-border">
     <div class=" title "></div>
-	<b-table
-	:items="items" :fields="fields" class="no-bdr" id="pnl"
-	stacked="sm">
+	<b-table 	:items="items" :fields="fields" class="no-bdr" id="pnl"
+	stacked="md">
 
 	<template #cell(symbol)="row">
 		<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
@@ -37,7 +36,7 @@
 					{{row.item.meta.buy_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.meta.buy_quantity | round5}}</div>
-				<div class="text-sm text-primary float-start">
+				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
 						'fw-bold fix price-u' : (row.item.ticker.last_price > row.item.meta.buy_rate),
 						'fw-bold fix price-d' : (row.item.ticker.last_price < row.item.meta.buy_rate),
@@ -67,7 +66,7 @@
 					{{row.item.order.onsale_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}</div>
-				<div class="text-sm text-primary float-start">
+				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
 						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
 						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
@@ -77,13 +76,13 @@
 				</div>
 		</template>
 		
-		<template #cell(nonsale)="row">
+		<template #cell(stkwrth)="row">
 				<div class="text-bold  float-start-x buy">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
-					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round2}}
+					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round5}}
 				</div>
 				<div class="text-xs coin">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity )| round5}}</div>
-				<div class="text-sm text-primary float-start">
+				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center float-start" :class="{
 						'fw-bold fix ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
 						'fw-bold fix' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
@@ -132,7 +131,7 @@
 						{{row.item.balance.balance | round5}}
 				</div>
 				</div>
-				<div class="text-sm text-primary text-center">
+				<div class="text-sm  text-center">
 					
 					
 					<div v-if="row.item.ticker && row.item.meta" class="text-center " :class="{
@@ -223,7 +222,7 @@
 						formatter: (v,k,item) => item.meta.sell_amount},
 					{ key: 'profit', label: ' PastPNL', sortable: true, variant : "1dark",class:"",sortByFormatted:true,
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
-						{ key: 'nonsale', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
+						{ key: 'stkwrth', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
 					{ key: 'stock', label: ' Stock@currentrate', sortable: true, variant : "stock",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
@@ -272,11 +271,11 @@
     padding-inline: 4px;
 }   
     .text-danger{
-    	color: #fc444e;
+    	color: #fc444e!important;
     }
 
     .text-success {
-    color: #72c24a;
+    color: #10ab57!important;
 }
    
    .stk{
@@ -297,20 +296,21 @@
     }
 
 	.fix{
-		color: #a19e9d;
+		color: #a19e9d!important;
    
 	}
 
 	 
 	    .pro{
    	color: #da7e1a;
+   	    font-size: 16px;
 
    }
    .no-bdr{
    	border: 0px;
    }
 
-   @media (max-width: 575px){
+   @media (max-width: 767.98px){
       #pnl  .f-row {
       	border: 0px;
 
@@ -320,8 +320,27 @@
 
         border-radius: 0px 0px 25px 25px ;
       }
+      #pnl tr {
+      	margin-top: 10px;
+      }
+      .table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
+    content: attr(data-label);
+    width: 40%;
+    float: left;
+    text-align: right;
+    overflow-wrap: break-word;
+    font-weight: bold;
+    font-style: normal;
+    padding: 0 calc(1rem / 2) 0 0;
+    margin: 0;
+    color: white!important;
+    font-weight: 800!important;
+    text-shadow: 1px 1px 3px #545454;
 
    }
+ }
+
+   
 
    #pnl  .table-1dark {
         --bs-table-bg: #000000;

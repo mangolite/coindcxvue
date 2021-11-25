@@ -101,7 +101,9 @@
 			</a-col>
 			<a-col :span="24" :lg="10" class="mb-24">
 				<History
-  					:selected="selected" :myTrades="$store.getters.trades"></History>
+  					:selected="selected" :myTrades="$store.getters.trades">
+  						
+  					</History>
 			</a-col>
 		</a-row>
 		<!-- / Charts -->
@@ -122,11 +124,11 @@
 		<!-- Charts -->
 		<a-row :gutter="24" type="flex" align="stretch">
 			<a-col :span="24" :lg="24" class="mb-24">
-				<!-- Active Users Card -->
+				
 	        <OneView
 				:items="$store.getters.sortedWallets" :total="$store.getters.total" :account="$store.getters.account"
 			></OneView>
-				<!-- Active Users Card -->
+				
 			</a-col>
 		</a-row>
 		<!-- / Charts -->
