@@ -55,7 +55,7 @@
 									'text-danger fa fa-sort-down' : wallet.seen_delta<0,
 									'text-mute hidden hide d-none' : wallet.seen_delta == 0
 								}"
-							>&nbsp; {{wallet.seen_delta | abs | round5}}</span>
+							>&nbsp; {{wallet.seen_delta | abs | roundA(2)}}%</span>
 						</span>
 						
 					</router-link>
