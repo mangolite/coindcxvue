@@ -161,7 +161,7 @@ const getters = {
     });
   },
   total(state){
-    if(!state.orders || !state.orders.length){
+    if(!state.orders){
         return 0;
     }
     let TOTAL = {
@@ -710,16 +710,23 @@ const actions = {
 },
 
 async updateLocal({ commit,dispatch,getters }){
-  state.local = state.local || { LOADED_STAMP : 0};
+  let lastRates = localStorage.getItem('lastRates');
+  if(lastRates == 'null') lastRates = null;
+  state.local = lastRates ? JSON.parse(lastRates) : (state.local || { LOADED_STAMP : 0});
   let toUpdate = state.local.LOADED_STAMP != LOADED_STAMP && (LOADED_STAMP - state.local.LOADED_STAMP)> 300000;
   if(toUpdate) state.local.LOADED_STAMP = LOADED_STAMP;
+  let anyUpdate = false;
   for(var s in state.summary){
     let sum = state.summary[s];
     if(toUpdate || !state.local[sum.symbol]){
       state.local[sum.symbol] =  sum?.ticker?.last_price || state.local[sum.symbol] || 0;
+      anyUpdate = true;
     }
   }
-  commit('local',state.local);
+  if(anyUpdate){
+    commit('local',state.local);
+    localStorage.setItem('lastRates',JSON.stringify(state.local));
+  } 
 }
 
   

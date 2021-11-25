@@ -72,8 +72,6 @@
 
 <script>
 
-	import formatter from "../formatter.js";
-
 	export default ({
 		props: {
 			// Sidebar collapsed status.
