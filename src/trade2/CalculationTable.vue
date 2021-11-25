@@ -233,7 +233,7 @@
 					{ key: 'stock', label: ' Stock@currentrate', sortable: true, variant : "stock",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
-					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info",sortByFormatted:true,
+					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
 
 					{ key: 'profit_presale', label: 'NowPNL', sortable: true, variant : "1dark",class:"", sortByFormatted:true,
@@ -397,6 +397,18 @@
     --bs-table-hover-bg: #000000ad;
     --bs-table-hover-color: #000;
     color: #ffffff;
+    border-color: #ffffff;
+}
+
+.table-info-dark {
+    --bs-table-bg: #007cc4;
+    --bs-table-striped-bg: #00507f;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #bcd0c7;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #c1d6cc;
+    --bs-table-hover-color: #000;
+    color: #fff;
     border-color: #ffffff;
 }
 
