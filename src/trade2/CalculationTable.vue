@@ -5,31 +5,33 @@
 	<b-table 	:items="items" :fields="fields" class="no-bdr" id="pnl"
 	stacked="md">
 
-	<template #cell(symbol)="row">
-		<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
-			tag="b" style="cursor:pointer">
-			{{ row.item.symbol}}<br/>
-            <span v-if="row.item.ticker && row.item.meta" class="text-left text-right next-line" :class="{
-                'fw-bold text-success' : (row.item.ticker.last_price > row.item.meta.buy_rate),
-                'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate),
-              }">
-                @{{row.item.ticker.last_price | round5}}
-              </span> 
-		</router-link>
-            <small class="fw-bold  badge p-range text-xxs">
-                <span v-if="row.item.ticker">
-                   {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
-        		</span>-<span v-if="row.item.range">
-                   {{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
-                 </span>-<span v-if="row.item.range">
-                   {{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}
-                 </span>-<span v-if="row.item.range" >
-                   {{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}
-                 </span>-<span v-if="row.item.range">
-                   {{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}<small>%</small>
-                 </span>
-              </small>
-    </template> 
+		<template #cell(symbol)="row">
+			<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
+				tag="b" style="cursor:pointer">
+				{{ row.item.symbol}}<br/>
+				<span v-if="row.item.ticker && row.item.meta" class="text-left text-right next-line" :class="{
+					'fw-bold text-success' : (row.item.ticker.last_price > row.item.meta.buy_rate),
+					'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate),
+				}">
+					@{{row.item.ticker.last_price | round5}}
+				</span> 
+			</router-link>
+				<small class="fw-bold  badge p-range text-xxs">
+					<span v-if="row.item.ticker">
+					{{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
+					</span>-<span v-if="row.item.range">
+					{{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
+					</span>-<span v-if="row.item.range">
+					{{(row.item.range.mHigh-row.item.range.mLow)/row.item.range.mHigh*100 | round}}
+					</span>-<span v-if="row.item.range" >
+					{{(row.item.range.m3High-row.item.range.m3Low)/row.item.range.m3High*100 | round}}
+					</span>-<span v-if="row.item.range">
+					{{(row.item.range.yHigh-row.item.range.yLow)/row.item.range.yHigh*100 | round}}<small>%</small>
+					</span>
+				</small>
+		</template> 
+
+		<!--  PAST  DATA POINTS ROWS -->
 		<template #cell(buy_amount)="row">
 				<div class="text-bold float-start-x">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
@@ -60,22 +62,25 @@
 					</div> 
 				</div>
 		</template>
-		<template #cell(onsale)="row">
-				<div class="text-bold float-start-x">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
-					{{row.item.order.onsale_amount | round2}}
+
+		<template #cell(profit)="row">
+			<div class="fw-bold float-start-x">
+					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
+					<b v-if="row.item.meta" class="pro" >
+						{{row.value | round2}}
+					</b>
 				</div>
-				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}</div>
-				<div class="text-sm  float-start">
-					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
-						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
+				<div class="float-start-x" :class="{
+					'sell ' : row.item.meta.earning<0,
+					'buy ' : row.item.meta.earning>0
 					}">
-						@&nbsp;{{row.item.order.onsale_rate | round5}}
-					</div> 
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<small v-if="row.item.meta"  >{{row.item.meta.earning | round2}}</small>
 				</div>
+				
 		</template>
-		
+
+		<!--  PRESENT  DATA POINTS ROWS -->
 		<template #cell(stkwrth)="row">
 				<div class="text-bold  float-start-x buy">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
@@ -90,6 +95,78 @@
 						@&nbsp;{{row.item.meta.buy_rate_stock | round5}}
 					</div> 
 					
+				</div>
+		</template>
+		
+		<template #cell(stock)="row">
+				<div class="text-bold text-center">
+					<div class="sell fw-bold">
+						<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
+						{{row.item.ticker.last_price * row.item.order.onsale_qty | round2}}
+					</div>
+				</div>
+				<div class="next-line text-center">
+					<div class="text-xs coin">
+							{{row.item.order.onsale_qty | round5}}
+					</div>
+				</div>
+				<div class="text-sm  text-center">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center " :class="{
+						'fw-bold text-success ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
+					}">
+						@&nbsp;{{row.item.ticker.last_price | round5}}
+					</div>
+				</div>
+		</template>
+		<template #cell(nonsale)="row">
+				<div class="text-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+					{{row.item.ticker.last_price  * row.item.balance.balance | round5}}
+				</div>
+				<div class="text-xs coin">{{row.item.balance.balance | round5}}</div>
+				<div class="text-sm  float-start">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
+						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
+					}">
+						@&nbsp;{{row.item.ticker.last_price | round5}}
+					</div> 
+				</div>
+		</template>
+
+		<template #cell(profit_presale)="row">
+			<div class="fw-bold float-start-x">
+					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
+					<b v-if="row.item.meta" class="pro">
+						{{row.value | round2}}
+					</b>
+				</div>
+				<div class="float-start-x" :class="{
+                	'sell ' : row.item.meta.efective_rate>row.item.ticker.last_price,
+                  	'buy ' : row.item.meta.efective_rate<row.item.ticker.last_price
+					}">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
+					<small v-if="row.item.meta && row.item.ticker" >
+						{{row.item.meta.stock*row.item.ticker.last_price * 0.999 + row.item.meta.earning  | round2}}
+					</small>
+				</div>
+		</template>
+
+		<!--  FUTRUE  DATA POINTS ROWS -->
+		<template #cell(onsale)="row">
+				<div class="text-bold float-start-x">
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+					{{row.item.order.onsale_amount | round2}}
+				</div>
+				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}</div>
+				<div class="text-sm  float-start">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
+						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
+					}">
+						@&nbsp;{{row.item.order.onsale_rate | round5}}
+					</div> 
 				</div>
 		</template>
 		<template #cell(onbuy)="row">
@@ -108,77 +185,6 @@
 				</div>
 		</template>
 
-		
-		<template #cell(stock)="row">
-				<div class="text-bold text-center">
-
-					<div class="float-start sell fw-bold">
-						<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
-						{{row.item.ticker.last_price * row.item.order.onsale_qty | round2}}
-					</div>
-					+					<div class="float-end stk fw-bold">
-						<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
-						{{row.item.ticker.last_price  * row.item.balance.balance | round5}}
-					</div>
-					
-				</div>
-				<div >
-								
-				<div class="text-xs coin float-start">
-						{{row.item.order.onsale_qty | round5}}
-				</div>
-				<div class="text-xs coin text-right">
-						{{row.item.balance.balance | round5}}
-				</div>
-				</div>
-				<div class="text-sm  text-center">
-					
-					
-					<div v-if="row.item.ticker && row.item.meta" class="text-center " :class="{
-						'fw-bold text-success ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
-						'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
-					}">
-						@&nbsp;{{row.item.ticker.last_price | round5}}
-					</div>
-
-
-				</div>
-		</template>
-
-		<template #cell(profit)="row">
-			<div class="fw-bold float-start-x">
-					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
-					<b v-if="row.item.meta" class="pro" >
-						{{row.value | round2}}
-					</b>
-				</div>
-				<div class="float-start-x" :class="{
-					'sell ' : row.item.meta.earning<0,
-					'buy ' : row.item.meta.earning>0
-					}">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
-					<small v-if="row.item.meta"  >{{row.item.meta.earning | round2}}</small>
-				</div>
-				
-		</template>
-		<template #cell(profit_presale)="row">
-			<div class="fw-bold float-start-x">
-					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
-					<b v-if="row.item.meta" class="pro">
-						{{row.value | round2}}
-					</b>
-				</div>
-				<div class="float-start-x" :class="{
-                	'sell ' : row.item.meta.efective_rate>row.item.ticker.last_price,
-                  	'buy ' : row.item.meta.efective_rate<row.item.ticker.last_price
-					}">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
-					<small v-if="row.item.meta && row.item.ticker" >
-						{{row.item.meta.stock*row.item.ticker.last_price * 0.999 + row.item.meta.earning  | round2}}
-					</small>
-				</div>
-				
-		</template>
 		<template #cell(profit_postsale)="row">
 			<div class="fw-bold float-start-x">
 					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
@@ -226,7 +232,10 @@
 						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
 					{ key: 'stock', label: ' Stock@currentrate', sortable: true, variant : "stock",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
-						
+
+					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info",sortByFormatted:true,
+						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
+
 					{ key: 'profit_presale', label: 'NowPNL', sortable: true, variant : "1dark",class:"", sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock*(item.ticker.last_price-item.meta.buy_rate_stock) * 0.999 },
 					{ key: 'onsale', label: ' OnSale', sortable: true, variant : "danger", sortByFormatted:true,
@@ -234,6 +243,7 @@
 						{ key: 'onbuy', label: ' OnBuy', sortable: true, variant : "success",class:"buy",sortByFormatted:true,
 						formatter: (v,k,item) => item.order.onbuy_amount },
 					
+
 					{ key: 'profit_postsale', label: ' FuturePNL', sortable: true, variant : "1dark", class:" l-row",sortByFormatted:true,
 						formatter: (v,k,item) => item.order.onsale_qty*(item.order.onsale_rate-item.meta.buy_rate_stock) * 0.999},
 					
