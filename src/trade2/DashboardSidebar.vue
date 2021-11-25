@@ -18,7 +18,9 @@
 			<!-- Sidebar Navigation Menu -->
 			<a-menu theme="light" mode="inline">
 				<a-menu-item v-for="wallet in wallets" :key="wallet.symbol">
-					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`" class="router-anchor">
+					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`" class="router-anchor"
+						:v-tooltip="wallet.ticker.last_price"
+						:title="wallet.last_price_seen">
 						<span class="icon icon-sm" hidden>
 							<span class="fa fa-refresh text-sm text-info"></span>&nbsp;
 							<span class="text-sm text-secondary">%</span>
@@ -45,6 +47,17 @@
 								<span class="text-sm text-secondary">%</span>
 							</span>
 						</span>
+						<span class="next-line">
+							<span class="text-white text-xs">{{wallet.ticker.last_price}}</span>&nbsp;
+							<span class="text-xs"
+								:class="{
+									'text-success fa fa-sort-up' : wallet.seen_delta>0,
+									'text-danger fa fa-sort-down' : wallet.seen_delta<0,
+									'hidden' : wallet.seen_delta == 0
+								}"
+							>&nbsp; {{wallet.seen_delta | abs | round5}}</span>
+						</span>
+						
 					</router-link>
 				</a-menu-item>
 			</a-menu>
@@ -58,6 +71,8 @@
 </template>
 
 <script>
+
+	import formatter from "../formatter.js";
 
 	export default ({
 		props: {
@@ -88,10 +103,16 @@
 		},
 		computed : {
 			wallets(){
+				let THAT = this;
 				return this.$store.getters.wallets.map(function(wallet){
+					let last_price_seen = parseFloat(THAT.$store.getters.local[wallet.symbol]);
 					return {
 						...wallet,
-						volatlity : (wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high
+						volatlity : (wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high,
+						last_price_seen : last_price_seen,
+						seen_delta : 100 * (
+							parseFloat(wallet?.ticker?.last_price || 0) - last_price_seen
+						) / last_price_seen
 					};
 				}).sort(function(wa,wb){
 					return wb.volatlity - wa.volatlity;
@@ -175,6 +196,13 @@
     font-size: 18px;
     border-radius: 25px;
   }
+	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item.ant-menu-item-selected .router-link-active .text-white, 
+	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item .router-link-active .text-white, 
+	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu.ant-menu-item-selected .router-link-active .text-white,
+	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu .router-link-active .text-white{
+			color: #000!important;
+	}
+
       
 	
 </style>

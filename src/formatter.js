@@ -43,6 +43,9 @@ var round = function (n,places) {
 var capitalize = function (str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
+var abs = function (n) {
+	return Math.abs(n);
+}
 
 var formatter = {
 	init : function(){
@@ -52,6 +55,7 @@ var formatter = {
 		Vue.filter('round2',round2);
 		Vue.filter('round',round);
 		Vue.filter('roundA',roundA);
+		Vue.filter('abs',abs);
 
 		Vue.filter('instock_worth', function (summary) {
 			let balance = summary.balance;
@@ -89,7 +93,8 @@ var formatter = {
 	round : round,
 	roundA : roundA,
 	capitalize : capitalize,
-	num : num
+	num : num,
+	abs : abs
 };
 formatter.init();
 export default formatter;

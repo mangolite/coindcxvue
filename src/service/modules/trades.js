@@ -31,6 +31,7 @@ for(var i =1; i < 50; i++){
   }
 }
 INDEX = KEY_LIST.length;
+var LOADED_STAMP = Date.now();
 var SKIP = true;
 
 var buyrate = function(symbol,qty,tqty,tcost,min,max,depth){
@@ -106,7 +107,8 @@ const state = {
   KEY_LIST : KEY_LIST,
   keyIndex : null,
 
-  marketDetails : null,balances : null,candlesMap : {}
+  marketDetails : null,balances : null,candlesMap : {},
+  local : { LOADED_STAMP : 0}
 };
 
 const getters = {
@@ -129,6 +131,7 @@ const getters = {
   symbol (state){
     return state.symbol;
   },
+  local: (state) => state.local,
   selected (state){
     return state.symbol ? (state.summary[state.symbol] || null) : null;
   },
@@ -158,7 +161,7 @@ const getters = {
     });
   },
   total(state){
-    if(!state.orders){
+    if(!state.orders || !state.orders.length){
         return 0;
     }
     let TOTAL = {
@@ -316,6 +319,7 @@ const actions = {
   	commit('account',account);
     dispatch('syncTicker');
     dispatch('fetchHistory');
+    dispatch('updateLocal');
   },
   async setSymbol({ commit,dispatch },symbol) {
     console.log("setSymbol",symbol);
@@ -436,7 +440,8 @@ const actions = {
         commit('summary',state.summary);
         dispatch('fetchBalance');
         dispatch('fetchMarketDetails');
-    });
+        dispatch('updateLocal');
+      });
   },
   //
   async fetchMarketDetails({ commit,dispatch },index){
@@ -468,6 +473,7 @@ const actions = {
     }
     commit('summary',summary);
     dispatch('fetchHigLowSelected');
+    dispatch('updateLocal');
   },
   //
 
@@ -548,6 +554,7 @@ const actions = {
         commit('summary',summary);
         state.candlesMap[symbol] = candles;
         commit('candles',state.candlesMap);
+        dispatch('updateLocal');
     });
 
   },
@@ -570,6 +577,7 @@ const actions = {
           }
         }
         commit('summary',summary);
+        dispatch('updateLocal');
         clearTimeout(syncTicker);
         syncTicker = setTimeout(function(){
           dispatch('syncTicker');
@@ -622,6 +630,7 @@ const actions = {
       }
       commit('balances',balances);
       commit('summary',summary);
+      dispatch('updateLocal');
       dispatch('fetchOrders');
     };
     if(getters.balances) onBalance(getters.balances);
@@ -694,12 +703,24 @@ const actions = {
         }
         commit('orders',orders);
         commit('summary',summary);
+        dispatch('updateLocal');
         clearTimeout(syncHistory);
         syncHistory = setTimeout(()=>dispatch('fetchHistory'),5000);
     });
 },
 
-
+async updateLocal({ commit,dispatch,getters }){
+  state.local = state.local || { LOADED_STAMP : 0};
+  let toUpdate = state.local.LOADED_STAMP != LOADED_STAMP && (LOADED_STAMP - state.local.LOADED_STAMP)> 300000;
+  if(toUpdate) state.local.LOADED_STAMP = LOADED_STAMP;
+  for(var s in state.summary){
+    let sum = state.summary[s];
+    if(toUpdate || !state.local[sum.symbol]){
+      state.local[sum.symbol] =  sum?.ticker?.last_price || state.local[sum.symbol] || 0;
+    }
+  }
+  commit('local',state.local);
+}
 
   
 
@@ -713,8 +734,11 @@ const mutations = {
     state.symbol = symbol;
   },
   summary(state, summaries) {
-      state.summary = Object.assign({}, state.summary, summaries)
+      state.summary = Object.assign({}, state.summary, summaries);
   }, 
+  local(state, local) {
+    state.local = Object.assign({}, state.local,local);
+  },
   balances(state, balances) {
     state.balances = balances;
   },

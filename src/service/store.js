@@ -10,5 +10,7 @@ export default new Vuex.Store({
   modules: {
     trades
   },
-  //plugins: [createPersistedState()]
+  plugins: [createPersistedState({
+    paths : ['trades.local','updateLocal']
+  })]
 });
