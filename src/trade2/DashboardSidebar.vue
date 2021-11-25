@@ -53,7 +53,7 @@
 								:class="{
 									'text-success fa fa-sort-up' : wallet.seen_delta>0,
 									'text-danger fa fa-sort-down' : wallet.seen_delta<0,
-									'hidden' : wallet.seen_delta == 0
+									'text-mute hidden hide d-none' : wallet.seen_delta == 0
 								}"
 							>&nbsp; {{wallet.seen_delta | abs | round5}}</span>
 						</span>
