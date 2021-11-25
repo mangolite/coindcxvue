@@ -31,8 +31,10 @@ for(var i =1; i < 50; i++){
   }
 }
 INDEX = KEY_LIST.length;
+var SKIP = true;
 
-var buyrate = function(qty,tqty,tcost,min,max){
+var buyrate = function(symbol,qty,tqty,tcost,min,max,depth){
+  depth = depth || 0;
   //let factor = tqty/qty;
   let avg = tcost/tqty;
   //let med = (max+min)/2;
@@ -40,17 +42,20 @@ var buyrate = function(qty,tqty,tcost,min,max){
     //console.log("buyrate",qty, tqty,tcost,min,max);
     return avg;
   }
+  
   let havg = (max+avg)/2;
+ 
   //let hrng = (max-avg);
   let lrng = (avg-min);
-  let rng = max-min;
+  let rng = (max-min);
 
   let hqty = tqty*lrng/rng;
 
   if(qty>hqty){
     return avg;
   }
-  return buyrate(qty,hqty, hqty*havg,avg,max);
+
+  return  buyrate(symbol,qty,hqty, hqty*havg,avg,max,++depth);
 }
 function num(str){
   if(isNaN(str) || !str){
@@ -64,6 +69,7 @@ return {
           key : key, 
           symbol : symbol,
           meta : {
+            debt_quantity :0,debt_amount : 0, debt_rate : 0,
             buy_quantity : 0 , buy_amount : 0,
             sell_quantity : 0 , sell_amount : 0,
             fee_amount : 0,
@@ -293,7 +299,7 @@ const getters = {
     return state.history.filter(function(trade){
       return trade.symbol == symbol;
     }).sort(function(a,b){
-        return b.timestamp - a.timestamp;
+        return 0//b.timestamp - a.timestamp;
     });
   },
 };
@@ -322,7 +328,7 @@ const actions = {
   },
 
   async fetchHistory({ commit,dispatch },index){
-    console.log("fetchHistory")
+    console.log("NaN:fetchHistory")
     let _index = state.account;
     let api_key = KEYS["api_key_" + _index];
     let api_secret = KEYS["api_secret_" + _index];
@@ -349,13 +355,22 @@ const actions = {
 
     let THIS = state;
     request.post(options, function(error, response, body) {
+      console.log("NaN:fetchingHistory")
         for (var k in THIS.summary) {
           THIS.summary[k].meta = newSummary(k,k,THIS.summary[k] || {}).meta;
         }
         var summary = THIS.summary;
-        THIS.history = body;  
-        for(var i in body){
-          let deal = body[i];
+        THIS.history = body.sort(function(a,b){
+          if(a.side == b.side){
+            return a.price - b.price;
+          } else if(a.side == "sell") {
+            return -1
+          }
+          return 1;
+        });
+        for(var i in THIS.history){
+          let deal = THIS.history[i];
+          deal.i = i;
           //let key = _index + "." + deal.symbol;
           let key = deal.symbol;
           summary[key] = summary[key] || newSummary(key,deal.symbol,{});
@@ -379,7 +394,9 @@ const actions = {
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
 
+
           if(meta.buy_quantity && !isNaN(meta.buy_quantity)){
+            meta.debt_rate =  num(meta.net_debit)/num(meta.buy_quantity);
             meta.buy_rate =  num(meta.buy_amount)/num(meta.buy_quantity);
             if(isNaN(meta.buy_rate)){
               console.log("buy_rate:isNaN",meta.buy_amount,meta.buy_quantity);
@@ -398,12 +415,21 @@ const actions = {
             }
           }
 
-          meta.buy_rate_stock = buyrate(
+          if(deal.side == "buy"){
+            if(meta.buy_quantity > meta.sell_quantity){
+              meta.debt_quantity+= num(deal.quantity);
+              meta.debt_amount+= (num(deal.price) * num(deal.quantity));
+              meta.debt_rate = meta.debt_amount/ meta.debt_quantity;
+            }
+          }
+
+          meta.buy_rate_stock = meta.debt_rate || buyrate(
+            key,
             meta.stock,
             meta.buy_quantity,
             meta.net_debit,
             meta.buy_rate_min,
-            meta.buy_rate_max 
+            meta.buy_rate_max
           );
           state.summary = summary;
         }
