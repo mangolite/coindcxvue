@@ -299,7 +299,7 @@ const getters = {
     return state.history.filter(function(trade){
       return trade.symbol == symbol;
     }).sort(function(a,b){
-        return 0//b.timestamp - a.timestamp;
+        return b.timestamp - a.timestamp;
     });
   },
 };
