@@ -101,17 +101,8 @@
 		},
 		computed : {
 			wallets(){
-				let THAT = this;
 				return this.$store.getters.wallets.map(function(wallet){
-					let last_price_seen = parseFloat(THAT.$store.getters.local[wallet.symbol]);
-					return {
-						...wallet,
-						volatlity : (wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high,
-						last_price_seen : last_price_seen,
-						seen_delta : 100 * (
-							parseFloat(wallet?.ticker?.last_price || 0) - last_price_seen
-						) / last_price_seen
-					};
+					return wallet;
 				}).sort(function(wa,wb){
 					return wb.volatlity - wa.volatlity;
 				});

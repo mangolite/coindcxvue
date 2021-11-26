@@ -95,7 +95,6 @@ return {
   }
 }
 
-
 const state = {
   items: [],
   selected : null, symbol : null,
@@ -742,6 +741,17 @@ const mutations = {
     state.symbol = symbol;
   },
   summary(state, summaries) {
+      for(var s in summaries){
+        let wallet = summaries[s];
+        let last_price_seen = parseFloat(state.local[wallet.symbol]);
+        wallet.last_price_seen = last_price_seen;
+        if(wallet.ticker){
+          wallet.volatlity = (wallet.ticker.high - wallet.ticker.low)/wallet.ticker.high;
+          wallet.seen_delta = 100 * (
+              parseFloat(wallet?.ticker?.last_price || 0) - last_price_seen
+          ) / last_price_seen;
+        }
+      }
       state.summary = Object.assign({}, state.summary, summaries);
   }, 
   local(state, local) {
