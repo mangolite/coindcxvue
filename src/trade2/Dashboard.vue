@@ -122,7 +122,6 @@
 		</a-row>
 
 		<!-- Charts -->
-		>
 		<!-- / Charts -->
 		<a-row :gutter="24" type="flex" align="stretch">
 			<calculation-table

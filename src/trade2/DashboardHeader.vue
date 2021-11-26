@@ -23,7 +23,7 @@
 
 							<div class="accs" >	
 								<span v-for="KEY in $store.getters.KEY_LIST"  v-bind:key="KEY.key"  >
-										<router-link :to="`/trade2/${KEY.id}`"
+										<router-link :to="`/trade2/${KEY.id}/${$route.params.symbol || ''}`"
 											tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
 											{{KEY.name}}
 										</router-link>&nbsp;
@@ -196,7 +196,7 @@
 				this.$nextTick(() => {
 				this.$bvModal.hide('modal-prevent-closing')
 				});
-				this.$router.push("/trade/"+this.keyIndex);
+				this.$router.push("/trade2/"+this.keyIndex);
 				window.location.reload();
 			},
 			deleteCurrentKey(){
