@@ -153,14 +153,6 @@ const getters = {
             //!!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
             //!!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
           );
-    }).sort(function (a,b) {
-        if(a.balance && b.balance){
-          var aStock = (num(a.balance.balance) + num(a.balance.locked_balance))*a.ticker.last_price;
-          var bStock = (num(b.balance.balance) + num(b.balance.locked_balance))*b.ticker.last_price;
-          return bStock-aStock;
-        } else {
-          return b.stock*b.ticker.last_price - a.stock*a.ticker.last_price;
-        }
     });
   },
   total(state){
