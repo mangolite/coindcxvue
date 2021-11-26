@@ -719,6 +719,7 @@ async updateLocal({ commit,dispatch,getters }){
   for(var s in state.summary){
     let sum = state.summary[s];
     if(toUpdate || !state.local[sum.symbol]){
+      state.local[sum.symbol+"_last"] =  state.local[sum.symbol] || state.local[sum.symbol+"_last"] || 0;
       state.local[sum.symbol] =  sum?.ticker?.last_price || state.local[sum.symbol] || 0;
       anyUpdate = true;
     }
