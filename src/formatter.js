@@ -13,14 +13,18 @@ var number = function (value,format) {
   var _format = format || "0,0000"
   return numeral(value).format(_format).toUpperCase();//.replace(/(?:\r\n|\r|\n)/g, '<br/>').trim();
 }
+var min0 = function(num){
+	return Math.max(num,0);
+}
 
 var roundA = function (n,places) {
 	let _places = places || 0;
-	let numb = num(n);
+	let sign = n<0 ? -1 : 1;
+	let numb = Math.abs(num(n));
 	let baseLen = Math.round(Math.log10(numb))
 	_places = (numb > 999) ? Math.min(2,_places) : Math.min(5,_places-baseLen-1);
 	let base = Math.pow(10,_places)
-	return Math.round(numb*base)/base;
+	return sign*Math.round(numb*base)/base;
 };
 
 var round2 = function (n,places) {
@@ -56,6 +60,8 @@ var formatter = {
 		Vue.filter('round',round);
 		Vue.filter('roundA',roundA);
 		Vue.filter('abs',abs);
+		Vue.filter('min0',min0);
+		
 
 		Vue.filter('instock_worth', function (summary) {
 			let balance = summary.balance;
@@ -94,7 +100,7 @@ var formatter = {
 	roundA : roundA,
 	capitalize : capitalize,
 	num : num,
-	abs : abs
+	abs : abs,min0
 };
 formatter.init();
 export default formatter;

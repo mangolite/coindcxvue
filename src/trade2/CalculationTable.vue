@@ -95,7 +95,7 @@
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round5}}
 				</div>
-				<div class="text-xs coin">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity )| round5}}</div>
+				<div class="text-xs coin">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center float-start" :class="{
 						'fw-bold fix ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),

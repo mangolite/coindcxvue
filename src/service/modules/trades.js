@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import request from 'request';
 import crypto from 'crypto';
+import formatters from "../../formatter.js"
 
 //var baseurl = document.location.origin;  
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
@@ -146,8 +147,11 @@ const getters = {
     return Object.values(state.summary).filter(function(value){
       return !!value.symbol 
         && (
-            !!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
-            !!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
+              !!Math.round(num(value?.meta?.stock_worth)) 
+            || !!Math.round(num(value?.meta?.onbuy_amount))
+            || !!Math.round(num(value?.meta?.onsale_amount))
+            //!!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
+            //!!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
           );
     }).sort(function (a,b) {
         if(a.balance && b.balance){
@@ -392,7 +396,7 @@ const actions = {
           }
           meta.fee_amount+= (deal.fee_amount - 0);
 
-          meta.stock = meta.buy_quantity - meta.sell_quantity;
+          meta.stock = Math.max(meta.buy_quantity - meta.sell_quantity,0);
           meta.net_debit = meta.buy_amount + meta.fee_amount
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
