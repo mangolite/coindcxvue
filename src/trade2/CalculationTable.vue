@@ -228,8 +228,9 @@
 						formatter: (v,k,item) => item.meta.sell_amount},
 					{ key: 'profit', label: ' PastPNL', sortable: true, variant : "1dark",class:"",sortByFormatted:true,
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
-						{ key: 'stkwrth', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
-						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
+					
+					{ key: 'stkwrth', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
+						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
 					{ key: 'stock', label: ' Stock@currentrate', sortable: true, variant : "stock",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
