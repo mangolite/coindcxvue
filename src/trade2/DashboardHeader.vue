@@ -27,12 +27,6 @@
 											tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
 											{{KEY.name}}
 										</router-link>&nbsp;
-										<a :href="`/coindcxvue/trade2/${KEY.id}/${$route.params.symbol || ''}`"
-											class="btn btn-acc btn-sm d-none" :class="{
-												'btn-acc1' : (KEY.id == $route.params.account)
-											}">
-											{{KEY.name}}
-										</a>&nbsp;
 									</span>
 							</div>
 						</div>	
