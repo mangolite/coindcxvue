@@ -11,10 +11,14 @@ import DefaultLayout from '@/@common/muse/layouts/Default.vue'
 import DashboardLayout from '@/trade2/DashboardLayout.vue'
 import DashboardRTLLayout from '@/@common/muse/layouts/DashboardRTL.vue'
 
+import VueLoading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 import router from './router';
 
 import '@/@common/muse/scss/app.scss';
 
+Vue.use(VueLoading);
 Vue.use(Antd);
 Vue.use(VTooltip);
 VTooltip.options.defaultClass = 'my-tooltip';
@@ -27,6 +31,7 @@ Vue.config.productionTip = false
 Vue.component("layout-default", DefaultLayout);
 Vue.component("layout-dashboard", DashboardLayout);
 Vue.component("layout-dashboard-rtl", DashboardRTLLayout);
+Vue.component("vue-loading",VueLoading);
 
 new Vue({
   render: h => h(App),

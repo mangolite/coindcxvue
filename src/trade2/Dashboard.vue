@@ -7,8 +7,8 @@
 	<div>
 		<!-- Counter Widgets -->
 		<a-row :gutter="24">
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
-			<WidgetCounter
+			<a-col :span="24" :lg="12" :xl="6" class="mb-24" >
+			<WidgetCounter :loading="!total"
 				:title="'Total  Worth '"
 				:icon="'fa fa-equals '"
 				:status="'stat.status'">
@@ -26,8 +26,8 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
-			<WidgetCounter
+			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<WidgetCounter :loading="!total"
 				:title="' +  Coins Worth'"
 				:icon="'fa fa-coins '"
 				:status="'primary'">
@@ -44,8 +44,8 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
-			<WidgetCounter
+			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<WidgetCounter :loading="!total"
 				:title="'+ New Orders'"
 				:icon="'fa fa-shopping-cart '"
 				:status="'danger'">
@@ -62,8 +62,8 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24" v-if="total">
-			<WidgetCounter
+			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<WidgetCounter :loading="!total"
 				:title="'+ INR Value'"
 				:icon="'fa fa-wallet bg-primary'"
 				:status="'danger'">

@@ -65,7 +65,7 @@ function num(str){
   } return parseFloat(str);
 }
 
-var syncHistory = 0, syncTicker=0;
+var syncHistoryTimer = 0, syncTicker=0;
 var newSummary = function(key,symbol, oldSummary){
 return {
           key : key, 
@@ -96,20 +96,25 @@ return {
   }
 }
 
-const state = {
-  items: [],
-  selected : null, symbol : null,
-  ticker : null,
-  summary : {},
-  nowIndex : 1, INDEX : INDEX, account : 1,
-  orders : null, history : null,
-  ranges : {},
-  KEY_LIST : KEY_LIST,
-  keyIndex : null,
 
-  marketDetails : null,balances : null,candlesMap : {},
-  local : { LOADED_STAMP : 0}
-};
+function newDate(){
+  return {
+    items: [],
+    selected : null, symbol : null,
+    ticker : null,
+    summary : {},
+    nowIndex : 1, INDEX : INDEX, account : 1,
+    orders : null, history : null,
+    ranges : {},
+    KEY_LIST : KEY_LIST,
+    keyIndex : null,
+
+    marketDetails : null,balances : null,candlesMap : {},
+    local : { LOADED_STAMP : 0}
+  }
+}
+
+const state = newDate();
 
 const getters = {
   KEY_LIST (state){
@@ -307,13 +312,21 @@ const actions = {
     console.log("setAccount",account);
     account = (account || 1);
     account = (account  <= INDEX) ? account : 1;
+
     state.summary = {};
     state.marketDetails = null;
+    state.orders = null;
+    state.balances = null;
+
+    commit('history',state.history);
     commit('summary',state.summary);
+    commit('orders',state.orders);
+    commit('balances',state.balances);
+
     //commit('items',[]);
   	commit('account',account);
     dispatch('syncTicker');
-    dispatch('fetchHistory');
+    dispatch('syncHistory');
     dispatch('updateLocal');
   },
   async setSymbol({ commit,dispatch },symbol) {
@@ -324,6 +337,11 @@ const actions = {
     } else {
       commit('symbol',null);
     }
+  },
+
+  async syncHistory({ commit,dispatch },gap){
+      clearTimeout(syncHistoryTimer);
+      syncHistoryTimer = setTimeout(()=>dispatch('fetchHistory'),gap);
   },
 
   async fetchHistory({ commit,dispatch },index){
@@ -459,10 +477,12 @@ const actions = {
         if(summary[state.marketDetails[i].symbol]){
           summary[state.marketDetails[i].symbol].details =  state.marketDetails[i];
           if(isFetched){
-              dispatch('fetchHigLow',{ 
-                pair : summary[state.marketDetails[i].symbol].details.pair,
-                symbol : state.marketDetails[i].symbol
-             });
+            (function(params,gap){
+                  setTimeout(()=>dispatch('fetchHigLow',params),gap)
+            })({ 
+                  pair : summary[state.marketDetails[i].symbol].details.pair,
+                  symbol : state.marketDetails[i].symbol
+            },1000*i);
           }
         }
     }
@@ -699,8 +719,7 @@ const actions = {
         commit('orders',orders);
         commit('summary',summary);
         dispatch('updateLocal');
-        clearTimeout(syncHistory);
-        syncHistory = setTimeout(()=>dispatch('fetchHistory'),5000);
+        dispatch('syncHistory',5000);
     });
 },
 
@@ -755,6 +774,9 @@ const mutations = {
   },
   balances(state, balances) {
     state.balances = balances;
+  },
+  history(state, history) {
+    state.history = history;
   },
   ranges(state, ranges) {
     state.ranges = ranges;

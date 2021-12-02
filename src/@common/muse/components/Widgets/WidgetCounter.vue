@@ -1,7 +1,6 @@
 <template>
-
 	<a-card :bordered="false" class="widget-1">
-		<a-statistic
+		<a-statistic v-if="!loading"
 			:value="formattedValue"
 			:precision="0"
 			:class="'text-' + status"
@@ -27,7 +26,11 @@
 			</slot>	
 		</template>	
 		</a-statistic>
-		<div v-if="icon" :class="['icon',icon]"></div>
+      	<vue-loading :active.sync="loading" 
+        	:can-cancel="false"  
+        	:loader="'dots'"
+        	:is-full-page="false"></vue-loading>		
+        <div v-if="icon" :class="['icon',icon]"></div>
 	</a-card>
 
 </template>
@@ -61,6 +64,10 @@
 			status: {
 				type: String,
 				default: "success",
+			},
+			loading: {
+				type: Boolean,
+				default: false,
 			},
 		},
 		data() {
@@ -118,5 +125,9 @@
 
 	}
 
+	.widget-1,.vld-overlay {
+		min-height: 138px;
+		border-radius: 10px;
+	}
      
 </style>
