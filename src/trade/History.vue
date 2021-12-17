@@ -25,9 +25,7 @@
             {{(trade.item.quantity * trade.item.price) | round2}}
         </template>
 
-        <template #cell(time)="trade">
-            <span v-if="trade.item.timestamp>day">24h</span>
-            <span v-else-if="trade.item.timestamp>week">Wk</span>
+        <template #cell(time)="trade">{{trade.item.timestamp | ago}}
         </template>
 
        </b-table>
@@ -37,6 +35,9 @@
 </template>
 
 <script>
+
+import momnet from 'moment';
+
 export default {
     props: {
       selected : {},
@@ -45,8 +46,6 @@ export default {
       myTrades : {},
     },
     data: () => ({
-        day : Date.now()-1000*60*60*24,
-        week : Date.now()-1000*60*60*24*7,
         fields : [
             { key: 'symbol', label : "Coin"},
             { key: 'side', label : "Side"},
@@ -56,6 +55,11 @@ export default {
             {key : 'time' , label : "When"}
         ]
   }),
+  filters : {
+    ago : function (timestamp) {
+      return momnet(timestamp).fromNow();
+    }
+  }
 }
 
 </script>

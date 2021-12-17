@@ -130,9 +130,13 @@
 				:account="$store.getters.account">
 		    </calculation-table>
 		</a-row>
-		
-
-
+		<a-row :gutter="24" type="flex" align="stretch" style="margin-top: 20px;">
+			<a-col :span="24" :lg="24" class="mb-24">
+				<History
+  					:selected="selected" :myTrades="$store.getters.alltrades">
+  				</History>
+			</a-col>
+		</a-row>
 	</div>
 </template>
 

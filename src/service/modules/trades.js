@@ -305,6 +305,17 @@ const getters = {
         return b.timestamp - a.timestamp;
     });
   },
+  alltrades (){
+    if(!state.history){
+        return [];
+    }
+    let lastWeek = Date.now() - 1000*60*60*24*7;
+    return state.history.filter(function(trade){
+      return trade.timestamp > lastWeek;
+    }).sort(function(a,b){
+        return b.timestamp - a.timestamp;
+    });
+  },
 };
 
 const actions = {
