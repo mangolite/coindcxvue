@@ -2,20 +2,20 @@
 
 	<a-card :bordered="false" class="dashboard-bar-line header-solid ant-col-24 b-border">
     <div class=" title "></div>
-	<b-table 	:items="items" :fields="fields" class="no-bdr" id="pnl"
+	<b-table 	:items="items" :fields="fields" class="no-bdr" id="pnl" :sort-by="'symbol'" :sort-desc="true"
 	stacked="md">
 
 		<template #cell(symbol)="row">
 			<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
-				tag="b" style="cursor:pointer">
+				tag="b" style="cursor:pointer" class="text-sm">
 				{{ row.item.symbol}} 
-				<span class="text-xxs"
+				<span class="text-xs"
 						:class="{
-							'text-success fa fa-sort-up' : row.item.seen_delta>0,
-							'text-danger fa fa-sort-down' : row.item.seen_delta<0,
-							'text-mute hidden hide d-none' : row.item.seen_delta == 0
+							'text-success fa fa-sort-up' : row.value>100,
+							'text-danger fa fa-sort-down' : row.value<100,
+							'text-warning' : row.value == 100
 						}"
-				>&nbsp; {{row.item.seen_delta | abs | roundA(2)}}%</span>
+				>&nbsp; {{row.value | abs | roundA(2)}}%</span>
 				
 				<br/>
 				<span v-if="row.item.ticker && row.item.meta" class="text-left text-right next-line" :class="{
@@ -228,7 +228,8 @@
 			},
 		},
 		data: () => ({
-			fields: [ { key: 'symbol', label : "Coin  ", sortable: true, variant : "1dark",class:"  f-row" }, 
+			fields: [ { key: 'symbol', label : "Coin  ", sortable: true, variant : "1dark",class:"  f-row", sortByFormatted :true,
+						formatter: (v,k,item) => formatter.roundA(formatter.num(item?.ticker?.last_price || 0) / formatter.num(item?.meta?.buy_rate_stock || 0),2)  * 100 }, 
 					//{ key: 'now_rate', label : "PRICE", sortable: false,variant : "dark" },  
 					//{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
 					{ key: 'buy_amount', label: 'Purchases',sortable: true, variant : "success",sortByFormatted:true, 
