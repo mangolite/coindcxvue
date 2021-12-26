@@ -110,7 +110,8 @@ function newDate(){
     keyIndex : null,
 
     marketDetails : null,balances : null,candlesMap : {},
-    local : { LOADED_STAMP : 0}
+    local : { LOADED_STAMP : 0},
+    TBALANCES : []
   }
 }
 
@@ -148,7 +149,7 @@ const getters = {
       return !!value.symbol;
     });
   },
-  sortedWallets : function () {
+  sortedWallets : function (state) {
     return Object.values(state.summary).filter(function(value){
       return !!value.symbol 
         && (
@@ -198,7 +199,26 @@ const getters = {
 
     return TOTAL;
   },
-  orders (){
+  totalBalance(state){
+    let TOTAL = {
+      onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
+      netWorth : 0, afterSellWorth  :0 
+    };
+    return state.TBALANCES.reduce(function(TOTAL,b){
+      if(b){
+        TOTAL.onBuy+= num(b.onBuy);
+        TOTAL.onSell+= num(b.onSell);
+        TOTAL.afterSell+= num(b.afterSell);
+        TOTAL.netStockWorth+= num(b.netStockWorth);
+        TOTAL.inStockWorth+= num(b.inStockWorth);
+        TOTAL.netINR+= num(b.netINR);
+        TOTAL.netWorth+= num(b.netWorth);
+        TOTAL.afterSellWorth+= num(b.afterSellWorth);
+      }
+      return TOTAL;
+    },TOTAL);
+  },
+  orders (state){
     if(!state.orders || !state.symbol){
         return [];
     }
@@ -294,7 +314,7 @@ const getters = {
         return diff;
     });
   },
-  trades (){
+  trades (state){
     if(!state.history || !state.symbol){
         return [];
     }
@@ -305,7 +325,7 @@ const getters = {
         return b.timestamp - a.timestamp;
     });
   },
-  alltrades (){
+  alltrades (state){
     if(!state.history){
         return [];
     }
@@ -328,6 +348,12 @@ const actions = {
     state.marketDetails = null;
     state.orders = null;
     state.balances = null;
+    try{
+      state.TBALANCES  = JSON.parse(localStorage.getItem("state.TBALANCES"),"[]");
+      commit('TBALANCES',state.TBALANCES);
+    } catch(e){
+      state.TBALANCES = [];
+    }
 
     commit('history',state.history);
     commit('summary',state.summary);
@@ -339,6 +365,7 @@ const actions = {
     dispatch('syncTicker');
     dispatch('syncHistory');
     dispatch('updateLocal');
+    dispatch('TBALANCES');
   },
   async setSymbol({ commit,dispatch },symbol) {
     console.log("setSymbol",symbol);
@@ -348,11 +375,33 @@ const actions = {
     } else {
       commit('symbol',null);
     }
+    dispatch('TBALANCES');
   },
 
-  async syncHistory({ commit,dispatch },gap){
+  async TBALANCES({ commit,dispatch,getters }){
+    let _index = state.account;
+    state.TBALANCES = state.TBALANCES || [];
+    state.TBALANCES[_index-1] = {
+      afterSellWorth : num(getters.total.afterSellWorth),
+      inStockWorth : num(getters.total.inStockWorth*1) ,
+      onSell : num(getters.total.onSell*1) ,
+      afterSell : num(getters.total.afterSell*1) ,
+      onBuy : num(getters.total.onBuy),
+      netStockWorth : num(getters.total.netStockWorth),
+      netWorth : num(getters.total.netWorth),
+      netINR : num(getters.total.netINR)
+    };
+    try {
+      localStorage.setItem("state.TBALANCES",JSON.stringify(state.TBALANCES || []));
+    } catch(e){
+      console.log("Not Saved")
+    }
+    commit('TBALANCES',state.TBALANCES);
+  },
+  async syncHistory({ commit,dispatch,getters },gap){
       clearTimeout(syncHistoryTimer);
       syncHistoryTimer = setTimeout(()=>dispatch('fetchHistory'),gap);
+      dispatch('TBALANCES');
   },
 
   async fetchHistory({ commit,dispatch },index){
@@ -465,6 +514,7 @@ const actions = {
         dispatch('fetchBalance');
         dispatch('fetchMarketDetails');
         dispatch('updateLocal');
+        dispatch('TBALANCES');
       });
   },
   //
@@ -500,6 +550,7 @@ const actions = {
     commit('summary',summary);
     dispatch('fetchHigLowSelected');
     dispatch('updateLocal');
+    dispatch('TBALANCES');
   },
   //
 
@@ -581,6 +632,7 @@ const actions = {
         state.candlesMap[symbol] = candles;
         commit('candles',state.candlesMap);
         dispatch('updateLocal');
+        dispatch('TBALANCES');
     });
 
   },
@@ -607,6 +659,7 @@ const actions = {
         clearTimeout(syncTicker);
         syncTicker = setTimeout(function(){
           dispatch('syncTicker');
+          dispatch('TBALANCES');
         },2000);
     });
   },
@@ -658,6 +711,7 @@ const actions = {
       commit('summary',summary);
       dispatch('updateLocal');
       dispatch('fetchOrders');
+      dispatch('TBALANCES');
     };
     if(getters.balances) onBalance(getters.balances);
     request.post(options,function(error, response, body) {
@@ -731,6 +785,7 @@ const actions = {
         commit('summary',summary);
         dispatch('updateLocal');
         dispatch('syncHistory',5000);
+        dispatch('TBALANCES');
     });
 },
 
@@ -801,8 +856,10 @@ const mutations = {
   items(state, items) {
     state.items = items;
   },
-  
-
+  TBALANCES(state,TBALANCES){
+    console.log("TBALANCES",TBALANCES);
+    state.TBALANCES = Object.assign([], state.TBALANCES , TBALANCES);
+  },
 
   KEYS(state, KEYS) {
     state.KEYS = KEYS;

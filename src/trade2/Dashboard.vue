@@ -9,9 +9,11 @@
 		<a-row :gutter="24">
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24" >
 			<WidgetCounter :loading="!total"
-				:title="'Total  Worth '"
 				:icon="'fa fa-equals '"
 				:status="'stat.status'">
+				<template #title>
+					Total  Worth <small>{{TOTAL.netWorth | round2}}</small>
+				</template>	
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
 				</template>	
@@ -28,9 +30,11 @@
 			</a-col>
 			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
 			<WidgetCounter :loading="!total"
-				:title="' +  Coins Worth'"
 				:icon="'fa fa-coins '"
 				:status="'primary'">
+				<template #title>
+					+  Coins Worth <small>{{TOTAL.netStockWorth | round2}}</small>
+				</template>	
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
 				</template>	
@@ -49,6 +53,9 @@
 				:title="'+ New Orders'"
 				:icon="'fa fa-shopping-cart '"
 				:status="'danger'">
+				<template #title>
+					+ New Orders <small>{{TOTAL.onBuy | round2}}</small>
+				</template>	
 				<template #prefix>
 					<span class="fa fa-rupee-sign "/>
 				</template>	
@@ -67,6 +74,9 @@
 				:title="'+ INR Value'"
 				:icon="'fa fa-wallet bg-primary'"
 				:status="'danger'">
+				<template #title>
+					+ INR Value <small>{{TOTAL.netINR | round2}}</small>
+				</template>	
 				<template #prefix>
 					<span class="fa fa-rupee-sign"/>
 				</template>	
@@ -282,6 +292,9 @@
 			},
 			total(){
 				return this.$store.getters.total;
+			},
+			TOTAL(){
+				return this.$store.getters.totalBalance;
 			},
 			orders(){
 				return this.$store.getters.orders;
