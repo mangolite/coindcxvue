@@ -6,8 +6,8 @@
 <template>
 	<div>
 		<!-- Counter Widgets -->
-		<a-row :gutter="24">
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24" >
+		<a-row :gutter="25" class="mb-1">
+			<a-col :span="24" :lg="12" :xl="5" class="p-1" >
 			<WidgetCounter :loading="!total"
 				:icon="'fa fa-equals '"
 				:status="'stat.status'">
@@ -18,7 +18,11 @@
 					<span class="fa fa-rupee-sign"/>
 				</template>	
 				<template #formatter>
-					<span class="t-w"> {{total.netWorth | round2}}</span>
+					<NumberCounter class="t-w" :value="total.netWorth"> 
+						<template #number="{number}">
+							{{ number | round2}}
+						</template>
+					</NumberCounter>
 					<br>
 				</template>	
 				<template #suffix>
@@ -28,7 +32,7 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<a-col :span="24" :lg="12" :xl="5" class="p-1">
 			<WidgetCounter :loading="!total"
 				:icon="'fa fa-coins '"
 				:status="'primary'">
@@ -48,7 +52,7 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<a-col :span="24" :lg="12" :xl="5" class="p-1">
 			<WidgetCounter :loading="!total"
 				:title="'+ New Orders'"
 				:icon="'fa fa-shopping-cart '"
@@ -69,7 +73,7 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-			<a-col :span="24" :lg="12" :xl="6" class="mb-24">
+			<a-col :span="24" :lg="12" :xl="5" class="p-1">
 			<WidgetCounter :loading="!total"
 				:title="'+ INR Value'"
 				:icon="'fa fa-wallet bg-primary'"
@@ -84,7 +88,6 @@
 					<span class="inr">{{total.netINR | round2}}</span>
 					<br>
 				</template>	
-				
 
 				<template #suffix>
 					+ <span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.afterSell) | round2}}<br>
@@ -92,9 +95,33 @@
 				</template>	
 			</WidgetCounter>
 			</a-col>
-		</a-row>
-		<!-- / Counter Widgets -->
 
+			<a-col :span="24" :lg="12" :xl="4" class="p-1">
+			<WidgetCounter :loading="!total"
+				:title="'Profit'"
+				:icon="'fa fa-money-bill-wave bg-primary'"
+				:status="'danger'">
+				<template #title>
+					Profit <small>{{TOTAL.now_profit | round2}}</small>
+				</template>	
+				<template #prefix>
+					<span class="fa fa-rupee-sign"/>
+				</template>	
+				<template #formatter>
+					<span class="inr">{{total.now_profit | round2}}</span>
+					<br>
+				</template>	
+				<template #suffix>
+					<span class="text-sm fa fa-rupee-sign"/>&nbsp;{{(total.investment) | abs | round2}}<br>
+					<span class="text-sm font-semibold">Investment</span>
+				</template>	
+			</WidgetCounter>
+			</a-col>
+			
+
+		</a-row>
+
+		<!-- / Counter Widgets -->
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<calculation-table
 				:items="[selected]" 
@@ -159,7 +186,7 @@
 	
 	// Counter Widgets
 	import WidgetCounter from '@/@common/muse/components/Widgets/WidgetCounter' ;
-
+	import NumberCounter from '@/@common/muse/components/Widgets/NumberCounter' ;	
 
 	import Orders from '@/trade/Orders' ;
 	import History from '@/trade/History' ;
@@ -276,7 +303,8 @@
 
 			Orders,History,
 			//CardCompareChart,
-			CalculationTable
+			CalculationTable,
+			NumberCounter
 		},
 		data() {
 			return {

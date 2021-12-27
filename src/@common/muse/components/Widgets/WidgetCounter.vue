@@ -72,6 +72,7 @@
 		},
 		data() {
 			return {
+				factor : 1
 			}
 		},
 		computed :{
@@ -83,6 +84,9 @@
 
 </script>
 <style >
+	.widget-1 .ant-card-body {
+		padding: 12px;
+	}
 	.widget-1 .icon {
      width: 35px;
     height: 35px;
@@ -99,29 +103,29 @@
 	}
 	.widget-1 .ant-statistic-content-suffix {
 		color: #8C8C8C!important;
-		
-	  
-
 	}
 
 	.widget-1 .ant-statistic {
-    margin-right: 0px;
+    	margin-right: 0px;
      }
 
      .widget-1 .ant-statistic-content{
 
      	line-height: 20px;
      }
-    
+    .widget-1 .ant-statistic-content-prefix {
+		font-size: 15px;
+	}
 
     .widget-1 .ant-statistic-content-value {
-		margin : 5px;
+		margin : 3px;
+		padding: 0px;
 		font-weight: 800;
 	   
       font-family: revert;
       font-weight: 700;
       text-shadow: 1px 1px 2px #505050;
-      font-size: 40px;
+      font-size: 35px;
 
 	}
 

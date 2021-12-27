@@ -34,6 +34,7 @@ for(var i =1; i < 50; i++){
 INDEX = KEY_LIST.length;
 var LOADED_STAMP = Date.now();
 var SKIP = true;
+var STATE_TBALANCES = 'state.TBALANCES_v2'
 
 var buyrate = function(symbol,qty,tqty,tcost,min,max,depth){
   depth = depth || 0;
@@ -74,11 +75,12 @@ return {
             debt_quantity :0,debt_amount : 0, debt_rate : 0,
             buy_quantity : 0 , buy_amount : 0,
             sell_quantity : 0 , sell_amount : 0,
+            earning : 0, extra_stock : 0,extra_amount : 0,
             fee_amount : 0,
             starting_coins : 0,
             buy_rate : 0, sell_rate : 0,
             efective_rate : 0, now_rate : 0,
-            stock : oldSummary?.meta?.stock,
+            stock : oldSummary?.meta?.stock, stock_quantity : oldSummary?.meta?.stock_quantity,
             stock_worth : oldSummary?.meta?.stock_worth,
             postsale_profit : oldSummary?.meta?.postsale_profit,
             postsale_amount : 0 // has to be ZERO in the start,, otherwise new value will be added old value
@@ -167,7 +169,8 @@ const getters = {
     }
     let TOTAL = {
       onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
-      netWorth : 0, afterSellWorth  :0 
+      netWorth : 0, afterSellWorth  :0 , earning : 0,investment : 0, now_profit : 0,
+      net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0
     };
     TOTAL=state.orders.reduce(function(total,n,i){
       if(n.side == 'buy')
@@ -186,23 +189,37 @@ const getters = {
     TOTAL = Object.keys(state.summary).map(function(key){
         return state.summary[key];
       }).reduce(function (total, n) {
-      if(n.balance && n.ticker){
-        let totalCoins = num(n.balance.balance) + num(n.balance.locked_balance);
-        total.inStockWorth =  total.inStockWorth + num(n.balance.balance) * n.ticker.last_price
-        total.netStockWorth = total.netStockWorth + num(totalCoins) * n.ticker.last_price;
+      if(n.balance){
+        let totalCoins = num(num(n.balance.balance) + num(n.balance.locked_balance));
+        if(n.ticker){
+          total.inStockWorth =  total.inStockWorth + num(n.balance.balance) * n.ticker.last_price
+          total.netStockWorth = total.netStockWorth + num(totalCoins) * n.ticker.last_price;
+          if(n.meta && n.meta.stock_quantity != totalCoins){
+            n.meta.extra_stock = num(totalCoins - n.meta.stock_quantity);
+            n.meta.extra_amount = Math.round(n.meta.extra_stock * n.ticker.last_price);
+            total.extra_amount  = total.extra_amount + n.meta.extra_amount;
+          }
+        }
       }
+      total.earning = (total.earning + num(n?.meta?.earning))
+      total.net_debit = (total.net_debit) + num(n?.meta?.net_debit);
+      total.buy_amount = num(total.buy_amount) + num(n?.meta?.buy_amount);
+      total.net_credit = num(total.net_credit) + num(n?.meta?.net_credit);
+
       return total;  
     },TOTAL);
 
     TOTAL.netWorth = num(TOTAL.netStockWorth) + num(TOTAL.netINR) + num(TOTAL.onBuy);
     TOTAL.afterSellWorth = num(TOTAL.afterSell) + num(TOTAL.inStockWorth) + num(TOTAL.onBuy) + num(TOTAL.netINR);
+    TOTAL.investment =  TOTAL.earning -  TOTAL.netINR - TOTAL.onBuy - TOTAL.extra_amount;
+    TOTAL.now_profit = TOTAL.netWorth + TOTAL.investment;
 
     return TOTAL;
   },
   totalBalance(state){
     let TOTAL = {
       onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
-      netWorth : 0, afterSellWorth  :0 
+      netWorth : 0, afterSellWorth  :0, now_profit : 0, investment : 0,net_debit : 0, net_credit : 0, buy_amount : 0
     };
     return state.TBALANCES.reduce(function(TOTAL,b){
       if(b){
@@ -214,6 +231,11 @@ const getters = {
         TOTAL.netINR+= num(b.netINR);
         TOTAL.netWorth+= num(b.netWorth);
         TOTAL.afterSellWorth+= num(b.afterSellWorth);
+        TOTAL.now_profit+= num(b.now_profit);
+        TOTAL.investment+= num(b.investment);
+        TOTAL.net_debit+=num(b.net_debit);
+        TOTAL.net_credit+=num(b.net_credit);
+        TOTAL.buy_amount+=num(b.buy_amount);
       }
       return TOTAL;
     },TOTAL);
@@ -344,12 +366,17 @@ const actions = {
     account = (account || 1);
     account = (account  <= INDEX) ? account : 1;
 
+    let newState = newDate();
+    Object.keys(newState).map(function(key){
+      state[key] = newState[key];
+    });
+
     state.summary = {};
     state.marketDetails = null;
     state.orders = null;
     state.balances = null;
     try{
-      state.TBALANCES  = JSON.parse(localStorage.getItem("state.TBALANCES"),"[]");
+      state.TBALANCES  = JSON.parse(localStorage.getItem(STATE_TBALANCES),"[]");
       commit('TBALANCES',state.TBALANCES);
     } catch(e){
       state.TBALANCES = [];
@@ -366,6 +393,8 @@ const actions = {
     dispatch('syncHistory');
     dispatch('updateLocal');
     dispatch('TBALANCES');
+    dispatch('syncAccount');
+    
   },
   async setSymbol({ commit,dispatch },symbol) {
     console.log("setSymbol",symbol);
@@ -382,17 +411,13 @@ const actions = {
     let _index = state.account;
     state.TBALANCES = state.TBALANCES || [];
     state.TBALANCES[_index-1] = {
-      afterSellWorth : num(getters.total.afterSellWorth),
-      inStockWorth : num(getters.total.inStockWorth*1) ,
-      onSell : num(getters.total.onSell*1) ,
-      afterSell : num(getters.total.afterSell*1) ,
-      onBuy : num(getters.total.onBuy),
-      netStockWorth : num(getters.total.netStockWorth),
-      netWorth : num(getters.total.netWorth),
-      netINR : num(getters.total.netINR)
     };
+    Object.keys(getters.total).map(function(key){
+      state.TBALANCES[_index-1][key] = num(getters.total[key]);
+    });
+
     try {
-      localStorage.setItem("state.TBALANCES",JSON.stringify(state.TBALANCES || []));
+      localStorage.setItem(STATE_TBALANCES,JSON.stringify(state.TBALANCES || []));
     } catch(e){
       console.log("Not Saved")
     }
@@ -466,7 +491,8 @@ const actions = {
           }
           meta.fee_amount+= (deal.fee_amount - 0);
 
-          meta.stock = Math.max(meta.buy_quantity - meta.sell_quantity,0);
+          meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
+          meta.stock = Math.max(meta.stock_quantity,0);
           meta.net_debit = meta.buy_amount + meta.fee_amount
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
@@ -788,6 +814,7 @@ const actions = {
         dispatch('TBALANCES');
     });
 },
+
 
 async updateLocal({ commit,dispatch,getters }){
   let lastRates = localStorage.getItem('lastRates');

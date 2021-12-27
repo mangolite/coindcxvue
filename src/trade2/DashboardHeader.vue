@@ -23,10 +23,18 @@
 
 							<div class="accs" >	
 								<span v-for="KEY in $store.getters.KEY_LIST"  v-bind:key="KEY.key"  >
-										<router-link :to="`/trade2/${KEY.id}/${$route.params.symbol || ''}`"
-											tag="button" class="btn btn-acc btn-sm" active-class="btn-acc1">
+										<router-link class="btn btn-acc btn-sm d-none"  tag="button"
+											:to="`/trade2/${KEY.id}/${$route.params.symbol || ''}`"
+											active-class="btn-acc1">
 											{{KEY.name}}
-										</router-link>&nbsp;
+										</router-link>
+										<a class="btn btn-acc btn-sm " 
+											:href="`/coindcxvue/trade2/${KEY.id}/${$route.params.symbol || ''}`"
+											:class="{
+												'btn-acc1' : (KEY.id == $route.params.account)
+											}" >
+											{{KEY.name}}
+										</a>	&nbsp;
 									</span>
 							</div>
 						</div>	
