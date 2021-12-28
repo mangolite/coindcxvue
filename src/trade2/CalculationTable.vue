@@ -136,8 +136,8 @@
 				<div class="text-xs coin">{{row.item.balance.balance | round5}}</div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
-						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
+						'fw-bold text-success price-u' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger price-d' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
 					}">
 						@&nbsp;{{row.item.ticker.last_price | round5}}
 					</div> 
@@ -241,7 +241,7 @@
 					
 					{ key: 'stkwrth', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
-					{ key: 'stock', label: ' Stock@currentrate', sortable: true, variant : "stock",sortByFormatted:true,
+					{ key: 'stock', label: ' OnSale@now', sortable: true, variant : "stock",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
 					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark",sortByFormatted:true,
