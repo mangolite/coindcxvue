@@ -80,8 +80,7 @@
 					</b>
 				</div>
 				<div class="float-start-x" :class="{
-					'sell ' : row.item.meta.earning<0,
-					'buy ' : row.item.meta.earning>0
+					
 					}">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
 					<small v-if="row.item.meta"  >{{row.item.meta.earning | round2}}</small>
@@ -152,7 +151,7 @@
 					</b>
 				</div>
 				<div class="float-start-x" :class="{
-                	'sell ' : row.item.meta.efective_rate>row.item.ticker.last_price,
+                	
                   	'buy ' : row.item.meta.efective_rate<row.item.ticker.last_price
 					}">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>&nbsp;
