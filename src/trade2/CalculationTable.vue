@@ -49,8 +49,8 @@
 				<div class="text-xs coin">{{row.item.meta.buy_quantity | round5}}</div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold fix price-u' : (row.item.ticker.last_price > row.item.meta.buy_rate),
-						'fw-bold fix price-d' : (row.item.ticker.last_price < row.item.meta.buy_rate),
+						'fw-bold fix ' : (row.item.ticker.last_price > row.item.meta.buy_rate),
+						'fw-bold fix ' : (row.item.ticker.last_price < row.item.meta.buy_rate),
 					}">
 						@&nbsp;{{row.item.meta.buy_rate | round5}}
 					</div> 
@@ -316,7 +316,7 @@
     }
 
 	.fix{
-		color: #a19e9d!important;
+		color: #0090c1!important;
    
 	}
 
@@ -375,8 +375,8 @@
 }
 
 .table-success {
-    --bs-table-bg: #007f69;
-    --bs-table-striped-bg: #007f69;
+    --bs-table-bg: #a2c3bd;
+    --bs-table-striped-bg: #a2c3bd;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #bcd0c7;
     --bs-table-active-color: #000;
@@ -387,8 +387,8 @@
 }
 
   .table-danger {
-    --bs-table-bg: #83000c;
-    --bs-table-striped-bg: #83000c;
+    --bs-table-bg: #ad8a8d;
+    --bs-table-striped-bg: #ad8a8d;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #dfc2c4;
     --bs-table-active-color: #000;
