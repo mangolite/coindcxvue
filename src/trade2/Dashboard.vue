@@ -76,7 +76,7 @@
 			<a-col :span="24" :lg="12" :xl="5" class="p-1">
 			<WidgetCounter :loading="!total"
 				:title="'+ INR Value'"
-				:icon="'fa fa-wallet bg-primary'"
+				:icon="'fa fa-wallet '"
 				:status="'danger'">
 				<template #title>
 					+ INR Value <small>{{TOTAL.netINR | round2}}</small>
@@ -99,7 +99,7 @@
 			<a-col :span="24" :lg="12" :xl="4" class="p-1">
 			<WidgetCounter :loading="!total"
 				:title="'Profit'"
-				:icon="'fa fa-money-bill-wave bg-primary'"
+				:icon="'fa fa-money-bill-wave  '"
 				:status="'danger'">
 				<template #title>
 					Profit <small>{{TOTAL.now_profit | round2}}</small>
@@ -108,7 +108,7 @@
 					<span class="fa fa-rupee-sign"/>
 				</template>	
 				<template #formatter>
-					<span class="inr">{{total.now_profit | round2}}</span>
+					<span class="pft">{{total.now_profit | round2}}</span>
 					<br>
 				</template>	
 				<template #suffix>
@@ -351,6 +351,10 @@
 	.fa-shopping-cart{
 		background-color: #02a66f!important;
 	}
+
+	.fa-money-bill-wave{
+		background-color:#00598a!important ;
+	}
     
 
     .n-o{
@@ -366,6 +370,10 @@
     
     .inr{
     	color: #996c44!important;
+    }
+
+    .pft{
+    	color: #00598a!important;
     }
 
 </style>

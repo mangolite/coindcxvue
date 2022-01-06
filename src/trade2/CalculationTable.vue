@@ -42,30 +42,27 @@
 
 		<!--  PAST  DATA POINTS ROWS -->
 		<template #cell(buy_amount)="row">
-				<div class="text-bold float-start-x">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+				<div class="text-bold ts">
+					<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
 					{{row.item.meta.buy_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.meta.buy_quantity | round5}}</div>
 				<div class="text-sm  float-start">
-					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold fix ' : (row.item.ticker.last_price > row.item.meta.buy_rate),
-						'fw-bold fix ' : (row.item.ticker.last_price < row.item.meta.buy_rate),
-					}">
+					<div v-if="row.item.ticker && row.item.meta" class="text-center fix" >
 						@&nbsp;{{row.item.meta.buy_rate | round5}}
 					</div> 
 				</div>
 		</template>
 		<template #cell(sell_amount)="row">
-				<div class="text-bold float-start-x">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+				<div class="text-bold ts">
+					<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
 					{{row.item.meta.sell_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.meta.sell_quantity | round5}}</div>
 				<div class="text-sm text-primary float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold text-success price-u' : (row.item.meta.sell_rate > row.item.meta.buy_rate),
-						'fw-bold text-danger price-d' : (row.item.meta.sell_rate < row.item.meta.buy_rate),
+						'fw-bold text-success ' : (row.item.meta.sell_rate > row.item.meta.buy_rate),
+						'fw-bold text-danger ' : (row.item.meta.sell_rate < row.item.meta.buy_rate),
 					}">
 						@&nbsp;{{row.item.meta.sell_rate | round5}}
 					</div> 
@@ -73,7 +70,7 @@
 		</template>
 
 		<template #cell(profit)="row">
-			<div class="fw-bold float-start-x">
+			<div class="fw-bold ">
 					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
 					<b v-if="row.item.meta" class="pro" >
 						{{row.value | round2}}
@@ -90,11 +87,11 @@
 
 		<!--  PRESENT  DATA POINTS ROWS -->
 		<template #cell(stkwrth)="row">
-				<div class="text-bold  float-start-x buy">
+				<div class="text-bold   buy">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round5}}
 				</div>
-				<div class="text-xs coin">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
+				
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center float-start" :class="{
 						'fw-bold fix ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
@@ -104,22 +101,32 @@
 					</div> 
 					
 				</div>
+				<!-- <div class="text-xs coin float-end ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div> -->
+		</template>
+
+		<template #cell(stk)="row">
+			<div style="display: block;" class="hide">
+				<br>
+			</div>
+																			
+				<div class=" coin  ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
+
 		</template>
 		
 		<template #cell(stock)="row">
-				<div class="text-bold text-center">
-					<div class="sell fw-bold">
+				<div class="text-bold sell ">
+					<div class=" fw-bold">
 						<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
-						{{row.item.ticker.last_price * row.item.order.onsale_qty | round2}}
+						{{row.item.ticker.last_price * row.item.meta.stock | round2}}
 					</div>
 				</div>
-				<div class="next-line text-center">
+				<!-- <div class="next-line text-center">
 					<div class="text-xs coin">
 							{{row.item.order.onsale_qty | round5}}
 					</div>
 				</div>
-				<div class="text-sm  text-center">
-					<div v-if="row.item.ticker && row.item.meta" class="text-center " :class="{
+ -->				<div class="text-sm  ">
+					<div v-if="row.item.ticker && row.item.meta"  :class="{
 						'fw-bold text-success ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
 						'fw-bold text-danger' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
 					}">
@@ -128,15 +135,15 @@
 				</div>
 		</template>
 		<template #cell(nonsale)="row">
-				<div class="text-bold float-start-x">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+				<div class="text-bold " >
+					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true" ></span>
 					{{row.item.ticker.last_price  * row.item.balance.balance | round5}}
 				</div>
 				<div class="text-xs coin">{{row.item.balance.balance | round5}}</div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold text-success price-u' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
-						'fw-bold text-danger price-d' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
+						'fw-bold text-success ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger ' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
 					}">
 						@&nbsp;{{row.item.ticker.last_price | round5}}
 					</div> 
@@ -144,7 +151,7 @@
 		</template>
 
 		<template #cell(profit_presale)="row">
-			<div class="fw-bold float-start-x">
+			<div class="fw-bold ">
 					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
 					<b v-if="row.item.meta" class="pro">
 						{{row.value | round2}}
@@ -163,30 +170,30 @@
 
 		<!--  FUTRUE  DATA POINTS ROWS -->
 		<template #cell(onsale)="row">
-				<div class="text-bold float-start-x">
+				<div class="text-bold">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.order.onsale_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}</div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold text-success price-u' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
-						'fw-bold text-danger price-d' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
+						'fw-bold text-success ' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
+						'fw-bold text-danger ' : (row.item.order.onsale_rate < row.item.meta.buy_rate_stock),
 					}">
 						@&nbsp;{{row.item.order.onsale_rate | round5}}
 					</div> 
 				</div>
 		</template>
 		<template #cell(onbuy)="row">
-				<div class="text-bold float-start-x">
+				<div class="text-bold ">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.order.onbuy_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.order.onbuy_qty | round5}}</div>
-				<div class="text-sm text-primary float-start">
+				<div class="text-sm text-primary float-start fix ">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
-						'fw-bold fix price-u' : (row.item.ticker.last_price > row.item.meta.sell_rate),
-						'fw-bold fix price-d' : (row.item.ticker.last_price < row.item.meta.sell_rate),
+						'fw-bold  ' : (row.item.ticker.last_price > row.item.meta.sell_rate),
+						'fw-bold ' : (row.item.ticker.last_price < row.item.meta.sell_rate),
 					}">
 						@&nbsp;{{row.item.order.onbuy_rate | round5}}
 					</div> 
@@ -194,7 +201,7 @@
 		</template>
 
 		<template #cell(profit_postsale)="row">
-			<div class="fw-bold float-start-x">
+			<div class="fw-bold ">
 					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
 					<b v-if="row.item.meta" class="pro">
 						{{row.value | round2}}
@@ -238,9 +245,12 @@
 					{ key: 'profit', label: ' PastPNL', sortable: true, variant : "1dark",class:"",sortByFormatted:true,
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
 					
-					{ key: 'stkwrth', label: ' Stock@buyrate', sortable: true, variant : "stock", class:"fw-normal",sortByFormatted:true,
+					{ key: 'stkwrth', label: ' @buyrate', sortable: true, variant : "stkb", class:"fw-normal",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
-					{ key: 'stock', label: ' OnSale@now', sortable: true, variant : "stock",sortByFormatted:true,
+					{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
+						formatter: (v,k,item) => (item.meta.buy_quantity - item.meta.sell_quantity)},
+
+					{ key: 'stock', label: ' @nowrate', sortable: true, variant : "stkn",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
 					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark",sortByFormatted:true,
@@ -305,6 +315,8 @@
    .coin{
    	    color: #fff1c6;
     font-family: cursive;
+    text-shadow: 0 0 3px #6c6c6c;
+
    }
 
    .buy{
@@ -316,9 +328,19 @@
     }
 
 	.fix{
-		color: #0090c1!important;
+		color: #0484b0!important;
    
 	}
+
+	 .now{
+	 	color: white;
+	 	background-color: #9f0909;
+    border-radius: 25px;
+
+	 }
+	  .ts{
+	  	    text-shadow: 0 0 4px #818181!important;
+	  }
 
 	 
 	    .pro{
@@ -343,6 +365,14 @@
       #pnl tr {
       	margin-top: 10px;
       }
+         .hide{
+         	display:none!important;
+         }
+
+         .table-coins,.table-stkb{
+         	border-color: #c3c3c3!important;
+         }
+
       .table.b-table.b-table-stacked-md > tbody > tr > [data-label]::before {
     content: attr(data-label);
     width: 40%;
@@ -355,16 +385,14 @@
     margin: 0;
     color: white!important;
     font-weight: 800!important;
-    text-shadow: 1px 1px 3px #545454;
-
-   }
+     }
  }
 
    
 
    #pnl  .table-1dark {
-        --bs-table-bg: #000000;
-    --bs-table-striped-bg: #000000;
+        --bs-table-bg: #03152e;
+    --bs-table-striped-bg: #03152e;
     --bs-table-striped-color: #fff;
     --bs-table-active-bg: #373b3e;
     --bs-table-active-color: #fff;
@@ -375,8 +403,8 @@
 }
 
 .table-success {
-    --bs-table-bg: #a2c3bd;
-    --bs-table-striped-bg: #a2c3bd;
+    --bs-table-bg: #afcdca;
+    --bs-table-striped-bg: #afcdca;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #bcd0c7;
     --bs-table-active-color: #000;
@@ -387,8 +415,8 @@
 }
 
   .table-danger {
-    --bs-table-bg: #ad8a8d;
-    --bs-table-striped-bg: #ad8a8d;
+    --bs-table-bg: #dcc4c6;
+    --bs-table-striped-bg: #dcc4c6;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #dfc2c4;
     --bs-table-active-color: #000;
@@ -398,7 +426,29 @@
     border-color: #ffffff;
 }
 
- .table-stock {
+ .table-stkb {
+    --bs-table-bg: #c3c3c3;
+    --bs-table-striped-bg: #c3c3c3;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #dfc2c4;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #000000ad;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+.table-stkn {
+    --bs-table-bg: #c3c3c3;
+    --bs-table-striped-bg: #c3c3c3;
+    --bs-table-striped-color: #000;
+    --bs-table-active-bg: #dfc2c4;
+    --bs-table-active-color: #000;
+    --bs-table-hover-bg: #000000ad;
+    --bs-table-hover-color: #000;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+.table-coins {
     --bs-table-bg: #c3c3c3;
     --bs-table-striped-bg: #c3c3c3;
     --bs-table-striped-color: #000;
@@ -411,8 +461,8 @@
 }
 
 .table-info-dark {
-    --bs-table-bg: #007cc4;
-    --bs-table-striped-bg: #00507f;
+    --bs-table-bg: #735d4a;
+    --bs-table-striped-bg: #735d4a;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #bcd0c7;
     --bs-table-active-color: #000;
