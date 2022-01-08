@@ -334,14 +334,20 @@
 
 <style >
 
+	.layout-dashboard .ant-card {
+		background-color: transparent;
+    border-radius: 12px;
+    box-shadow: -5px 0px 20px 8px rgb(127 127 127);
+  }
+
 	.fa-equals{
-		background-color: #da7e1a!important;
+		background-color: #00598a!important;
 		
 	}
 
 
 	.fa-coins{
-		background-color:#39bed5!important ;
+		background-color:#00b4ba!important;
 	}
 
 	.fa-wallet{
@@ -353,7 +359,7 @@
 	}
 
 	.fa-money-bill-wave{
-		background-color:#00598a!important ;
+		background-color:#da7e1a!important ;
 	}
     
 
@@ -361,11 +367,11 @@
     	color: #02a66f!important;
     }
 	.t-w{
-		color: #da7e1a!important;
+		color: #00598a!important;
 	}
 
 	.c-w{
-		color: #39bed5!important;
+		color: #00b4ba!important;
 	}
     
     .inr{
@@ -373,7 +379,7 @@
     }
 
     .pft{
-    	color: #00598a!important;
+    	color: #da7e1a!important;
     }
 
 </style>

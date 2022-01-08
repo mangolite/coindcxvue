@@ -57,7 +57,8 @@
           label-for="api-name-input"
           invalid-feedback="ApiName is required"
           :state="apiNameState"
-          class="acc-modal"
+          
+          :class="acc-modal"
         >
           <b-form-input
             id="api-key-input"
@@ -250,11 +251,17 @@
 <style >
 
 	.headbar.main {
-		background-color: black!important;
+		background-color: transparent!important;
+	}
+
+	.home{
+		    color: #001b41;
+    text-shadow: 1px 1px 4px #989898;
+
 	}
     
     .home:hover{
-    	color: orange;
+    	color: #da7e1a;
     
      }
 
@@ -273,18 +280,19 @@
 
 		background-color: transparent;
 		border-color: transparent;
-		color: white;
+		color: #001b41;
+		text-shadow: 1px 1px 4px #989898;
 
 	}
 
 	 .fa-edit:hover,.fa-plus:hover,.fa-trash:hover{
-		color: orange!important;
+		color: #da7e1a!important;
 		background-color: transparent;
 		border-color: transparent!important;
 	}
 
 	.fa-edit:focus,.fa-plus:focus,.fa-trash:focus {
-		color: white;
+		color:  #001b41;
 		background-color: transparent;
 		border-color: transparent;
 		box-shadow: none!important;
@@ -298,20 +306,31 @@
 	}
 
     .btn-acc{
-    	border-color: white;
-    	color: white;
-    }
+    	    color:#071932;
+    background-color: white ;
+    box-shadow: 0px 0px 3px 3px #d2d2d2;
+    border-color: #ffffff00;
+}
+
     .btn-acc:hover{
-    	color: #da7e1a;
+    	    color: #071932;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 2px 2px #071932;
     }
 
     .btn-acc1{
-    	color: black;
-    	background-color: white;
+    	          color: white;
+    background-color: #071932;
+    box-shadow: 0px 0px 3px 3px #d2d2d2;
+    border-color: #ffffff00;
+
+
     }
+
     .btn-acc1:hover{
     	color: white;
-    	background-color: #da7e1a;
+    background-color: #858584;
+   box-shadow: 0px 0px 2px 4px #d2d2d2;
     }
 
 
@@ -334,20 +353,26 @@
     width: 25px;
     height: 25px;
     vertical-align: middle;
-    border-color: transparent;
-      color: #454342;
+    border-color: #590b0b;
+    color: grey;
     border: solid;
-    border-radius: 6px;
+    border-radius: 4px;
+    background-color: gray;
 
 
 }
 
    .navbar-toggler-icon:hover{
-   	color: #b65e0e;
-   }
+   	color: #071932;
+   	background-color: #071932;
+    
+  }
+
+
 .navbar-toggler:focus{
-	    box-shadow: none;
+	    box-shadow: none!important;
 }
+
 .navbar-toggler{
 	border: none;
 }

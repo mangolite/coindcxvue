@@ -18,11 +18,14 @@
 			<!-- Sidebar Navigation Menu -->
 			<a-menu theme="light" mode="inline">
 				<a-menu-item v-for="wallet in wallets" :key="wallet.symbol">
-					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`" class="router-anchor"
+					<router-link :to="`/trade2/${$store.getters.account}/${wallet.symbol}`" class="router-anchor pp"
 						:v-tooltip="wallet.ticker.last_price"
-						:title="wallet.last_price_seen">
+						
+						:title="wallet.last_price_seen"
+					   
+						 >
 						<span class="icon icon-sm" hidden>
-							<span class="fa fa-refresh text-sm text-info"></span>&nbsp;
+							<span class="  text-sm text-info"></span>&nbsp;
 							<span class="text-sm text-secondary">%</span>
 							<span class="float-end">
 								{{(wallet.ticker.high-wallet.ticker.low)/wallet.ticker.high*100 | round}}
@@ -48,7 +51,7 @@
 							</span>
 						</span>
 						<span class="next-line">
-							<span class="text-white text-xs">{{wallet.ticker.last_price}}</span>&nbsp;
+							<span class=" text-bold pp">{{wallet.ticker.last_price | round2}}</span>&nbsp;
 							<span class="text-xs"
 								:class="{
 									'text-success fa fa-sort-up' : wallet.seen_delta>0,
@@ -116,7 +119,7 @@
 </script>
 <style scoped>
 	.router-link-active .icon {
-		color: white;
+		color: darkorange;
 	}
 	.router-anchor{
 		text-decoration : unset !important;
@@ -139,19 +142,19 @@
     margin: 0 0 0 0;
     padding: 13px 20px;
     height: calc(100vh - 20px);
-    background: transparent !important;
+    background: #001b41 !important;
   }
 }
 
 
 
    .d-d{
-   	color: orange;
+   	color: #ebff29;
    }
    
       .router-link-active:visited .coin-n{
       	
-      	color: black!important;
+      	color: orange!important;
       }
 
       .
@@ -181,7 +184,7 @@
 
       .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item.ant-menu-item-selected .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-item .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu.ant-menu-item-selected .router-link-active, .layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu .router-link-active {
     background-color: #FFFFFF;
-    box-shadow: 0px 20px 27px rgb(0 0 0 / 5%);
+    box-shadow: 0px 0px 3px 5px rgb(92 92 92);
     font-size: 18px;
     border-radius: 25px;
   }
@@ -190,6 +193,17 @@
 	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu.ant-menu-item-selected .router-link-active .text-white,
 	.layout-dashboard .ant-layout-sider.sider-primary .ant-menu-submenu .router-link-active .text-white{
 			color: #000!important;
+	}
+
+	.pp{
+		color: #ffb429!important;
+
+	}
+
+	.router-link-active:visited .pp{
+		color: #d4941e!important;
+		font-size: 15px;
+		
 	}
 
       

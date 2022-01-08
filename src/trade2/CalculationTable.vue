@@ -1,7 +1,6 @@
 <template>
 
-	<a-card :bordered="false" class="dashboard-bar-line header-solid ant-col-24 b-border">
-    <div class=" title "></div>
+	
 	<b-table 	:items="items" :fields="fields" class="no-bdr" id="pnl" :sort-by="'symbol'" :sort-desc="true"
 	stacked="md">
 
@@ -86,10 +85,20 @@
 		</template>
 
 		<!--  PRESENT  DATA POINTS ROWS -->
+		<template #cell(stk)="row">
+			<div style="display: block;" class="hide">
+				<br>
+			</div>
+																			
+				<div class=" coin  ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
+
+		</template>
+
 		<template #cell(stkwrth)="row">
-				<div class="text-bold   buy">
-					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
-					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round5}}
+				<div class="text-bold    buy">
+					<span class="tbb">
+						<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"> </span>
+					{{row.item.meta.buy_rate_stock * row.item.meta.stock | round5}}</span>
 				</div>
 				
 				<div class="text-sm  float-start">
@@ -104,22 +113,17 @@
 				<!-- <div class="text-xs coin float-end ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div> -->
 		</template>
 
-		<template #cell(stk)="row">
-			<div style="display: block;" class="hide">
-				<br>
-			</div>
-																			
-				<div class=" coin  ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
-
-		</template>
+		
 		
 		<template #cell(stock)="row">
-				<div class="text-bold sell ">
-					<div class=" fw-bold">
-						<span class="fa fa-rupee-sign text-xxs " aria-hidden="true"></span>
-						{{row.item.ticker.last_price * row.item.meta.stock | round2}}
+				<div class="text-bold  sell ">
+					
+						<span class="tbc">
+							<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
+												{{row.item.ticker.last_price * row.item.meta.stock | round2}}</span>
+						
 					</div>
-				</div>
+				
 				<!-- <div class="next-line text-center">
 					<div class="text-xs coin">
 							{{row.item.order.onsale_qty | round5}}
@@ -135,7 +139,7 @@
 				</div>
 		</template>
 		<template #cell(nonsale)="row">
-				<div class="text-bold " >
+				<div class="text-bold ts" >
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true" ></span>
 					{{row.item.ticker.last_price  * row.item.balance.balance | round5}}
 				</div>
@@ -170,7 +174,7 @@
 
 		<!--  FUTRUE  DATA POINTS ROWS -->
 		<template #cell(onsale)="row">
-				<div class="text-bold">
+				<div class="text-bold ts ">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.order.onsale_amount | round2}}
 				</div>
@@ -185,7 +189,7 @@
 				</div>
 		</template>
 		<template #cell(onbuy)="row">
-				<div class="text-bold ">
+				<div class="text-bold ts ">
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.order.onbuy_amount | round2}}
 				</div>
@@ -219,7 +223,7 @@
 				
 		</template>
 	</b-table>
-	</a-card>	
+	
 </template>
 
 <script>
@@ -244,13 +248,15 @@
 						formatter: (v,k,item) => item.meta.sell_amount},
 					{ key: 'profit', label: ' PastPNL', sortable: true, variant : "1dark",class:"",sortByFormatted:true,
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
-					
-					{ key: 'stkwrth', label: ' @buyrate', sortable: true, variant : "stkb", class:"fw-normal",sortByFormatted:true,
-						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
-					{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
-						formatter: (v,k,item) => (item.meta.buy_quantity - item.meta.sell_quantity)},
 
-					{ key: 'stock', label: ' @nowrate', sortable: true, variant : "stkn",sortByFormatted:true,
+						{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
+						formatter: (v,k,item) => (item.meta.buy_quantity - item.meta.sell_quantity)},
+					
+					{ key: 'stkwrth', label: ' @BuyRate', sortable: true, variant : "stkb", class:"fw-normal",sortByFormatted:true,
+						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
+					
+
+					{ key: 'stock', label: ' @NowRate', sortable: true, variant : "stkn",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
 					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark",sortByFormatted:true,
@@ -287,11 +293,23 @@
 </script>
 <style >
 
+
+
+    #pnl{
+    	margin-top: 20px;
+    }
+
+	.layout-dashboard .ant-card {
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px 10px rgb(127 127 127);
+    }
+
   #pnl  thead tr th {
-  	background-color: white!important;
-  	color: black!important;
-  	font-weight: 800!important;
-  	text-shadow: 0px 0px 4px #8b8b8b;
+  	       background-color: black!important;
+    color: white!important;
+    font-weight: 600!important;
+    
+    font-family: unset;
  } 
 
 
@@ -299,6 +317,7 @@
 	 .b-border .ant-card-body {
     padding: 16px;
     padding-inline: 4px;
+    background-color: transparent;
 }   
     .text-danger{
     	color: #fc444e!important;
@@ -307,17 +326,32 @@
     .text-success {
     color: #10ab57!important;
 }
-   
+   .tbc{
+   	background-color: #a30c0c;
+    color: white!important;
+    border-radius: 5px;
+    padding-inline: 5px;
+
+   }
+   .tbb{
+   	background-color: #128961;
+    color: white!important;
+    border-radius: 5px;
+    padding-inline: 5px;
+
+
+   }
+
    .stk{
       color: #1486bf;
     }
 
    .coin{
-   	    color: #fff1c6;
-    font-family: cursive;
-    text-shadow: 0 0 3px #6c6c6c;
-
-   }
+   	    color: #ffefbd;
+    font-family: inherit;
+    text-shadow: 1px 1px 4px #3d3a0d;
+    font-weight: 600;
+  }
 
    .buy{
       color: #128961;
@@ -339,7 +373,7 @@
 
 	 }
 	  .ts{
-	  	    text-shadow: 0 0 4px #818181!important;
+	  	    text-shadow:1px 1px 3px #252525!important;
 	  }
 
 	 
@@ -364,7 +398,11 @@
       }
       #pnl tr {
       	margin-top: 10px;
+      	
       }
+     
+
+       
          .hide{
          	display:none!important;
          }
@@ -385,14 +423,15 @@
     margin: 0;
     color: white!important;
     font-weight: 800!important;
+    text-shadow: 1px 1px 3px #3f3f3f;
      }
  }
 
    
 
    #pnl  .table-1dark {
-        --bs-table-bg: #03152e;
-    --bs-table-striped-bg: #03152e;
+        --bs-table-bg: #001b41;
+    --bs-table-striped-bg: #001b41;
     --bs-table-striped-color: #fff;
     --bs-table-active-bg: #373b3e;
     --bs-table-active-color: #fff;
