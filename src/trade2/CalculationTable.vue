@@ -350,14 +350,14 @@ table{ /*or other element you want*/
    	background-color: #a30c0c;
     color: white!important;
     border-radius: 0px;
-    padding-inline: 5px;
+    padding: 4px;
 
    }
    .tbb{
    	background-color: #128961;
     color: white!important;
     border-radius: 0px;
-    padding-inline: 5px;
+    padding: 5px;
 
 
    }
