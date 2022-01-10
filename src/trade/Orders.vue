@@ -83,7 +83,7 @@ export default {
   
 
   #myOrders tr.table-warning{
-    border: 5px solid black;
+    border: 5px solid #454545;
     
   }
 
