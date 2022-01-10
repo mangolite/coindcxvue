@@ -116,9 +116,12 @@
 		
 		
 		<template #cell(stock)="row">
-				<div class="text-bold  sell ">
+				<div class="text-bold   sell ">
 					
-						<span class="tbc">
+						<span  v-if="row.item.ticker && row.item.meta"  :class="{
+						'fw-bold tbc  ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
+						'fw-bold tbc ok' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
+					}">
 							<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 												{{row.item.ticker.last_price * row.item.meta.stock | round2}}</span>
 						
@@ -292,9 +295,26 @@
 	})
 </script>
 <style >
+      
+    
 
+@keyframes blink {
+ 50% { border-color: #ff0000; } 
+}
+table{ /*or other element you want*/
+    animation-name: blink ;
+    animation-duration: .5s ;
+    animation-timing-function: step-end ;
+    animation-iteration-count: infinite ;
+    animation-direction: alternate ;
+}
 
+     .ok{
+     	border: 3px solid;
+    border-color: #c3c3c3;
+    animation: blink 1s steps(1, end) infinite;
 
+     }
     #pnl{
     	margin-top: 20px;
     }
@@ -329,14 +349,14 @@
    .tbc{
    	background-color: #a30c0c;
     color: white!important;
-    border-radius: 5px;
+    border-radius: 0px;
     padding-inline: 5px;
 
    }
    .tbb{
    	background-color: #128961;
     color: white!important;
-    border-radius: 5px;
+    border-radius: 0px;
     padding-inline: 5px;
 
 
@@ -500,8 +520,8 @@
 }
 
 .table-info-dark {
-    --bs-table-bg: #735d4a;
-    --bs-table-striped-bg: #735d4a;
+    --bs-table-bg: #c5b6ad;
+    --bs-table-striped-bg: #c5b6ad;
     --bs-table-striped-color: #000;
     --bs-table-active-bg: #bcd0c7;
     --bs-table-active-color: #000;

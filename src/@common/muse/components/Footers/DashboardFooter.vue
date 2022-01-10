@@ -9,7 +9,7 @@
 				<p class="copyright  " style="text-align: right; ">
 					© 2021, made  
 					
-					by <a style="color: white;  ">Pamma Tonna</a> for a better Explanation .
+					by <a class="hl">Pamma Tonna</a> for a better Explanation .
 				</p>
 				<!-- / Footer Copyright Notice -->
 
@@ -37,3 +37,15 @@
 	})
 
 </script>
+<style type="text/css">
+	
+      .hl{
+               color: #001b41!important;
+    font-size: 16px;
+    font-weight: 800!important;
+    text-decoration: none;
+
+
+      }
+
+</style>
