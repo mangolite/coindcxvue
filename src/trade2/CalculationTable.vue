@@ -150,6 +150,7 @@
 				<div class="text-xs coin  ">{{row.item.balance.balance | round5}}
 					<span v-if="row.item.balance.balance " class="text-center" :class="{
 						'fa fa-dot-circle float-end ' : (row.item.balance.balance  > 0),
+						'fw-bold  alert2 ' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
 						
 					}"></span></div>
 				<div class="text-sm  float-start" >
@@ -164,7 +165,10 @@
 
 		<template #cell(profit_presale)="row">
 			<div class="fw-bold ">
-					<span class="fa fa-rupee-sign pro text-xxs" aria-hidden="true"></span>&nbsp;
+					<span class="fa fa-rupee-sign pro text-xxs " aria-hidden="true" :class="{
+						'fw-bold  ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
+						'fw-bold pro2 alert2 ' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
+					}"></span>&nbsp;
 					<b v-if="row.item.meta" class="pro">
 						{{row.value | round2}}
 					</b>
@@ -186,7 +190,12 @@
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 					{{row.item.order.onsale_amount | round2}}
 				</div>
-				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}</div>
+				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}
+					<span class="fas fa-exclamation  float-end" v-if="row.item.balance.balance " :class="{
+						' hideit float-end ' : (row.item.order.onsale_qty  > 0),
+						
+						
+					}" ></span></div>
 				<div class="text-sm  float-start">
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
 						'fw-bold text-success ' : (row.item.order.onsale_rate > row.item.meta.buy_rate_stock),
@@ -303,7 +312,8 @@
       
     @keyframes blinkingText{
 		
-		50%		{ color: #ef0a1a;}
+		50%		{ color: red;}
+		
 		
 	}
 
@@ -313,6 +323,13 @@
 		50%	        { background-color: #F5222D;}
 		50%         {border-color: white;}
 	}
+
+	@keyframes blink {  
+
+ 		 0% { opacity: 1.0; }
+		  50% { opacity: 0.0; }
+ 		 100% { opacity: 1.0; }
+		}
 
 
      .alert{
@@ -325,11 +342,17 @@
      }
 
      .alert2{
-     	color: #000;
-		font-weight: bold;
-		font-size: 2rem;
-		animation: blinkingText 1s infinite;
+     	
+		
+		animation: blinkingText .4s infinite!important;
      }
+        
+      .alert3{
+      	font-weight: 600!important;
+
+      	 animation: blink 1s infinite; 
+      }  
+
     #pnl{
     	margin-top: 20px;
     }
@@ -420,6 +443,12 @@
    	    font-size: 16px;
 
    }
+     
+     .pro2{
+     	color:white;
+   	    font-size: 16px;
+   }
+
    .no-bdr{
    	border: 0px;
    }
@@ -439,7 +468,7 @@
       	
       }
      
-
+         
        
          .hide{
          	display:none!important;
@@ -464,7 +493,10 @@
     text-shadow: 1px 1px 3px #3f3f3f;
      }
  }
-
+     
+      .hideit{
+      	display: none!important;
+     }
    
 
    #pnl  .table-1dark {
