@@ -191,7 +191,7 @@
 					{{row.item.order.onsale_amount | round2}}
 				</div>
 				<div class="text-xs coin">{{row.item.order.onsale_qty | round5}}
-					<span class="fas fa-exclamation  float-end" v-if="row.item.balance.balance " :class="{
+					<span class="fas fa-exclamation alert3  float-end" v-if="row.item.balance.balance " :class="{
 						' hideit float-end ' : (row.item.order.onsale_qty  > 0),
 						
 						
