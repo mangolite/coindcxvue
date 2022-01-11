@@ -57,8 +57,7 @@
           label-for="api-name-input"
           invalid-feedback="ApiName is required"
           :state="apiNameState"
-          
-          :class="acc-modal"
+          class="acc-modal"
         >
           <b-form-input
             id="api-key-input"
@@ -278,9 +277,9 @@
 
 	.fa-plus , .fa-edit , .fa-trash {
 
-		background-color: transparent;
-		border-color: transparent;
-		color: #001b41;
+		background-color: transparent!important;
+		border-color: transparent!important;
+		color: #001b41!important;
 		text-shadow: 1px 1px 4px #989898;
 
 	}
@@ -310,12 +309,15 @@
     background-color: white ;
     box-shadow: 0px 0px 3px 3px #d2d2d2;
     border-color: #ffffff00;
+    padding-block: 0px;
+    margin-bottom: 10px;
 }
 
     .btn-acc:hover{
     	    color: #071932;
     background-color: #ffffff;
     box-shadow: 0px 0px 2px 2px #071932;
+
     }
 
     .btn-acc1{
@@ -323,6 +325,8 @@
     background-color: #071932;
     box-shadow: 0px 0px 3px 3px #d2d2d2;
     border-color: #ffffff00;
+    padding-block: 0px;
+    margin-bottom: 10px;
 
 
     }
@@ -406,6 +410,39 @@
    	color: orange;
    }
 
+       .btn-primary {
+    color: #fff;
+    background-color:#000e21;
+     border-color: transparent; 
+    padding-block: 2px;
+    }
+
+     .btn-primary:hover {
+    color: #fff;
+    background-color: #cb873c;
+     border-color: transparent;
+     padding-block: 2px;
+    
+    }
+
+    .btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: transparent;
+    padding-block: 2px;
+}
+    .btn-secondary:hover {
+    color: #fff;
+    background-color: #cb873c;
+    border-color: transparent;
+    padding-block: 2px;
+}
+ .btn-primary:focus ,.btn-primary:active {
+    color: #fff;
+    background-color: #000e21;
+    border-color:#1f749c!important;
+    box-shadow: 0 0 0 0.25rem rgb(31 108 143 / 34%);
+}
 
 
 	
