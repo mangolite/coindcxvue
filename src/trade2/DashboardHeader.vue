@@ -7,7 +7,7 @@
 				&nbsp;{{$store.getters.symbol}}
 			</b-navbar-brand>
 
-			<b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+			<b-navbar-toggle target="nav-collapse">g</b-navbar-toggle>
 
 			<b-collapse id="nav-collapse" is-nav class="justify-content-end ">
 			<!-- Right aligned nav items "  -->

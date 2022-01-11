@@ -91,13 +91,14 @@ export default {
 
     .title{
 
-    color: #ffffff;
-    font-weight: 700;
+   color: #000000;
+    font-weight: 900;
     text-align: center;
-    font-size: 15px;
-    text-shadow: 0px 1px 7px #232121;
+    font-size: 20px;
+    text-shadow: 1px 1px 1px #8484848c;
     margin-top: -6px;
     margin-bottom: 6px;
+    font-family: monospace;
   }
 
 

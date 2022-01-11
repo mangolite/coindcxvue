@@ -344,13 +344,14 @@
      .alert2{
      	
 		
-		animation: blinkingText .4s infinite!important;
+		animation: blinkingText 1s infinite!important;
      }
         
       .alert3{
       	font-weight: 600!important;
 
-      	 animation: blink 1s infinite; 
+      	 animation: blink .5s infinite;
+      	 font-size: 20px; 
       }  
 
     #pnl{
@@ -363,12 +364,13 @@
     }
 
   #pnl  thead tr th {
-  	       background-color: black!important;
+  	       background-color: #001b41!important;
     color: white!important;
     font-weight: 600!important;
     
     font-family: unset;
-    box-shadow: none;
+    box-shadow: inset 1px 1px 10px 10px #000000!important;
+
  } 
 
 
@@ -509,6 +511,7 @@
     --bs-table-hover-color: #fff;
     color: #ffffff;
     border-color: #ffffff;
+    box-shadow: inset 1px 1px 6px 1px #959595;
 }
 
 .table-success {
