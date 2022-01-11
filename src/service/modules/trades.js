@@ -2,11 +2,13 @@ import Vue from 'vue';
 import request from 'request';
 import crypto from 'crypto';
 import formatters from "../../formatter.js"
+import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
 var baseurlPublic =  'https://pure-citadel-90943.herokuapp.com/https://public.coindcx.com' 
       // Place your API key and secret below. You can generate it from the website.
+const socketEndpoint = "wss://stream.coindcx.com";
 var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
 var api_secret_1 = localStorage.getItem("api_secret_1") || localStorage.getItem("api_secret");
 
@@ -79,7 +81,7 @@ return {
             fee_amount : 0,
             starting_coins : 0,
             buy_rate : 0, sell_rate : 0,
-            efective_rate : 0, now_rate : 0,
+            efective_rate : 0, now_rate : 0, buy_rate_low : 0,buy_rate_high : 0,buy_rate_eff : 0,
             stock : oldSummary?.meta?.stock, stock_quantity : oldSummary?.meta?.stock_quantity,
             stock_worth : oldSummary?.meta?.stock_worth,
             postsale_profit : oldSummary?.meta?.postsale_profit,
@@ -253,19 +255,40 @@ const getters = {
       total_quantity : (selected.balance ? selected.balance.total : 0),
       _rowVariant : "warning"
     },{
-       side : 'Buy Rate',
-       market : symbol,
-       price_per_unit : selected.meta.buy_rate,
-       amount : selected.meta.buy_rate * selected.meta.buy_quantity,
-       total_quantity : selected.meta.buy_quantity,
-        _rowVariant : "buyRate"
+      side : "Buy Rate High", //_rowVariant : "info",
+      market : symbol, order : 20, 
+      price_per_unit : selected.meta.buy_rate_high,
+      amount : selected.meta.buy_rate_high * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
     },{
-       side : "Buy Rate Stock", //_rowVariant : "info",
-       market : symbol,
-       price_per_unit : selected.meta.buy_rate_stock,
-       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
-       total_quantity : (selected.balance ? selected.balance.total : 0),
-        _rowVariant : "buyRateStock"
+      side : "Buy Rate Stock", //_rowVariant : "info",
+      market : symbol,  order : 10, 
+      price_per_unit : selected.meta.buy_rate_stock,
+      amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
+    },{
+      side : 'Buy Rate',
+      market : symbol, order : 0, 
+      price_per_unit : selected.meta.buy_rate,
+      amount : selected.meta.buy_rate * selected.meta.buy_quantity,
+      total_quantity : selected.meta.buy_quantity,
+       _rowVariant : "buyRate"
+   },{
+      side : "Buy Rate Eff.", //_rowVariant : "info",
+      market : symbol,order : -10, 
+      price_per_unit : selected.meta.buy_rate_eff,
+      amount : selected.meta.buy_rate_eff * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+      _rowVariant : "buyRateStock"
+    },{
+      side : "Buy Rate Low", //_rowVariant : "info",
+      market : symbol, order : -20, 
+      price_per_unit : selected.meta.buy_rate_low,
+      amount : selected.meta.buy_rate_low * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
     },{
        side : "Sell Rate",_rowVariant : "SellRate",
        market : symbol,
@@ -534,6 +557,9 @@ const actions = {
             meta.buy_rate_min,
             meta.buy_rate_max
           );
+          meta.buy_rate_eff = Math.max(meta.efective_rate,meta.buy_rate_min);
+          meta.buy_rate_low = Math.min(meta.buy_rate,meta.buy_rate_eff);
+          meta.buy_rate_high = Math.max(meta.buy_rate_max,meta.buy_rate_eff,meta.buy_rate);
           state.summary = summary;
         }
         commit('summary',state.summary);
@@ -835,9 +861,54 @@ async updateLocal({ commit,dispatch,getters }){
     commit('local',state.local);
     localStorage.setItem('lastRates',JSON.stringify(state.local));
   } 
-}
+},
 
-  
+    async subscriber(){
+
+            let _index = getters.account;
+            let api_key = KEYS["api_key_" + _index];
+            let api_secret = KEYS["api_secret_" + _index];
+            console.log("_index",_index)
+            if(!api_key && !api_secret){
+              return;
+            }
+
+          //connect to server.
+          const socket = io(socketEndpoint, {
+            transports: ['websocket']
+          });
+
+          const secret = "secret";
+          const key = "key";
+
+
+          const body = { channel: "coindcx" };
+          const payload = new Buffer(JSON.stringify(body)).toString();
+          const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+
+          //Join channel
+          socket.emit('join', {
+            'channelName': "coindcx",
+            'authSignature': signature,
+            'apiKey' : api_key
+          });
+
+
+          //Listen update on eventName
+          socket.on("balance-update", (response) => {
+            if (response.event == "balance-update") {
+              console.log("****balance-update",response.data);
+            }
+          });
+
+          socket.on("trade-update", (response) => {
+            console.log("****trade-update",response.data);
+          });
+
+
+
+    }
+
 
 };
 
