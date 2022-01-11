@@ -120,7 +120,7 @@
 					
 						<span  v-if="row.item.ticker && row.item.meta"  :class="{
 						'fw-bold tbc  ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
-						'fw-bold tbc ok' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
+						'fw-bold tbc alert' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
 					}">
 							<span class="fa fa-rupee-sign text-xxs" aria-hidden="true"></span>
 												{{row.item.ticker.last_price * row.item.meta.stock | round2}}</span>
@@ -140,14 +140,19 @@
 						@&nbsp;{{row.item.ticker.last_price | round5}}
 					</div>
 				</div>
+				
 		</template>
-		<template #cell(nonsale)="row">
+		<template #cell(nonsale)="row" class="alert" >
 				<div class="text-bold ts" >
 					<span class="fa fa-rupee-sign text-xxs" aria-hidden="true" ></span>
 					{{row.item.ticker.last_price  * row.item.balance.balance | round5}}
 				</div>
-				<div class="text-xs coin">{{row.item.balance.balance | round5}}</div>
-				<div class="text-sm  float-start">
+				<div class="text-xs coin  ">{{row.item.balance.balance | round5}}
+					<span v-if="row.item.balance.balance " class="text-center" :class="{
+						'fa fa-dot-circle float-end ' : (row.item.balance.balance  > 0),
+						
+					}"></span></div>
+				<div class="text-sm  float-start" >
 					<div v-if="row.item.ticker && row.item.meta" class="text-center" :class="{
 						'fw-bold text-success ' : (row.item.ticker.last_price > row.item.meta.buy_rate_stock),
 						'fw-bold text-danger ' : (row.item.ticker.last_price < row.item.meta.buy_rate_stock),
@@ -262,7 +267,7 @@
 					{ key: 'stock', label: ' @NowRate', sortable: true, variant : "stkn",sortByFormatted:true,
 						formatter: (v,k,item) => item.meta.stock_worth},
 
-					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark",sortByFormatted:true,
+					{ key: 'nonsale', label: ' NOTSale', sortable: true, variant : "info-dark" ,sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.balance?.balance || 0) * formatter.num(item?.ticker?.last_price || 0) * 0.999 },
 
 					{ key: 'profit_presale', label: 'NowPNL', sortable: true, variant : "1dark",class:"", sortByFormatted:true,
@@ -296,24 +301,34 @@
 </script>
 <style >
       
-    
+    @keyframes blinkingText{
+		
+		50%		{ color: #ef0a1a;}
+		
+	}
 
-@keyframes blink {
- 50% { border-color: #ff0000; } 
-}
-table{ /*or other element you want*/
-    animation-name: blink ;
-    animation-duration: .5s ;
-    animation-timing-function: step-end ;
-    animation-iteration-count: infinite ;
-    animation-direction: alternate ;
-}
 
-     .ok{
-     	border: 3px solid;
-    border-color: #c3c3c3;
-    animation: blink 1s steps(1, end) infinite;
+ @keyframes blinkingBackground{
+		
+		50%	        { background-color: #F5222D;}
+		50%         {border-color: white;}
+	}
 
+
+     .alert{
+     	color: #fff;
+		
+		
+		border: solid 1px;
+		animation: blinkingBackground .4s infinite;
+		    border-color: #a30c0c;
+     }
+
+     .alert2{
+     	color: #000;
+		font-weight: bold;
+		font-size: 2rem;
+		animation: blinkingText 1s infinite;
      }
     #pnl{
     	margin-top: 20px;
@@ -330,6 +345,7 @@ table{ /*or other element you want*/
     font-weight: 600!important;
     
     font-family: unset;
+    box-shadow: none;
  } 
 
 
@@ -349,7 +365,7 @@ table{ /*or other element you want*/
    .tbc{
    	background-color: #a30c0c;
     color: white!important;
-    border-radius: 0px;
+    border-radius: 7px;
     padding-inline: 4px;
     padding-block: 2px;
 
@@ -357,7 +373,7 @@ table{ /*or other element you want*/
    .tbb{
    	background-color: #128961;
     color: white!important;
-    border-radius: 0px;
+    border-radius: 7px;
      padding-inline: 4px;
     padding-block: 2px;
 
