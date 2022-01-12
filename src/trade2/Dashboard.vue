@@ -121,6 +121,10 @@
 
 		</a-row>
 
+		<a-row :gutter="24" type="flex" align="stretch">
+  			<StatusMeter/>
+		</a-row>
+
 		<!-- / Counter Widgets -->
 		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
 			<calculation-table
@@ -152,10 +156,6 @@
 			<a-col :span="24" :lg="24" class="mb-24">
 <!-- 				<CardCompareChart></CardCompareChart> -->	
 		</a-col>
-		</a-row>
-
-		<a-row :gutter="24" type="flex" align="stretch" v-if="selected">
-
 		</a-row>
 
 		<!-- Charts -->
@@ -192,6 +192,7 @@
 	import History from '@/trade/History' ;
 	
 	import CalculationTable from './CalculationTable' ;
+	import StatusMeter from './StatusMeter';
 
 
 	// "Projects" table list of columns and their properties.
@@ -304,7 +305,8 @@
 			Orders,History,
 			//CardCompareChart,
 			CalculationTable,
-			NumberCounter
+			NumberCounter,
+			StatusMeter
 		},
 		data() {
 			return {

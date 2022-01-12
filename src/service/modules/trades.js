@@ -172,7 +172,8 @@ const getters = {
     let TOTAL = {
       onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
       netWorth : 0, afterSellWorth  :0 , earning : 0,investment : 0, now_profit : 0,
-      net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0
+      net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0,
+      buy_rate_stock_amount : 0,buy_rate_avg_amount : 0
     };
     TOTAL=state.orders.reduce(function(total,n,i){
       if(n.side == 'buy')
@@ -207,6 +208,12 @@ const getters = {
       total.net_debit = (total.net_debit) + num(n?.meta?.net_debit);
       total.buy_amount = num(total.buy_amount) + num(n?.meta?.buy_amount);
       total.net_credit = num(total.net_credit) + num(n?.meta?.net_credit);
+      total.buy_rate_stock_amount = num(total.buy_rate_stock_amount) + (
+        num(n?.meta?.buy_rate_stock || 0) * num(n?.balance?.total || 0)
+      );
+      total.buy_rate_avg_amount = num(total.buy_rate_avg_amount) + (
+        num(n?.meta?.buy_rate || 0) * num(n?.balance?.total || 0)
+      );
 
       return total;  
     },TOTAL);
@@ -380,7 +387,7 @@ const getters = {
     }).sort(function(a,b){
         return b.timestamp - a.timestamp;
     });
-  },
+  }
 };
 
 const actions = {
