@@ -526,7 +526,7 @@ const actions = {
           meta.fee_amount+= (deal.fee_amount - 0);
 
           meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
-          meta.stock = Math.max(meta.stock_quantity,0);
+          meta.stock = Math.max(meta.stock_quantity,0) || (summary[key]?.balance?.total);
           meta.net_debit = meta.buy_amount + meta.fee_amount
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
