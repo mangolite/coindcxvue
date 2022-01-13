@@ -9,7 +9,7 @@
 						backgroundColor : ar.color,
 						position : 'absolute', float : 'left',
 						left : '0px',
-						width : Math.max(ar.value,5*(index+1)) + '%'
+						width : Math.max(ar.value,5*(index+1))*0.98 + '%'
 					}"
 				>&nbsp;</div>
 				<div :style="{
