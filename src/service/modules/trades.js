@@ -173,7 +173,7 @@ const getters = {
       onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
       netWorth : 0, afterSellWorth  :0 , earning : 0,investment : 0, now_profit : 0,
       net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0,
-      buy_rate_stock_amount : 0,buy_rate_avg_amount : 0
+      buy_rate_stock_amount : 0,buy_rate_avg_amount : 0, onsale_amount_total : 0
     };
     TOTAL=state.orders.reduce(function(total,n,i){
       if(n.side == 'buy')
@@ -213,6 +213,9 @@ const getters = {
       );
       total.buy_rate_avg_amount = num(total.buy_rate_avg_amount) + (
         num(n?.meta?.buy_rate || 0) * num(n?.balance?.total || 0)
+      );
+      total.onsale_amount_total = num(total.onsale_amount_total) + (
+        Math.max(num(n?.order?.onsale_rate || 0),num(n?.ticker?.last_price || 0)) * num(n?.balance?.total || 0)
       );
 
       return total;  
