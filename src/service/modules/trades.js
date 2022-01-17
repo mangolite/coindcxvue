@@ -160,7 +160,6 @@ const getters = {
               !!Math.round(num(value?.meta?.stock_worth)) 
             || !!Math.round(num(value?.meta?.onbuy_amount))
             || !!Math.round(num(value?.meta?.onsale_amount))
-            || !!Math.round(num(value?.balance?.balance || 0) * num(value?.ticker?.last_price || 0))
             //!!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
             //!!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
           );
