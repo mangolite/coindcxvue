@@ -2,11 +2,13 @@ import Vue from 'vue';
 import request from 'request';
 import crypto from 'crypto';
 import formatters from "../../formatter.js"
+import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
 var baseurl = 'https://pure-citadel-90943.herokuapp.com/https://api.coindcx.com'
 var baseurlPublic =  'https://pure-citadel-90943.herokuapp.com/https://public.coindcx.com' 
       // Place your API key and secret below. You can generate it from the website.
+const socketEndpoint = "wss://stream.coindcx.com";
 var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
 var api_secret_1 = localStorage.getItem("api_secret_1") || localStorage.getItem("api_secret");
 
@@ -79,7 +81,7 @@ return {
             fee_amount : 0,
             starting_coins : 0,
             buy_rate : 0, sell_rate : 0,
-            efective_rate : 0, now_rate : 0,
+            efective_rate : 0, now_rate : 0, buy_rate_low : 0,buy_rate_high : 0,buy_rate_eff : 0,
             stock : oldSummary?.meta?.stock, stock_quantity : oldSummary?.meta?.stock_quantity,
             stock_worth : oldSummary?.meta?.stock_worth,
             postsale_profit : oldSummary?.meta?.postsale_profit,
@@ -158,6 +160,7 @@ const getters = {
               !!Math.round(num(value?.meta?.stock_worth)) 
             || !!Math.round(num(value?.meta?.onbuy_amount))
             || !!Math.round(num(value?.meta?.onsale_amount))
+            || !!Math.round(num(value?.balance?.balance || 0) * num(value?.ticker?.last_price || 0))
             //!!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
             //!!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
           );
@@ -170,7 +173,8 @@ const getters = {
     let TOTAL = {
       onBuy : 0, onSell : 0, afterSell : 0, netStockWorth : 0, inStockWorth : 0, netINR : 0,
       netWorth : 0, afterSellWorth  :0 , earning : 0,investment : 0, now_profit : 0,
-      net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0
+      net_debit : 0, net_credit : 0, buy_amount : 0,extra_amount : 0,
+      buy_rate_stock_amount : 0,buy_rate_avg_amount : 0, onsale_amount_total : 0
     };
     TOTAL=state.orders.reduce(function(total,n,i){
       if(n.side == 'buy')
@@ -205,6 +209,15 @@ const getters = {
       total.net_debit = (total.net_debit) + num(n?.meta?.net_debit);
       total.buy_amount = num(total.buy_amount) + num(n?.meta?.buy_amount);
       total.net_credit = num(total.net_credit) + num(n?.meta?.net_credit);
+      total.buy_rate_stock_amount = num(total.buy_rate_stock_amount) + (
+        num(n?.meta?.buy_rate_stock || 0) * num(n?.balance?.total || 0)
+      );
+      total.buy_rate_avg_amount = num(total.buy_rate_avg_amount) + (
+        num(n?.meta?.buy_rate || 0) * num(n?.balance?.total || 0)
+      );
+      total.onsale_amount_total = num(total.onsale_amount_total) + (
+        Math.max(num(n?.order?.onsale_rate || 0),num(n?.ticker?.last_price || 0)) * num(n?.balance?.total || 0)
+      );
 
       return total;  
     },TOTAL);
@@ -253,19 +266,40 @@ const getters = {
       total_quantity : (selected.balance ? selected.balance.total : 0),
       _rowVariant : "warning"
     },{
-       side : 'Buy Rate',
-       market : symbol,
-       price_per_unit : selected.meta.buy_rate,
-       amount : selected.meta.buy_rate * selected.meta.buy_quantity,
-       total_quantity : selected.meta.buy_quantity,
-        _rowVariant : "buyRate"
+      side : "Buy Rate High", //_rowVariant : "info",
+      market : symbol, order : 20, 
+      price_per_unit : selected.meta.buy_rate_high,
+      amount : selected.meta.buy_rate_high * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
     },{
-       side : "Buy Rate Stock", //_rowVariant : "info",
-       market : symbol,
-       price_per_unit : selected.meta.buy_rate_stock,
-       amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
-       total_quantity : (selected.balance ? selected.balance.total : 0),
-        _rowVariant : "buyRateStock"
+      side : "Buy Rate Stock", //_rowVariant : "info",
+      market : symbol,  order : 10, 
+      price_per_unit : selected.meta.buy_rate_stock,
+      amount : selected.meta.buy_rate_stock * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
+    },{
+      side : 'Buy Rate',
+      market : symbol, order : 0, 
+      price_per_unit : selected.meta.buy_rate,
+      amount : selected.meta.buy_rate * selected.meta.buy_quantity,
+      total_quantity : selected.meta.buy_quantity,
+       _rowVariant : "buyRate"
+   },{
+      side : "Buy Rate Eff.", //_rowVariant : "info",
+      market : symbol,order : -10, 
+      price_per_unit : selected.meta.buy_rate_eff,
+      amount : selected.meta.buy_rate_eff * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+      _rowVariant : "buyRateStock"
+    },{
+      side : "Buy Rate Low", //_rowVariant : "info",
+      market : symbol, order : -20, 
+      price_per_unit : selected.meta.buy_rate_low,
+      amount : selected.meta.buy_rate_low * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
     },{
        side : "Sell Rate",_rowVariant : "SellRate",
        market : symbol,
@@ -357,7 +391,7 @@ const getters = {
     }).sort(function(a,b){
         return b.timestamp - a.timestamp;
     });
-  },
+  }
 };
 
 const actions = {
@@ -492,7 +526,7 @@ const actions = {
           meta.fee_amount+= (deal.fee_amount - 0);
 
           meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
-          meta.stock = Math.max(meta.stock_quantity,0);
+          meta.stock = Math.max(meta.stock_quantity,0) || (summary[key]?.balance?.total);
           meta.net_debit = meta.buy_amount + meta.fee_amount
           meta.net_credit = meta.sell_amount;
           meta.earning = meta.net_credit - meta.net_debit;
@@ -534,6 +568,9 @@ const actions = {
             meta.buy_rate_min,
             meta.buy_rate_max
           );
+          meta.buy_rate_eff = Math.max(meta.efective_rate,meta.buy_rate_min);
+          meta.buy_rate_low = Math.min(meta.buy_rate,meta.buy_rate_eff);
+          meta.buy_rate_high = Math.max(meta.buy_rate_max,meta.buy_rate_eff,meta.buy_rate);
           state.summary = summary;
         }
         commit('summary',state.summary);
@@ -835,9 +872,54 @@ async updateLocal({ commit,dispatch,getters }){
     commit('local',state.local);
     localStorage.setItem('lastRates',JSON.stringify(state.local));
   } 
-}
+},
 
-  
+    async subscriber(){
+
+            let _index = getters.account;
+            let api_key = KEYS["api_key_" + _index];
+            let api_secret = KEYS["api_secret_" + _index];
+            console.log("_index",_index)
+            if(!api_key && !api_secret){
+              return;
+            }
+
+          //connect to server.
+          const socket = io(socketEndpoint, {
+            transports: ['websocket']
+          });
+
+          const secret = "secret";
+          const key = "key";
+
+
+          const body = { channel: "coindcx" };
+          const payload = new Buffer(JSON.stringify(body)).toString();
+          const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+
+          //Join channel
+          socket.emit('join', {
+            'channelName': "coindcx",
+            'authSignature': signature,
+            'apiKey' : api_key
+          });
+
+
+          //Listen update on eventName
+          socket.on("balance-update", (response) => {
+            if (response.event == "balance-update") {
+              console.log("****balance-update",response.data);
+            }
+          });
+
+          socket.on("trade-update", (response) => {
+            console.log("****trade-update",response.data);
+          });
+
+
+
+    }
+
 
 };
 
