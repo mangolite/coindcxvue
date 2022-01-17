@@ -90,7 +90,7 @@
 				<br>
 			</div>
 																			
-				<div class=" coin  ">{{(row.item.meta.stock) | min0 | round5}}</div>
+				<div class=" coin  ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
 
 		</template>
 
@@ -266,8 +266,8 @@
 					{ key: 'profit', label: ' PastPNL', sortable: true, variant : "1dark",class:"",sortByFormatted:true,
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
 
-					{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
-						formatter: (v,k,item) => (item.meta.stock) },
+						{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
+						formatter: (v,k,item) => (item.meta.buy_quantity - item.meta.sell_quantity)},
 					
 					{ key: 'stkwrth', label: ' @BuyRate', sortable: true, variant : "stkb", class:"fw-normal",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },
