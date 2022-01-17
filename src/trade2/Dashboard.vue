@@ -349,7 +349,7 @@
 
 
 	.fa-coins{
-		background-color:#00b4ba!important;
+		background-color:#c5a518!important;
 	}
 
 	.fa-wallet{
@@ -373,7 +373,7 @@
 	}
 
 	.c-w{
-		color: #00b4ba!important;
+		color: #c5a518!important;
 	}
     
     .inr{

@@ -321,7 +321,7 @@
  @keyframes blinkingBackground{
 		
 		50%	        { background-color: #F5222D;}
-		50%         {border-color: white;}
+		
 	}
 
 	@keyframes blink {  
@@ -336,9 +336,9 @@
      	color: #fff;
 		
 		
-		border: solid 0px!important;
-		animation: blinkingBackground .4s infinite;
-		    border-color: #a30c0c;
+		border: solid 0px;
+		animation: blinkingBackground 1s infinite;
+		    
      }
 
      .alert2{
@@ -388,7 +388,7 @@
     color: #10ab57!important;
 }
    .tbc{
-   	background-color: #00598a;
+   	background-color: #c5a518;
     color: white!important;
     border-radius: 7px;
     padding-inline: 4px;
@@ -396,7 +396,7 @@
 
    }
    .tbb{
-   	background-color: #128961;
+   	background-color: #18c4e8!important;
     color: white!important;
     border-radius: 7px;
      padding-inline: 4px;
@@ -425,7 +425,7 @@
     }
 
 	.fix{
-		color: white!important;
+		color: #00598a!important;
   
 	}
 
