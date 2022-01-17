@@ -336,7 +336,7 @@
      	color: #fff;
 		
 		
-		border: solid 1px;
+		border: solid 0px!important;
 		animation: blinkingBackground .4s infinite;
 		    border-color: #a30c0c;
      }
@@ -388,7 +388,7 @@
     color: #10ab57!important;
 }
    .tbc{
-   	background-color: #a30c0c;
+   	background-color: #00598a;
     color: white!important;
     border-radius: 7px;
     padding-inline: 4px;
@@ -425,8 +425,8 @@
     }
 
 	.fix{
-		color: #0484b0!important;
-   
+		color: white!important;
+  
 	}
 
 	 .now{
