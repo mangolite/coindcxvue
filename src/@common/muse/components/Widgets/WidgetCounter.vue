@@ -37,7 +37,7 @@
 
 <script>
 
-	import formatter from '@/formatter';
+	import formatter from '@/service/formatter';
 
 	export default ({
 		props: {

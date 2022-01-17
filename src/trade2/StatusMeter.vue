@@ -27,7 +27,7 @@
 </template>
 
 <script>
-	import formatter from '../formatter.js';
+	import formatter from '../service/formatter.js';
 	let counter = 0;
 	function num(str){
 		if(isNaN(str) || !str){

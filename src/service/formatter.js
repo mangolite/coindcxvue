@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import numeral from 'numeral';
 
-
 function num(str){
 	if(isNaN(str) || !str){
 	  return 0;

@@ -1,11 +1,21 @@
 <template>
   <div class="hello">
-
-      
       <a-card :bordered="false" class="dashboard-bar-line header-solid">
         <div class="title"> Trades History</div>
-       <b-table small striped :items="myTrades" id="myTrades" fixed
-       :fields="fields">
+
+      <b-form-group v-slot="{ ariaDescribedby }" class="text-center">
+        <b-form-radio-group
+          id="btn-radios-1" size="xs"
+          v-model="timewindow"
+          :options="options"
+          :aria-describedby="ariaDescribedby"
+          name="radios-btn-default"
+          buttons
+        ></b-form-radio-group>
+      </b-form-group>
+
+       <b-table small striped :items="trades" id="myTrades" fixed
+       :fields="fields" :sort-by="'time'" :sort-desc="false">
 
         <template #cell(side)="trade">
           <span :data-value="trade.value" :class="{
@@ -25,7 +35,8 @@
             {{(trade.item.quantity * trade.item.price) | round2}}
         </template>
 
-        <template #cell(time)="trade">{{trade.item.timestamp | ago}}
+        <template #cell(time)="trade">
+          <small>{{trade.item.timestamp | ago}}</small>
         </template>
 
        </b-table>
@@ -37,6 +48,7 @@
 <script>
 
 import momnet from 'moment';
+import formatter from '@/service/formatter.js';
 
 export default {
     props: {
@@ -53,8 +65,46 @@ export default {
             { key: 'quantity', label : "TQty"},
             { key: 'amount', label : "Amount"},
             {key : 'time' , label : "When"}
+        ],
+        timewindow: 1,
+        options: [
+          { text: 'None', value: 1 },
+          { text: 'Daily', value: 1000*60*60*24 },
+          { text: 'Weekly', value: 1000*60*60*24*7 },
+          { text: 'Monthly', value: 1000*60*60*24*30 }
         ]
   }),
+  computed : {
+    trades : function(){
+      let tradeMap = {};
+      let trades = [];
+      let day = this.timewindow;
+      let now = Date.now();
+      this.myTrades.map(function(trade){
+        let time =  Math.floor(trade.timestamp/day)*day;
+        let key = trade.side + time;
+        tradeMap[key] = tradeMap[key] || {
+          pushed : false,
+          quantity : 0,
+          amount : 0
+        };
+
+        tradeMap[key].timestamp = Math.min(time,tradeMap[key].timestamp || time);
+        tradeMap[key].symbol = trade.symbol;
+        tradeMap[key].side = trade.side;
+        tradeMap[key].quantity = tradeMap[key].quantity  + formatter.num(trade.quantity);
+        tradeMap[key].amount = tradeMap[key].amount  + (formatter.num(trade.quantity) * formatter.num(trade.price));
+        tradeMap[key].price = tradeMap[key].amount/tradeMap[key].quantity;
+
+        if(!tradeMap[key].pushed){
+            tradeMap[key].pushed = true;
+            trades.push(tradeMap[key]);
+            return tradeMap[key];
+        }
+      });
+      return trades;
+    }
+  },
   filters : {
     ago : function (timestamp) {
       return momnet(timestamp).fromNow();

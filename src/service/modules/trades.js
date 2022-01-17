@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import request from 'request';
 import crypto from 'crypto';
-import formatters from "../../formatter.js"
+import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
@@ -36,7 +36,17 @@ for(var i =1; i < 50; i++){
 INDEX = KEY_LIST.length;
 var LOADED_STAMP = Date.now();
 var SKIP = true;
-var STATE_TBALANCES = 'state.TBALANCES_v2'
+var STATE_TBALANCES = 'state.TBALANCES_v2';
+var WIP = {};
+function locked(name){
+  if(WIP[name] && WIP[name] <  Date.now()) {
+    return true;
+  }
+  WIP[name] = Date.now() + 5000; 
+}
+function unlock(name){
+  delete WIP[name];
+}
 
 var buyrate = function(symbol,qty,tqty,tcost,min,max,depth){
   depth = depth || 0;
@@ -195,11 +205,12 @@ const getters = {
       if(n.balance){
         let totalCoins = num(num(n.balance.balance) + num(n.balance.locked_balance));
         if(n.ticker){
-          total.inStockWorth =  total.inStockWorth + num(n.balance.balance) * n.ticker.last_price
-          total.netStockWorth = total.netStockWorth + num(totalCoins) * n.ticker.last_price;
+          let last_price = num(n.ticker.last_price)
+          total.inStockWorth =  total.inStockWorth + num(n.balance.balance) * last_price
+          total.netStockWorth = total.netStockWorth + num(totalCoins) * last_price;
           if(n.meta && n.meta.stock_quantity != totalCoins){
             n.meta.extra_stock = num(totalCoins - n.meta.stock_quantity);
-            n.meta.extra_amount = Math.round(n.meta.extra_stock * n.ticker.last_price);
+            n.meta.extra_amount = Math.round(n.meta.extra_stock * last_price);
             total.extra_amount  = total.extra_amount + n.meta.extra_amount;
           }
         }
@@ -463,7 +474,8 @@ const actions = {
   },
 
   async fetchHistory({ commit,dispatch },index){
-    console.log("NaN:fetchHistory")
+    if(locked("fetchHistory")) return ;
+    console.log("NaN:fetchHistory");
     let _index = state.account;
     let api_key = KEYS["api_key_" + _index];
     let api_secret = KEYS["api_secret_" + _index];
@@ -577,6 +589,7 @@ const actions = {
         dispatch('fetchMarketDetails');
         dispatch('updateLocal');
         dispatch('TBALANCES');
+        unlock("fetchHistory");
       });
   },
   //
@@ -625,7 +638,6 @@ const actions = {
   },
 
   async fetchHigLow({ commit,dispatch,getters },{pair,symbol}){
-    console.log("fetchHigLow",symbol);
     if(!symbol){
       return;
     }    
@@ -700,6 +712,8 @@ const actions = {
   },
   //
   async syncTicker({ commit,dispatch,getters },index){
+    if(locked("syncTicker")) return ;
+
     let summary = state.summary;
     request.get(baseurl + "/exchange/ticker",function(error, response, body) {
         let tickers = JSON.parse(body);
@@ -723,10 +737,13 @@ const actions = {
           dispatch('syncTicker');
           dispatch('TBALANCES');
         },2000);
+        unlock("syncTicker");
     });
   },
   //
   async fetchBalance({ commit,dispatch,getters },index){
+    if(locked("fetchBalance")) return ;
+
     console.log("fetchBalance",getters.symbol);
     let _index = getters.account;
     let api_key = KEYS["api_key_" + _index];
@@ -779,11 +796,14 @@ const actions = {
     request.post(options,function(error, response, body) {
         let balances = body;
         console.log("balances",balances)
-        onBalance(balances)
+        onBalance(balances);
+        unlock("fetchBalance");
     });
   },
   //
   async fetchOrders({ commit,dispatch,getters },index){
+    if(locked("fetchOrders")) return;
+
     let _index = getters.account;
     let api_key = KEYS["api_key_" + _index];
     let api_secret = KEYS["api_secret_" + _index];
@@ -848,6 +868,7 @@ const actions = {
         dispatch('updateLocal');
         dispatch('syncHistory',5000);
         dispatch('TBALANCES');
+        unlock("fetchOrders")
     });
 },
 
