@@ -149,7 +149,8 @@
 
 
    .d-d{
-   	color: #ebff29;
+   	color: #ebff29
+   	;
    }
    
       .router-link-active:visited .coin-n{

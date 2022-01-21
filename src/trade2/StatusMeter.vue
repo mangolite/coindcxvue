@@ -2,6 +2,15 @@
 	<div :id="options.needleValue"> 
 		<div class="mb-2" >
 			<div style="position:absolute;width:100%;height:20px;font-size:8px;z-index:1000">
+				<div :style="{
+						zIndex : 100,
+						backgroundColor : '#000',
+						position : 'absolute', float : 'left',
+						left : options.needleValue  + '%',
+						width : '2px', height : '22px',
+						margin : '-5px 0px -5px 0px'
+					}"
+				>&nbsp;</div>
 				<div v-for="(ar,index ) in arc" v-bind:key="index"
 					v-tooltip=" '₹ ' + ar.text" :title="ar.text"
 					:style="{
@@ -14,11 +23,14 @@
 				>&nbsp;</div>
 				<div :style="{
 						zIndex : 100,
-						backgroundColor : '#000',
+						backgroundColor : 'transparent',
 						position : 'absolute', float : 'left',
 						left : options.needleValue  + '%',
-						width : '5px', height : '22px',
-						margin : '-5px 0px -5px 0px'
+						width : '1px', height : '22px',
+						margin : '0px 0px 0px -5px',
+						borderLeft: '6px solid transparent',
+	                    borderRight: '6px solid transparent',
+	                    borderBottom: '10px solid #000'
 					}"
 				>&nbsp;</div>
 			</div>
@@ -69,7 +81,7 @@
 				let buy_rate_avg_amount = t0 + num(total.buy_rate_avg_amount);
 				let onsale_amount_total = t0 + num(total.onsale_amount_total);
 
-				let colors = ['#660e0e','#d72020','#95541c','#95911c','#29951c', '#0d4a14'];
+				let colors = ['#db2d2d','#e36639 ','#e36639','#e6df31','#4bc93c', '#008910'];
 				this.arc = [{
 					value : round(t0*t100), text : round(t0), color : '#660e0e'
 				},{
