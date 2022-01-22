@@ -82,7 +82,7 @@ export default {
       let now = Date.now();
       this.myTrades.map(function(trade){
         let time =  Math.floor(trade.timestamp/day)*day;
-        let key = trade.side + time;
+        let key = trade.symbol + "/" + trade.side + "/" + time;
         tradeMap[key] = tradeMap[key] || {
           pushed : false,
           quantity : 0,
