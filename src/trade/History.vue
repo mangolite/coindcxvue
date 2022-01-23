@@ -16,6 +16,16 @@
 
        <b-table small striped :items="trades" id="myTrades" fixed
        :fields="fields" :sort-by="'time'" :sort-desc="false">
+        <template #table-colgroup>
+          <col
+            key="symbol"
+            :style="{ 'width' : '75px'}"
+          >
+          <col
+            key="side"
+            :style="{ width:'25px'}"
+          >
+        </template>
 
         <template #cell(symbol)="trade">
           <router-link tag="span" :to="`/trade2/${$store.getters.account}/${trade.value}`" 
@@ -31,9 +41,12 @@
         </template>
 
         <template #cell(side)="trade">
-          <span :data-value="trade.value" :class="{
-           'text-danger' : (trade.value == 'sell'),  'text-success' : (trade.value == 'buy')
-          }">{{trade.value}}</span>
+          <span v-if="trade.value == 'sell'" class="text-danger text-bold text-sm">
+            S
+          </span>
+          <span v-else class="text-success text-bold text-sm">
+            B
+          </span>
         </template>
         
         <template #cell(price)="trade">
@@ -77,7 +90,7 @@ export default {
     data: () => ({
         fields : [
             { key: 'symbol', label : "Coin"},
-            { key: 'side', label : "Side"},
+            { key: 'side', label : "S/B"},
             { key: 'price', label : "Price"},
             { key: 'quantity', label : "TQty"},
             { key: 'amount', label : "Amount"},
