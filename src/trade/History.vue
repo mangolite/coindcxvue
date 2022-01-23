@@ -19,7 +19,7 @@
         <template #table-colgroup>
           <col
             key="symbol"
-            :style="{ 'width' : '75px'}"
+            :style="{ 'min-width' : '75px', 'max-width' : '80px'}"
           >
           <col
             key="side"
