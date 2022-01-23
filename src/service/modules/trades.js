@@ -396,10 +396,10 @@ const getters = {
         return [];
     }
     let lastWeek = Date.now() - 1000*60*60*24*7;
-    return state.history.filter(function(trade){
-      return trade.timestamp > lastWeek;
-    }).sort(function(a,b){
-        return b.timestamp - a.timestamp;
+    return state.history.sort(function(a,b){
+      return b.timestamp - a.timestamp;
+    }).filter(function(trade,i){
+      return trade.timestamp > lastWeek || i < 50;
     });
   }
 };
@@ -532,8 +532,8 @@ const actions = {
             meta.buy_rate_min =  Math.min(meta.buy_rate_min,deal.price);
             meta.buy_rate_max = meta.buy_rate_max || 0;
             meta.buy_rate_max =  Math.max(meta.buy_rate_max,deal.price);
-
           }
+          deal.last_price = summary[key]?.ticker?.last_price;
           meta.fee_amount+= (deal.fee_amount - 0);
 
           meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
@@ -585,6 +585,7 @@ const actions = {
           state.summary = summary;
         }
         commit('summary',state.summary);
+        commit('history',state.history);
         dispatch('fetchBalance');
         dispatch('fetchMarketDetails');
         dispatch('updateLocal');

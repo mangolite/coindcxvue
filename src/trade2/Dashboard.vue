@@ -142,8 +142,8 @@
 			</a-col>
 			<a-col :span="24" :lg="10" class="mb-24">
 				<History
-  					:selected="selected" :myTrades="$store.getters.trades">
-  						
+  					:selected="selected" :myTrades="$store.getters.trades"
+					  :title="selected.symbol + ' - Trade History'">
   					</History>
 			</a-col>
 		</a-row>
@@ -170,7 +170,7 @@
 		<a-row :gutter="24" type="flex" align="stretch" style="margin-top: 20px;">
 			<a-col :span="24" :lg="24" class="mb-24">
 				<History
-  					:selected="selected" :myTrades="$store.getters.alltrades">
+  					:selected="selected" :myTrades="$store.getters.alltrades" title="Trade History">
   				</History>
 			</a-col>
 		</a-row>

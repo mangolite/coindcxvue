@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
       <a-card :bordered="false" class="dashboard-bar-line header-solid">
-        <div class="title"> Trades History</div>
+        <div class="title"> {{title}}</div>
 
       <b-form-group v-slot="{ ariaDescribedby }" class="text-center">
         <b-form-radio-group
@@ -16,6 +16,19 @@
 
        <b-table small striped :items="trades" id="myTrades" fixed
        :fields="fields" :sort-by="'time'" :sort-desc="false">
+
+        <template #cell(symbol)="trade">
+          <router-link tag="span" :to="`/trade2/${$store.getters.account}/${trade.value}`" 
+              v-tooltip="trade.item.last_price"
+              class="text-sm pointer">
+            <i class="text-xs fa pointer" :class="{
+              'fa-long-arrow-alt-down' : trade.item.price > trade.item.last_price,
+              'fa-long-arrow-alt-up' : trade.item.price < trade.item.last_price,
+              'text-success' : trade.item.good,
+              'text-danger' : !trade.item.good
+            }" />&nbsp;{{trade.value}}
+          </router-link>
+        </template>
 
         <template #cell(side)="trade">
           <span :data-value="trade.value" :class="{
@@ -56,6 +69,10 @@ export default {
       summary : {},
       myOrders : {},
       myTrades : {},
+      title : {
+        type : String,
+        default : "No Title"
+      }
     },
     data: () => ({
         fields : [
@@ -92,17 +109,24 @@ export default {
         tradeMap[key].timestamp = Math.min(time,tradeMap[key].timestamp || time);
         tradeMap[key].symbol = trade.symbol;
         tradeMap[key].side = trade.side;
+        tradeMap[key].last_price = trade.last_price || 0;
         tradeMap[key].quantity = tradeMap[key].quantity  + formatter.num(trade.quantity);
         tradeMap[key].amount = tradeMap[key].amount  + (formatter.num(trade.quantity) * formatter.num(trade.price));
         tradeMap[key].price = tradeMap[key].amount/tradeMap[key].quantity;
-
         if(!tradeMap[key].pushed){
             tradeMap[key].pushed = true;
             trades.push(tradeMap[key]);
             return tradeMap[key];
         }
       });
-      return trades;
+      return trades.map(function(deal){
+        if(deal.side == 'sell'){
+          deal.good  = (deal.last_price < deal.price);
+        } else {
+          deal.good  = (deal.last_price > deal.price);
+        }
+        return deal;
+      });
     }
   },
   filters : {
