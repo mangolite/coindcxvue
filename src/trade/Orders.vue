@@ -31,7 +31,9 @@
         </template>
 
         <template #cell(amount)="order">
-          <span class="fw-bold">{{(order.item.amount || (order.item.price_per_unit * order.item.total_quantity)) | round2}}</span>
+          <span class="fw-bold" v-tooltip="new Date(order.item.updated_at).toLocaleString()">
+            {{(order.item.amount || (order.item.price_per_unit * order.item.total_quantity)) | round2}}
+            </span>
         </template>
 
       </b-table>
