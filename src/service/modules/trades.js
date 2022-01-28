@@ -939,9 +939,51 @@ async updateLocal({ commit,dispatch,getters }){
 
 
 
+    },
+
+    async cancelOrder({commit,getters},order){
+
+      if(!window.confirm(`
+        Are you sure you want to cancel?
+        ${order.price_per_unit}x${order.total_quantity}=${order.amount}
+      `)){
+        return;
+      }
+
+
+      let _index = getters.account;
+      let api_key = KEYS["api_key_" + _index];
+      let api_secret = KEYS["api_secret_" + _index];
+      console.log("_index",_index)
+      if(!api_key && !api_secret){
+        return;
+      }
+      console.log("cancelOrder",order.id)
+      var timeStamp = Math.floor(Date.now());
+      // To check if the timestamp is correct
+      console.log(timeStamp);
+      let body = {
+          "timestamp": timeStamp,
+          id : order.id
+      }
+      const payload = new Buffer(JSON.stringify(body)).toString();
+      const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+  
+      const options = {
+          url: baseurl + "/exchange/v1/orders/cancel",
+          headers: {
+              'X-AUTH-APIKEY': api_key,
+              'X-AUTH-SIGNATURE': signature
+          },
+          json: true,
+          body: body
+      }
+
+      request.post(options,function(error, response, body) {
+        alert(body.message);
+      });
+
     }
-
-
 };
 
 const mutations = {

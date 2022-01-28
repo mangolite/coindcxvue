@@ -36,6 +36,20 @@
             </span>
         </template>
 
+        <template #cell(actions)="order">
+          <span v-if="order.item.id"
+            class="fw-bold fa fa-times-circle pointer text-muted"
+            v-tooltip="'Cancel Order'"
+            @click="$store.dispatch('cancelOrder',{ 
+                id : order.item.id,
+                price_per_unit : order.item.price_per_unit,
+                amount : order.item.price_per_unit * order.item.total_quantity,
+                total_quantity : order.item.total_quantity
+            })"
+            >
+          </span>
+        </template>
+
       </b-table>
 
   </a-card>
@@ -55,7 +69,8 @@ export default {
             { key: 'side', label : "Market" ,class:"side"},
             { key: 'ppu', label : "Price", class:"ppu" },
             { key: 'total_quantity', label : "TQty",class:"total_quantity"},
-            { key: 'amount', label : "Amount",class:"amount"}
+            { key: 'amount', label : "Amount",class:"amount"},
+             { key: 'actions', label : "Actions",class:"action"}
         ]
     }),
 }
