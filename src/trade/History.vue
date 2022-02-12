@@ -99,7 +99,7 @@ export default {
         timewindow: 0,
         options: [
           { text: 'Smart', value: 0 },
-          { text: 'One', value: 1 },
+          { text: 'One', value: 1 , lower : Date.now()-1000*60*60*24 },
           { text: '1d', value: 1000*60*60*24, lower : Date.now()-1000*60*60*24*7},
           { text: '7d', value: 1000*60*60*24*7,lower : Date.now()-1000*60*60*24*30 },
           { text: '30d', value: 1000*60*60*24*30, lower : Date.now()-1000*60*60*24*30*10 }
@@ -115,7 +115,7 @@ export default {
       this.myTrades.map(function(trade){
         let timewindow = timewindowOption;
         if(timewindowOption == 0){
-          for(var i=2;i< options.length;i++){
+          for(var i=1;i< options.length;i++){
               if(trade.timestamp > options[i].lower){
                   timewindow = options[i].value;
                   break;
