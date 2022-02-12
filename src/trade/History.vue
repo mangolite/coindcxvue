@@ -3,8 +3,8 @@
       <a-card :bordered="false" class="dashboard-bar-line header-solid">
         <div class="title"> {{title}}</div>
 
-      <b-form-group v-slot="{ ariaDescribedby }" class="text-center">
-        <b-form-radio-group
+      <b-form-group v-slot="{ ariaDescribedby }" class="text-center text-xs">
+        <b-form-radio-group class="text-xs"
           id="btn-radios-1" size="xs"
           v-model="timewindow"
           :options="options"
@@ -96,22 +96,33 @@ export default {
             { key: 'amount', label : "Amount"},
             {key : 'time' , label : "When"}
         ],
-        timewindow: 1,
+        timewindow: 0,
         options: [
-          { text: 'None', value: 1 },
-          { text: 'Daily', value: 1000*60*60*24 },
-          { text: 'Weekly', value: 1000*60*60*24*7 },
-          { text: 'Monthly', value: 1000*60*60*24*30 }
+          { text: 'Smart', value: 0 },
+          { text: 'One', value: 1 },
+          { text: '1d', value: 1000*60*60*24, lower : Date.now()-1000*60*60*24*7},
+          { text: '7d', value: 1000*60*60*24*7,lower : Date.now()-1000*60*60*24*30 },
+          { text: '30d', value: 1000*60*60*24*30, lower : Date.now()-1000*60*60*24*30*10 }
         ]
   }),
   computed : {
     trades : function(){
       let tradeMap = {};
       let trades = [];
-      let day = this.timewindow;
+      let timewindowOption = this.timewindow;
       let now = Date.now();
+      let options = this.options;
       this.myTrades.map(function(trade){
-        let time =  Math.floor(trade.timestamp/day)*day;
+        let timewindow = timewindowOption;
+        if(timewindowOption == 0){
+          for(var i=2;i< options.length;i++){
+              if(trade.timestamp > options[i].lower){
+                  timewindow = options[i].value;
+                  break;
+              }
+          }
+        }
+        let time =  Math.floor(trade.timestamp/timewindow)*timewindow;
         let key = trade.symbol + "/" + trade.side + "/" + time;
         tradeMap[key] = tradeMap[key] || {
           pushed : false,
