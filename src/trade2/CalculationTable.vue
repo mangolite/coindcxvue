@@ -256,7 +256,7 @@
 		},
 		data: () => ({
 			fields: [ { key: 'symbol', label : "Coin  ", sortable: true, variant : "1dark",class:"  f-row", sortByFormatted :true,
-						formatter: (v,k,item) => formatter.roundA(formatter.num(item?.ticker?.last_price || 0) / formatter.num(item?.meta?.buy_rate_stock || 0),2)  * 100 }, 
+						formatter: (v,k,item) => formatter.roundA(formatter.num(item?.ticker?.last_price || 0) / formatter.num(item?.meta?.buy_rate_alpha || 0),2)  * 100 }, 
 					//{ key: 'now_rate', label : "PRICE", sortable: false,variant : "dark" },  
 					//{ key: 'low_high', label : "L-H,24h", sortable: false,variant : "secondary" }, 
 					{ key: 'buy_amount', label: 'Purchases',sortable: true, variant : "success",sortByFormatted:true, 

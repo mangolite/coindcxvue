@@ -290,13 +290,20 @@ const getters = {
       total_quantity : (selected.balance ? selected.balance.total : 0),
        _rowVariant : "buyRateStock"
     },{
-      side : 'Buy Rate',
+      side : 'Buy Rate Avg',
       market : symbol, order : 0, 
       price_per_unit : selected.meta.buy_rate,
       amount : selected.meta.buy_rate * selected.meta.buy_quantity,
       total_quantity : selected.meta.buy_quantity,
        _rowVariant : "buyRate"
-   },{
+   }, {
+      side : 'Buy Rate Alpha',
+      market : symbol,  order : -5, 
+      price_per_unit : selected.meta.buy_rate_alpha,
+      amount : selected.meta.buy_rate_alpha * (selected.balance ? selected.balance.total : 0),
+      total_quantity : (selected.balance ? selected.balance.total : 0),
+       _rowVariant : "buyRateStock"
+  },{
       side : "Buy Rate Eff.", //_rowVariant : "info",
       market : symbol,order : -10, 
       price_per_unit : selected.meta.buy_rate_eff,
@@ -582,6 +589,8 @@ const actions = {
           meta.buy_rate_eff = Math.max(meta.efective_rate,meta.buy_rate_min);
           meta.buy_rate_low = Math.min(meta.buy_rate,meta.buy_rate_eff);
           meta.buy_rate_high = Math.max(meta.buy_rate_max,meta.buy_rate_eff,meta.buy_rate);
+          meta.buy_rate_alpha = (meta.buy_rate_eff+meta.buy_rate_stock)/2;
+
           state.summary = summary;
         }
         commit('summary',state.summary);
