@@ -6,9 +6,9 @@
 <template>
 	<div>
 		<!-- Counter Widgets -->
-		<a-row :gutter="25" class="mb-1">
+		<a-row :gutter="25" class="mb-1" v-if="accounts.length>0">
 			<a-col :span="24" :lg="12" :xl="5" class="p-1" >
-			<WidgetCounter :loading="!total"
+			<WidgetCounter :loading="showLoader"
 				:icon="'fa fa-equals '"
 				:status="'stat.status'">
 				<template #title>
@@ -53,7 +53,7 @@
 			</WidgetCounter>
 			</a-col>
 			<a-col :span="24" :lg="12" :xl="5" class="p-1">
-			<WidgetCounter :loading="!total"
+			<WidgetCounter :loading="showLoader"
 				:title="'+ New Orders'"
 				:icon="'fa fa-shopping-cart '"
 				:status="'danger'">
@@ -74,7 +74,7 @@
 			</WidgetCounter>
 			</a-col>
 			<a-col :span="24" :lg="12" :xl="5" class="p-1">
-			<WidgetCounter :loading="!total"
+			<WidgetCounter :loading="showLoader"
 				:title="'+ INR Value'"
 				:icon="'fa fa-wallet '"
 				:status="'danger'">
@@ -97,7 +97,7 @@
 			</a-col>
 
 			<a-col :span="24" :lg="12" :xl="4" class="p-1">
-			<WidgetCounter :loading="!total"
+			<WidgetCounter :loading="showLoader"
 				:title="'Profit'"
 				:icon="'fa fa-money-bill-wave  '"
 				:status="'danger'">
@@ -328,6 +328,12 @@
 			},
 			orders(){
 				return this.$store.getters.orders;
+			},
+			accounts(){
+				return this.$store.getters.KEY_LIST;
+			},
+			showLoader(){
+				return (this.accounts.length>0) && !this.total;
 			}
 		}
 	})

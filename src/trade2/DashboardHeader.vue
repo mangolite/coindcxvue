@@ -162,6 +162,7 @@
 			},
 
 			showEditor(){
+				console.log("showEditor")
 				let KEYS = this.$store.getters.KEYS;
 				this.apiName = KEYS["api_name_" + this.keyIndex];
 				this.apiKey = KEYS["api_key_" + this.keyIndex];
@@ -247,6 +248,14 @@
 			// Registering window resize event listener to fix affix elements size
 			// error while resizing.
 			window.addEventListener("resize", this.resizeEventHandler);
+			console.log("showEditor",this.keyIndex,this.$store.getters.KEY_LIST)
+			setTimeout(()=>{
+					if(this.$store.getters.KEY_LIST.length==0){
+						this.keyIndex = null;
+						console.log("showEditor",this.keyIndex,this.$store.getters.KEY_LIST)
+						this.showEditor();	
+					}
+			},500)
 		},
 		destroyed() {
 			// Removing window resize event listener.
