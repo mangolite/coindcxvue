@@ -52,12 +52,13 @@
               }
             }
           },
-		  timewindow : 0,
+		  timewindow : 1000*60*60*24*7*5,
         options: [
-          { text: 'Day', value: 1000*60*60*24, lower : Date.now()-1000*60*60*24*7},
-          { text: 'Week', value: 1000*60*60*24*7,lower : Date.now()-1000*60*60*24*30 },
-          { text: 'Month', value: 1000*60*60*24*30, lower : Date.now()-1000*60*60*24*30*10 },
-		  { text: 'Month', value: 1000*60*60*24*365, lower : Date.now()-1000*60*60*24*30*10 },
+          { text: '1D', value: 1000*60*60*24, lower : Date.now()-1000*60*60*24*7},
+          { text: '1Wk', value: 1000*60*60*24*7,lower : Date.now()-1000*60*60*24*30 },
+          { text: '5Wks', value: 1000*60*60*24*7*5, lower : Date.now()-1000*60*60*24*30*10 },
+		  { text: '3Mo', value: 1000*60*60*24*90, lower : Date.now()-1000*60*60*24*30*10 },
+		  { text: '1Yr', value: 1000*60*60*24*365, lower : Date.now()-1000*60*60*24*30*10 },
 		  { text: 'All', value: 0 },
         ]
 			}

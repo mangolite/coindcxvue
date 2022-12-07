@@ -22,8 +22,14 @@ var roundA = function (n,places) {
 	let numb = Math.abs(num(n));
 	let baseLen = Math.round(Math.log10(numb))
 	_places = (numb > 999) ? Math.min(2,_places) : Math.min(5,_places-baseLen-1);
-	let base = Math.pow(10,_places)
-	return sign*Math.round(numb*base)/base;
+	if(_places >= 5 && numb< 0.00001){
+		let base5 = Math.pow(10,5);
+		let base10 = Math.pow(10,10);
+		return `${sign*Math.round(numb*base10)/base5}e-5`;
+	} else {
+		let base = Math.pow(10,_places)
+		return sign*Math.round(numb*base)/base;
+	}
 };
 
 var round2 = function (n,places) {
@@ -33,7 +39,8 @@ var round2 = function (n,places) {
 }
 
 var round5 = function (n,places) {
-	return roundA(n,places || 5);
+	//return roundA(n,places || 9);
+	return roundA(n,9);
 	// let _places = places || 5;
 	// let base = Math.pow(10,_places)
 	// return Math.round(num(n)*base)/base;
