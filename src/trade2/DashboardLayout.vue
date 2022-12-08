@@ -4,9 +4,9 @@
 
 <template>
 	<div>
-
 		<!-- Dashboard Layout -->
-		<a-layout class="layout-dashboard" id="layout-dashboard" :class="[navbarFixed ? 'navbar-fixed' : '', ! sidebarCollapsed ? 'has-sidebar' : '', layoutClass]">
+		<a-layout class="layout-dashboard" id="layout-dashboard" 
+			:class="[navbarFixed ? 'navbar-fixed' : '', ! sidebarCollapsed ? 'has-sidebar' : '', layoutClass]">
 			
 			<!-- Main Sidebar -->
 			<DashboardSidebar
@@ -19,7 +19,6 @@
 
 			<!-- Layout Content -->
 			<a-layout>
-
 				<!-- Layout Header's Conditionally Fixed Wrapper -->
 				<DashboardHeader
 					:title="$route.params.symbol"
@@ -39,8 +38,6 @@
 				<!-- Layout Footer -->
 				<DashboardFooter></DashboardFooter>
 				<!-- / Layout Footer -->
-
-				
 				
 				<!-- Sidebar Overlay -->
 				<div class="sidebar-overlay" @click="sidebarCollapsed = true" v-show="! sidebarCollapsed"></div>
@@ -104,16 +101,12 @@
 			return {
 				// Sidebar collapsed status.
 				sidebarCollapsed: false,
-				
 				// Main sidebar color.
 				sidebarColor: "primary",
-				
 				// Main sidebar theme : light, white, dark.
 				sidebarTheme: "light",
-
 				// Header fixed status.
 				navbarFixed: false,
-
 				// Settings drawer visiblility status.
 				showSettingsDrawer: false,
 			}
@@ -169,14 +162,11 @@
 
 </script>
 <style >
-	
-	@media (min-width: 992px){
-
+@media (min-width: 992px){
    .layout-dashboard .ant-layout {
-    width: auto;
-    flex-shrink: 1;
-    margin-left: 300px!important;
+		width: auto;
+		flex-shrink: 1;
+		margin-left: 300px!important;
     }
 }
-
 </style>
