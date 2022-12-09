@@ -154,8 +154,11 @@
 				<CardCandleChart></CardCandleChart>
 			</a-col>
 			<a-col :span="24" :lg="24" class="mb-24">
+				<hr/>	
+			</a-col>
+			<a-col :span="24" :lg="24" class="mb-24">
 				<CardCompareChart></CardCompareChart>	
-		</a-col>
+			</a-col>
 		</a-row>
 
 		<!-- Charts -->
