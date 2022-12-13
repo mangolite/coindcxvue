@@ -22,7 +22,7 @@ var roundA = function (n,places) {
 	let numb = Math.abs(num(n));
 	let baseLen = Math.round(Math.log10(numb))
 	_places = (numb > 999) ? Math.min(2,_places) : Math.min(5,_places-baseLen-1);
-	if(_places >= 5 && numb< 0.00001){
+	if(_places >= 5 && numb < 0.0001){
 		let base5 = Math.pow(10,5);
 		let base10 = Math.pow(10,10);
 		return `${sign*Math.round(numb*base10)/base5}e-5`;
