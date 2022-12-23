@@ -5,8 +5,8 @@ import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
-var baseurl = 'https://web-production-414a.up.railway.app/https://api.coindcx.com'
-var baseurlPublic =  'https://web-production-414a.up.railway.app/https://public.coindcx.com' 
+var baseurl = 'https://web-production-c734.up.railway.app/https://api.coindcx.com'
+var baseurlPublic =  'https://web-production-c734.up.railway.app/https://public.coindcx.com' 
       // Place your API key and secret below. You can generate it from the website.
 const socketEndpoint = "wss://stream.coindcx.com";
 var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
