@@ -5,12 +5,15 @@
       <b-table small striped :items="myOrders"  id="myOrders" fixed head-dark light
        :fields="fields">
 
+        <template v-slot:cell(market)="order">
+          <span class="text-xs"> {{order.value}}</span>
+        </template>
+
         <template v-slot:cell(side)="order">
-          <span :data-value="order.value" :class="{
+          <span :data-value="order.value"  class="text-xs" :class="{
            'text-danger' : (order.value == 'sell'), 
            'text-success' : (order.value == 'buy'),
-           
-           
+
           }" v-tooltip="order.item.desc" >{{order.value}}</span>
         </template>
 
