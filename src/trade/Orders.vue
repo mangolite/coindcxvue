@@ -40,19 +40,8 @@
         </template>
 
         <template #cell(actions)="order">
-          <span v-if="order.item.id"
-            class="fw-bold fa fa-times-circle pointer text-muted"
-            v-tooltip="'Cancel Order'"
-            @click="$store.dispatch('cancelOrder',{ 
-                id : order.item.id,
-                price_per_unit : order.item.price_per_unit,
-                amount : order.item.price_per_unit * order.item.total_quantity,
-                total_quantity : order.item.total_quantity
-            })"
-            >
-          </span>
           <span v-if="order.item.sidex == 'BUY' || order.item.sidex == 'BUYSELL'"
-            class="mx-2 fw-bold btn btn-xs btn-sm pointer btn-success text-xs float-end"
+            class="mx-1 fw-bold btn btn-xs btn-sm pointer btn-success text-xs float-end"
             v-tooltip="'Buy Order'"
             @click="makeOrder({ 
                 type : 'BUY', market : order.item.market,
@@ -63,7 +52,7 @@
           </span>
 
           <span v-if="order.item.sidex == 'SELL' || order.item.sidex == 'BUYSELL'"
-            class="mx-2 fw-bold btn btn-xs btn-sm pointer btn-danger text-xs float-end"
+            class="mx-1 fw-bold btn btn-xs btn-sm pointer btn-danger text-xs float-end"
             v-tooltip="'Sell Order'"
             @click="makeOrder({ 
                 type : 'SELL', market : order.item.market,
@@ -71,6 +60,18 @@
                 quantity :order.item ?  order.item.total_quantity : 0
             })"
             >S
+          </span>
+
+          <span v-if="order.item.id"
+            class="mx-1 fw-bold  btn btn-xs btn-sm pointer btn-warning text-xs float-end"
+            v-tooltip="'Cancel Order'"
+            @click="$store.dispatch('cancelOrder',{ 
+                id : order.item.id,
+                price_per_unit : order.item.price_per_unit,
+                amount : order.item.price_per_unit * order.item.total_quantity,
+                total_quantity : order.item.total_quantity
+            })"
+            >X
           </span>
 
         </template>
