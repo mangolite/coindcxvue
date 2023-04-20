@@ -388,6 +388,15 @@ const getters = {
           return b.order - a.order;
         }
         return diff;
+    }).map(function(order){
+      if(order.price_per_unit > selected.ticker.ask){
+        order.sidex =  'SELL';
+      } else if(order.price_per_unit < selected.ticker.bid){
+        order.sidex =  'BUY';
+      } else {
+        order.sidex =  'BUYSELL';
+      }
+      return order;
     });
   },
   trades (state){
@@ -993,6 +1002,55 @@ async updateLocal({ commit,dispatch,getters }){
 
       request.post(options,function(error, response, body) {
         alert(body.message);
+      });
+
+    },
+
+
+    async makeOrder({commit,getters},order){
+
+      if(!window.confirm(`
+        Are you sure you want to make ${order.side}? 
+        ${order.ppu}x${order.quantity}=${order.amount}
+      `)){
+        return;
+      }
+
+
+      let _index = getters.account;
+      let api_key = KEYS["api_key_" + _index];
+      let api_secret = KEYS["api_secret_" + _index];
+      console.log("_index",_index)
+      if(!api_key && !api_secret){
+        return;
+      }
+      console.log("cancelOrder",order.id)
+      var timeStamp = Math.floor(Date.now());
+      // To check if the timestamp is correct
+      console.log(timeStamp);
+      let body = {
+          "timestamp": timeStamp,
+          side : order.type.toLowerCase(),
+          "order_type": "limit_order",
+          "market": order.market,
+          "price_per_unit": order.ppu,
+          total_quantity : order.quantity
+      }
+      const payload = new Buffer(JSON.stringify(body)).toString();
+      const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+  
+      const options = {
+          url: baseurl + "/exchange/v1/orders/create",
+          headers: {
+              'X-AUTH-APIKEY': api_key,
+              'X-AUTH-SIGNATURE': signature
+          },
+          json: true,
+          body: body
+      }
+
+      request.post(options,function(error, response, body) {
+        alert(body.message || "Success");
       });
 
     }

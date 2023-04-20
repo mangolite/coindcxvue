@@ -48,12 +48,86 @@
             })"
             >
           </span>
-          
+          <span v-if="order.item.sidex == 'BUY' || order.item.sidex == 'BUYSELL'"
+            class="mx-2 fw-bold btn btn-xs btn-sm pointer btn-success text-xs float-end"
+            v-tooltip="'Buy Order'"
+            @click="makeOrder({ 
+                type : 'BUY', market : order.item.market,
+                ppu : order.item ? order.item.price_per_unit : 0,
+                quantity :order.item ?  order.item.total_quantity : 0
+            })"
+            >B
+          </span>
+
+          <span v-if="order.item.sidex == 'SELL' || order.item.sidex == 'BUYSELL'"
+            class="mx-2 fw-bold btn btn-xs btn-sm pointer btn-danger text-xs float-end"
+            v-tooltip="'Sell Order'"
+            @click="makeOrder({ 
+                type : 'SELL', market : order.item.market,
+                ppu : order.item ? order.item.price_per_unit : 0,
+                quantity :order.item ?  order.item.total_quantity : 0
+            })"
+            >S
+          </span>
+
         </template>
 
       </b-table>
 
+   <b-modal
+      id="modal-buy-sell"
+      ref="buysell"
+      :title="buysell.type"
+      @ok="makeOrderOk"
+      
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+
+        <b-form-group
+          label="Price Per Unit (Rate)"
+          label-for="api-name-input"
+          invalid-feedback="PPU is required"
+          class="acc-modal"
+        >
+          <b-form-input
+            id="api-key-input"
+            v-model="buysell.ppu"
+            required
+          ></b-form-input>
+
+        </b-form-group>
+
+        <b-form-group
+          :label="`Total Quantity to ${buysell.type}`"
+          label-for="api-key-input"
+          invalid-feedback="Quantity is required"
+        >
+          <b-form-input
+            id="api-key-input"
+            v-model="buysell.quantity"
+            required
+          ></b-form-input>
+
+        </b-form-group>
+
+      <b-form-group
+          label="Amount"
+          label-for="api-secret-input"
+        >
+
+          <b-form-input
+            id="api-secret-input"
+            v-model="buysell_amount" readonly
+            required
+          ></b-form-input>
+
+        </b-form-group>
+
+      </form>
+    </b-modal>
+
   </a-card>
+
 </template>
 
 <script>
@@ -71,9 +145,36 @@ export default {
             { key: 'ppu', label : "Price", class:"ppu" },
             { key: 'total_quantity', label : "TQty",class:"total_quantity"},
             { key: 'amount', label : "Amount",class:"amount"},
-             { key: 'actions', label : "Actions",class:"action"}
-        ]
+             { key: 'actions', label : "Actions",class:"action"},
+            // { key: 'sidex', label : "Sidex" ,class:"sidex"},
+        ],
+        buysell : {
+          type : 'BUY',
+          ppu : 0,
+          quantity : 0,
+          amount : 0
+        }
     }),
+    computed :{
+      buysell_amount (){
+        return this.buysell.ppu * this.buysell.quantity;
+      }
+    },
+    methods : {
+      makeOrder({type,ppu,quantity,market}){
+        this.$bvModal.show('modal-buy-sell');
+        this.buysell.type  = type;
+        this.buysell.ppu  = ppu;
+        this.buysell.quantity  = quantity || 1;
+        this.buysell.market  = market;
+        console.log(this.buysell)
+      },
+      makeOrderOk(){
+        this.buysell.amount = this.buysell_amount
+        console.error(this.buysell)
+        this.$store.dispatch('makeOrder',this.buysell);
+      },
+    }
 }
 </script>
   
