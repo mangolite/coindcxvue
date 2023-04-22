@@ -5,7 +5,7 @@ import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
-var proxy_base  = 'https://web-production-4017.up.railway.app';
+var proxy_base  = 'https://web-production-86e6.up.railway.app';
 
 
 var baseurl = proxy_base+'/https://api.coindcx.com'
