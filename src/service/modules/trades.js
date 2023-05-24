@@ -10,7 +10,7 @@ function myb2a(base){
 }
 
 var request = {
-  post(a,b,c,d){
+  POST(a,b,c,d){
     //console.log("aaa",a.url)
     //a.url = "https://app.mehery.xyz/xms/api/v1/message/send";
      a.headers = {
@@ -19,6 +19,20 @@ var request = {
        'X-at-APIKEY':   a.headers['X-AUTH-APIKEY'],
        'X-at-SIGNATURE': a.headers['X-AUTH-SIGNATURE'],
     };
+    return new Promise(function(resolve,reject){
+      requestOriginal.post(a,function(error, response, body){
+        if(response.statusCode==200){
+          resolve({error, response, body});
+        } else {
+          reject({error, response, body});
+        }
+        if(typeof b == 'function')
+            b(error, response, body);
+      });
+    });
+
+  },
+  post(a,b,c,d){
     return requestOriginal.post(a,b,c,d);
   },
   get(a,b,c,d){
@@ -30,8 +44,8 @@ var request = {
 
 //var baseurl = document.location.origin;  
 //var proxy_base  = 'https://web-production-4017.up.railway.app';
-//var proxy_base  = 'https://app.mehery.xyz/xms/proxc';
-var proxy_base  = 'https://app.local.com/xms/proxyh';
+var proxy_base  = 'https://app.mehery.xyz/xms/proxch';
+//var proxy_base  = 'https://app.local.com/xms/proxyh';
 
 //var baseurl = proxy_base+'/https://api.coindcx.com'
 var _baseurl = proxy_base+'/'+ myb2a('https://api.coindcx.com');
@@ -460,6 +474,44 @@ const getters = {
   }
 };
 
+
+
+const snippet = {
+  async fetchHistory({
+    api_secret,api_key
+  }){
+    let hasMore = true;
+    let from_id = null;
+    let hist = [];
+    while(hasMore){
+      var timeStamp = Math.floor(Date.now());
+      let body = {
+        //"limit": 5000,
+        "timestamp": timeStamp
+      };
+      if(from_id){
+        body.from_id = from_id;
+      }
+      const payload = new Buffer(JSON.stringify(body)).toString();
+      const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+      const options = {
+        url: baseurl ( "/exchange/v1/orders/trade_history"),
+        headers: {
+          'X-AUTH-APIKEY': api_key,
+          'X-AUTH-SIGNATURE': signature
+        },
+        json: true,
+        body: body
+      } 
+      let resp = await request.POST(options);
+      hasMore = !(resp.body.length<500);
+      from_id = resp.body[resp.body.length-1].id;
+      hist = [...hist,...resp.body];
+    }
+    return hist;
+  }
+};
+
 const actions = {
   async setAccount({ commit ,dispatch},account) {
     console.log("setAccount",account);
@@ -538,121 +590,111 @@ const actions = {
     if(!api_key && !api_secret){
       return;
     }
-    var timeStamp = Math.floor(Date.now());
-    let body = {
-      //"from_id": 352622,
-      "limit": 5000,
-      "timestamp": timeStamp
-    }
-    const payload = new Buffer(JSON.stringify(body)).toString();
-    const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
-    const options = {
-      url: baseurl ( "/exchange/v1/orders/trade_history"),
-      headers: {
-        'X-AUTH-APIKEY': api_key,
-        'X-AUTH-SIGNATURE': signature
-      },
-      json: true,
-      body: body
-    }
 
-    let THIS = state;
-    request.post(options, function(error, response, body) {
-      console.log("NaN:fetchingHistory",response.statusCode);
-      if(response.statusCode!==200){
-        return;
-      }
-        for (var k in THIS.summary) {
-          THIS.summary[k].meta = newSummary(k,k,THIS.summary[k] || {}).meta;
-        }
-        var summary = THIS.summary;
-        THIS.history = body.sort(function(a,b){
-          if(a.side == b.side){
-            return a.price - b.price;
-          } else if(a.side == "sell") {
-            return -1
-          }
-          return 1;
-        });
-        for(var i in THIS.history){
-          let deal = THIS.history[i];
-          deal.i = i;
-          //let key = _index + "." + deal.symbol;
-          let key = deal.symbol;
-          summary[key] = summary[key] || newSummary(key,deal.symbol,{});
-          let meta = summary[key].meta;
-          if(deal.side == "sell"){
-            meta.sell_quantity += num(deal.quantity);
-            meta.sell_amount += num(deal.price * num(deal.quantity));
-          } else if(deal.side == "buy"){
-            meta.buy_quantity+= num(deal.quantity);
-            meta.buy_amount+= (num(deal.price) * num(deal.quantity));
-            meta.buy_rate_min = meta.buy_rate_min || 99999999999999;
-            meta.buy_rate_min =  Math.min(meta.buy_rate_min,deal.price);
-            meta.buy_rate_max = meta.buy_rate_max || 0;
-            meta.buy_rate_max =  Math.max(meta.buy_rate_max,deal.price);
-          }
-          deal.last_price = summary[key]?.ticker?.last_price;
-          meta.fee_amount+= (deal.fee_amount - 0);
-
-          meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
-          meta.stock = Math.max(meta.stock_quantity,0);
-          meta.net_debit = meta.buy_amount + meta.fee_amount
-          meta.net_credit = meta.sell_amount;
-          meta.earning = meta.net_credit - meta.net_debit;
-
-
-          if(meta.buy_quantity && !isNaN(meta.buy_quantity)){
-            meta.debt_rate =  num(meta.net_debit)/num(meta.buy_quantity);
-            meta.buy_rate =  num(meta.buy_amount)/num(meta.buy_quantity);
-            if(isNaN(meta.buy_rate)){
-              console.log("buy_rate:isNaN",meta.buy_amount,meta.buy_quantity);
-            }
-          }
-
-          meta.sell_rate = meta.sell_amount>0 ? num(meta.sell_amount)/num(meta.sell_quantity) : 0;
-
-          if(meta.net_debit > meta.net_credit ){
-            meta.efective_rate =  (meta.net_debit - meta.net_credit)/meta.stock;
-          } else {
-            if(meta.stock != 0){
-              meta.efective_rate =  (-1*(meta.earning)/meta.stock);
-            } else {
-              meta.efective_rate =  0;
-            }
-          }
-
-          if(deal.side == "buy"){
-            if(meta.buy_quantity > meta.sell_quantity){
-              meta.debt_quantity+= num(deal.quantity);
-              meta.debt_amount+= (num(deal.price) * num(deal.quantity));
-              meta.debt_rate = meta.debt_amount/ meta.debt_quantity;
-            }
-          }
-
-          meta.buy_rate_stock = meta.debt_rate || buyrate(
-            key,
-            meta.stock,
-            meta.buy_quantity,
-            meta.net_debit,
-            meta.buy_rate_min,
-            meta.buy_rate_max
-          );
-          meta.buy_rate_eff = Math.max(meta.efective_rate,meta.buy_rate_min);
-          meta.buy_rate_low = Math.min(meta.buy_rate,meta.buy_rate_eff);
-          meta.buy_rate_high = Math.max(meta.buy_rate_max,meta.buy_rate_eff,meta.buy_rate);
-          meta.buy_rate_alpha = (meta.buy_rate_eff+meta.buy_rate_stock)/2;
-
-          state.summary = summary;
-        }
-        commit('summary',state.summary);
-        commit('history',state.history);
-        dispatch('fetchBalance');
-        dispatch('fetchMarketDetails');
-        dispatch('updateLocal');
-        dispatch('TBALANCES');
-        unlock("fetchHistory");
+    try {
+      let resp = await snippet.fetchHistory({
+        api_key : api_key,
+        api_secret : api_secret,
       });
+      console.log("fetchHistory:resp",resp);
+
+      let THIS = state;
+      (function(body) {
+          for (var k in THIS.summary) {
+            THIS.summary[k].meta = newSummary(k,k,THIS.summary[k] || {}).meta;
+          }
+          var summary = THIS.summary;
+          THIS.history = body.sort(function(a,b){
+            if(a.side == b.side){
+              return a.price - b.price;
+            } else if(a.side == "sell") {
+              return -1
+            }
+            return 1;
+          });
+          for(var i in THIS.history){
+            let deal = THIS.history[i];
+            deal.i = i;
+            //let key = _index + "." + deal.symbol;
+            let key = deal.symbol;
+            summary[key] = summary[key] || newSummary(key,deal.symbol,{});
+            let meta = summary[key].meta;
+            if(deal.side == "sell"){
+              meta.sell_quantity += num(deal.quantity);
+              meta.sell_amount += num(deal.price * num(deal.quantity));
+            } else if(deal.side == "buy"){
+              meta.buy_quantity+= num(deal.quantity);
+              meta.buy_amount+= (num(deal.price) * num(deal.quantity));
+              meta.buy_rate_min = meta.buy_rate_min || 99999999999999;
+              meta.buy_rate_min =  Math.min(meta.buy_rate_min,deal.price);
+              meta.buy_rate_max = meta.buy_rate_max || 0;
+              meta.buy_rate_max =  Math.max(meta.buy_rate_max,deal.price);
+            }
+            deal.last_price = summary[key]?.ticker?.last_price;
+            meta.fee_amount+= (deal.fee_amount - 0);
+  
+            meta.stock_quantity = meta.buy_quantity - meta.sell_quantity;
+            meta.stock = Math.max(meta.stock_quantity,0);
+            meta.net_debit = meta.buy_amount + meta.fee_amount
+            meta.net_credit = meta.sell_amount;
+            meta.earning = meta.net_credit - meta.net_debit;
+  
+  
+            if(meta.buy_quantity && !isNaN(meta.buy_quantity)){
+              meta.debt_rate =  num(meta.net_debit)/num(meta.buy_quantity);
+              meta.buy_rate =  num(meta.buy_amount)/num(meta.buy_quantity);
+              if(isNaN(meta.buy_rate)){
+                console.log("buy_rate:isNaN",meta.buy_amount,meta.buy_quantity);
+              }
+            }
+  
+            meta.sell_rate = meta.sell_amount>0 ? num(meta.sell_amount)/num(meta.sell_quantity) : 0;
+  
+            if(meta.net_debit > meta.net_credit ){
+              meta.efective_rate =  (meta.net_debit - meta.net_credit)/meta.stock;
+            } else {
+              if(meta.stock != 0){
+                meta.efective_rate =  (-1*(meta.earning)/meta.stock);
+              } else {
+                meta.efective_rate =  0;
+              }
+            }
+  
+            if(deal.side == "buy"){
+              if(meta.buy_quantity > meta.sell_quantity){
+                meta.debt_quantity+= num(deal.quantity);
+                meta.debt_amount+= (num(deal.price) * num(deal.quantity));
+                meta.debt_rate = meta.debt_amount/ meta.debt_quantity;
+              }
+            }
+  
+            meta.buy_rate_stock = meta.debt_rate || buyrate(
+              key,
+              meta.stock,
+              meta.buy_quantity,
+              meta.net_debit,
+              meta.buy_rate_min,
+              meta.buy_rate_max
+            );
+            meta.buy_rate_eff = Math.max(meta.efective_rate,meta.buy_rate_min);
+            meta.buy_rate_low = Math.min(meta.buy_rate,meta.buy_rate_eff);
+            meta.buy_rate_high = Math.max(meta.buy_rate_max,meta.buy_rate_eff,meta.buy_rate);
+            meta.buy_rate_alpha = (meta.buy_rate_eff+meta.buy_rate_stock)/2;
+  
+            state.summary = summary;
+          }
+          commit('summary',state.summary);
+          commit('history',state.history);
+          dispatch('fetchBalance');
+          dispatch('fetchMarketDetails');
+          dispatch('updateLocal');
+          dispatch('TBALANCES');
+          unlock("fetchHistory");
+        })(resp);
+
+    } catch(e){
+      console.log(e);
+    }
   },
   //
   async fetchMarketDetails({ commit,dispatch },index){
