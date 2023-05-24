@@ -1,19 +1,43 @@
 import Vue from 'vue';
-import request from 'request';
+import requestOriginal from 'request';
 import crypto from 'crypto';
 import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
+function cleanProxyBase(base){
+  //return base.replaceAll("/","_").replaceAll(":","_").replaceAll(".","_");
+  return btoa(base);
+}
+
+var request = {
+  post(a,b,c,d){
+    //console.log("aaa",a.url)
+    //a.url = "https://app.mehery.xyz/xms/api/v1/message/send";
+     a.headers = {
+       'x-print-log' : 'true',
+       'x-api-replacer' : 'X-at:X-Auth',
+       'X-at-APIKEY':   a.headers['X-AUTH-APIKEY'],
+       'X-at-SIGNATURE': a.headers['X-AUTH-SIGNATURE'],
+    };
+    return requestOriginal.post(a,b,c,d);
+  },
+  get(a,b,c,d){
+    //a.url = "https://app.mehery.xyz/xms/api/v1/message/send";
+    return requestOriginal.get(a,b,c,d);
+  }
+}
+
+
 //var baseurl = document.location.origin;  
 //var proxy_base  = 'https://web-production-4017.up.railway.app';
-var proxy_base  = 'https://app.mehery.xyz/xms/proxy';
-
+var proxy_base  = 'https://app.mehery.xyz/xms/proxc';
+//var proxy_base  = 'https://app.local.com/xms/proxy';
 
 //var baseurl = proxy_base+'/https://api.coindcx.com'
-var baseurl = proxy_base+'/'+ btoa('https://api.coindcx.com');
+var baseurl = proxy_base+'/'+ cleanProxyBase('https://api.coindcx.com');
 
 //var baseurlPublic =  proxy_base+'/https://public.coindcx.com' 
-var baseurlPublic =  proxy_base+'/' + btoa('https://public.coindcx.com'); 
+var baseurlPublic =  proxy_base+'/' + cleanProxyBase('https://public.coindcx.com'); 
 
       // Place your API key and secret below. You can generate it from the website.
 const socketEndpoint = "wss://stream.coindcx.com";
@@ -526,7 +550,10 @@ const actions = {
 
     let THIS = state;
     request.post(options, function(error, response, body) {
-      console.log("NaN:fetchingHistory")
+      console.log("NaN:fetchingHistory",response.statusCode);
+      if(response.statusCode!==200){
+        return;
+      }
         for (var k in THIS.summary) {
           THIS.summary[k].meta = newSummary(k,k,THIS.summary[k] || {}).meta;
         }

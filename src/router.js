@@ -29,7 +29,7 @@ export default new Router({
         },
         {
           path : '/trade2/:account/:symbol',
-          name: 'Dashboard',
+          name: 'Dashboard_Symbol',
           meta : { layout: "dashboard" },
           component: () => import(/* webpackChunkName: "dashboard" */ './trade2/Dashboard.vue'),
       },
