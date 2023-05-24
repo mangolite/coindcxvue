@@ -4,9 +4,9 @@ import crypto from 'crypto';
 import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
-function cleanProxyBase(base){
-  //return base.replaceAll("/","_").replaceAll(":","_").replaceAll(".","_");
-  return btoa(base);
+function myb2a(base){
+  let enc = btoa(base).split('=');
+  return "_" + enc[0]+"_"+ (enc.length-1)
 }
 
 var request = {
@@ -30,21 +30,21 @@ var request = {
 
 //var baseurl = document.location.origin;  
 //var proxy_base  = 'https://web-production-4017.up.railway.app';
-var proxy_base  = 'https://app.mehery.xyz/xms/proxc';
-//var proxy_base  = 'https://app.local.com/xms/proxyh';
+//var proxy_base  = 'https://app.mehery.xyz/xms/proxc';
+var proxy_base  = 'https://app.local.com/xms/proxyh';
 
 //var baseurl = proxy_base+'/https://api.coindcx.com'
-var _baseurl = proxy_base+'/'+ cleanProxyBase('https://api.coindcx.com');
+var _baseurl = proxy_base+'/'+ myb2a('https://api.coindcx.com');
 
 //var baseurlPublic =  proxy_base+'/https://public.coindcx.com' 
-var _baseurlPublic =  proxy_base+'/' + cleanProxyBase('https://public.coindcx.com'); 
+var _baseurlPublic =  proxy_base+'/' + myb2a('https://public.coindcx.com'); 
 
 function baseurl(url){
-  return _baseurl + "/"+ btoa(url);
+  return _baseurl + "/"+ myb2a(url);
 }
 
 function baseurlPublic(url){
-  return _baseurlPublic + "/" + btoa(url);
+  return _baseurlPublic + "/" + myb2a(url);
 }
 
       // Place your API key and secret below. You can generate it from the website.
@@ -659,7 +659,7 @@ const actions = {
     if(state.marketDetails){
       dispatch('updateMarketDetails');
     } else {
-      request.get(baseurl + "/exchange/v1/markets_details",function(error, response, markets_details) {
+      request.get(baseurl("/exchange/v1/markets_details"),function(error, response, markets_details) {
         state.marketDetails = JSON.parse(markets_details);
         dispatch('updateMarketDetails', true);
       });
