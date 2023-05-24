@@ -31,13 +31,21 @@ var request = {
 //var baseurl = document.location.origin;  
 //var proxy_base  = 'https://web-production-4017.up.railway.app';
 var proxy_base  = 'https://app.mehery.xyz/xms/proxc';
-//var proxy_base  = 'https://app.local.com/xms/proxy';
+//var proxy_base  = 'https://app.local.com/xms/proxyh';
 
 //var baseurl = proxy_base+'/https://api.coindcx.com'
-var baseurl = proxy_base+'/'+ cleanProxyBase('https://api.coindcx.com');
+var _baseurl = proxy_base+'/'+ cleanProxyBase('https://api.coindcx.com');
 
 //var baseurlPublic =  proxy_base+'/https://public.coindcx.com' 
-var baseurlPublic =  proxy_base+'/' + cleanProxyBase('https://public.coindcx.com'); 
+var _baseurlPublic =  proxy_base+'/' + cleanProxyBase('https://public.coindcx.com'); 
+
+function baseurl(url){
+  return _baseurl + "/"+ btoa(url);
+}
+
+function baseurlPublic(url){
+  return _baseurlPublic + "/" + btoa(url);
+}
 
       // Place your API key and secret below. You can generate it from the website.
 const socketEndpoint = "wss://stream.coindcx.com";
@@ -539,7 +547,7 @@ const actions = {
     const payload = new Buffer(JSON.stringify(body)).toString();
     const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
     const options = {
-      url: baseurl + "/exchange/v1/orders/trade_history",
+      url: baseurl ( "/exchange/v1/orders/trade_history"),
       headers: {
         'X-AUTH-APIKEY': api_key,
         'X-AUTH-SIGNATURE': signature
@@ -704,7 +712,7 @@ const actions = {
     let wkTime = endTime - (1000*60*60*24*7);
     let dayTime = endTime - (1000*60*60*24);
 
-    request.get(baseurlPublic + `/market_data/candles?pair=${pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
+    request.get(baseurlPublic('/market_data/candles') + `?pair=${pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
         if(!symbol){
             console.log("Cannot find symbol",symbol)
             return;          
@@ -769,7 +777,7 @@ const actions = {
     if(locked("syncTicker")) return ;
 
     let summary = state.summary;
-    request.get(baseurl + "/exchange/ticker",function(error, response, body) {
+    request.get(baseurl ("/exchange/ticker"),function(error, response, body) {
         let tickers = JSON.parse(body);
         for(var i in tickers){
           var ticker = tickers[i];
@@ -813,7 +821,7 @@ const actions = {
     const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
 
     const options = {
-        url: baseurl + "/exchange/v1/users/balances",
+        url: baseurl("/exchange/v1/users/balances"),
         headers: {
             'X-AUTH-APIKEY': api_key,
             'X-AUTH-SIGNATURE': signature
@@ -877,7 +885,7 @@ const actions = {
     const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
 
     const options = {
-        url: baseurl + "/exchange/v1/orders/active_orders",
+        url: baseurl ("/exchange/v1/orders/active_orders"),
         headers: {
             'X-AUTH-APIKEY': api_key,
             'X-AUTH-SIGNATURE': signature
@@ -1023,7 +1031,7 @@ async updateLocal({ commit,dispatch,getters }){
       const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
   
       const options = {
-          url: baseurl + "/exchange/v1/orders/cancel",
+          url: baseurl ("/exchange/v1/orders/cancel"),
           headers: {
               'X-AUTH-APIKEY': api_key,
               'X-AUTH-SIGNATURE': signature
@@ -1072,7 +1080,7 @@ async updateLocal({ commit,dispatch,getters }){
       const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
   
       const options = {
-          url: baseurl + "/exchange/v1/orders/create",
+          url: baseurl ("/exchange/v1/orders/create"),
           headers: {
               'X-AUTH-APIKEY': api_key,
               'X-AUTH-SIGNATURE': signature
