@@ -5,11 +5,16 @@ import formatters from "../formatter.js"
 import io from 'socket.io-client';
 
 //var baseurl = document.location.origin;  
-var proxy_base  = 'https://web-production-86e6.up.railway.app';
+//var proxy_base  = 'https://web-production-4017.up.railway.app';
+var proxy_base  = 'https://app.mehery.xyz/xms/proxy';
 
 
-var baseurl = proxy_base+'/https://api.coindcx.com'
-var baseurlPublic =  proxy_base+'/https://public.coindcx.com' 
+//var baseurl = proxy_base+'/https://api.coindcx.com'
+var baseurl = proxy_base+'/'+ btoa('https://api.coindcx.com');
+
+//var baseurlPublic =  proxy_base+'/https://public.coindcx.com' 
+var baseurlPublic =  proxy_base+'/' + btoa('https://public.coindcx.com'); 
+
       // Place your API key and secret below. You can generate it from the website.
 const socketEndpoint = "wss://stream.coindcx.com";
 var api_key_1 = localStorage.getItem("api_key_1") || localStorage.getItem("api_key");
