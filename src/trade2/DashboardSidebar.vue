@@ -1,5 +1,4 @@
 <template>
-	
 	<!-- Main Sidebar -->
 	<a-layout-sider
 		collapsible
@@ -14,6 +13,7 @@
 		theme="light"
 		:style="{ backgroundColor: 'transparent',}">
 			<div class="brand" hidden><img src="images/logo-ct-black.png" alt=""> <span>{{walletCount}}</span></div>
+	          <b-form-input  id="search" v-model="search"></b-form-input>
 			<hr hidden>
 			<!-- Sidebar Navigation Menu -->
 			<a-menu theme="light" mode="inline">
@@ -70,7 +70,6 @@
 
 	</a-layout-sider>
 	<!-- / Main Sidebar -->
-
 </template>
 
 <script>
@@ -98,14 +97,20 @@
 		data() {
 			return {
 				// sidebarCollapsedModel: this.sidebarCollapsed,
+				search : ""
 			}
 		},
 		created(){
 		},
 		computed : {
+			SEARCH(){
+				return (this.search || "").toUpperCase();
+			},
 			wallets(){
 				return this.$store.getters.wallets.map(function(wallet){
 					return wallet;
+				}).filter((w)=>{
+					return w.symbol.indexOf(this.SEARCH) > -1
 				}).sort(function(wa,wb){
 					return wb.volatlity - wa.volatlity;
 				});
