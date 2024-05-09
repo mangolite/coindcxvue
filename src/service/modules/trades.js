@@ -1083,7 +1083,7 @@ async updateLocal({ commit,dispatch,getters }){
       }
 
       request.post(options,function(error, response, body) {
-        alert(body.message);
+        Vue.$toast.success(body.message);
       });
 
     },
@@ -1092,7 +1092,7 @@ async updateLocal({ commit,dispatch,getters }){
     async makeOrder({commit,getters},order){
 
       if(!window.confirm(`
-        Are you sure you want to make ${order.side}? 
+        Are you sure you want to make ${order.type}? 
         ${order.ppu}x${order.quantity}=${order.amount}
       `)){
         return;
@@ -1132,7 +1132,7 @@ async updateLocal({ commit,dispatch,getters }){
       }
 
       request.post(options,function(error, response, body) {
-        alert(body.message || "Success");
+        Vue.$toast.success(body.message || order.type + " Success");
       });
 
     }

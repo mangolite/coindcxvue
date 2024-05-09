@@ -14,11 +14,15 @@ import DashboardRTLLayout from '@/@common/muse/layouts/DashboardRTL.vue'
 import VueLoading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
 import router from './router';
 
 import '@/@common/muse/scss/app.scss';
 
 Vue.use(VueLoading);
+Vue.use(ToastPlugin);
 Vue.use(Antd);
 Vue.use(VTooltip);
 VTooltip.options.defaultClass = 'my-tooltip';
