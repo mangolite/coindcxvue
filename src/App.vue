@@ -23,7 +23,7 @@ export default {
   mounted : function () {
     console.log("this.$route.meta.layout",this.$route.meta.layout);
     let recaptchaScript = document.createElement('script')
-    recaptchaScript.setAttribute('src', 'https://kit.fontawesome.com/1153462312.js')
+    recaptchaScript.setAttribute('src', 'https://kit.fontawesome.com/924f16f871.js')
     document.head.appendChild(recaptchaScript);
   },
 }
