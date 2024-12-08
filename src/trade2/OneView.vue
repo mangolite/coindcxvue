@@ -46,6 +46,9 @@
 
             <small>
                  <span v-if="row.item.ticker"  class=" fw-bold  badge p-range">
+                   {{(row.item.range.hHigh-row.item.range.hLow)/row.item.range.hHigh*100 | round}}<small>%</small>
+                  </span>
+                 <span v-if="row.item.ticker"  class=" fw-bold  badge p-range">
                    {{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}<small>%</small>
                   </span>
                   <span v-if="row.item.range"  class=" fw-bold badge p-range">

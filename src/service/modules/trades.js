@@ -753,6 +753,7 @@ const actions = {
     let m3Time = endTime - (1000*60*60*24*31*3);
     let wkTime = endTime - (1000*60*60*24*7);
     let dayTime = endTime - (1000*60*60*24);
+    let hourTime = endTime - (1000*60*60);
 
     request.get(baseurlPublic('/market_data/candles') + `?pair=${pair}&interval=8h&startTime=${startTime}&endTime=${endTime}`,function(error, response, candles) {
         if(!symbol){
@@ -793,6 +794,12 @@ const actions = {
                         if(candle.time > dayTime){
                             range.dHigh = (range.dHigh  === null) ? candle.high : Math.max(range.dHigh,candle.high);
                             range.dLow = (range.dLow  === null) ? candle.low : Math.min(range.dLow,candle.low);
+                            
+                            //Hour Time
+                            if(candle.time > hourTime){
+                                range.hHigh = (range.hHigh  === null) ? candle.high : Math.max(range.hHigh,candle.high);
+                                range.hLow = (range.hLow  === null) ? candle.low : Math.min(range.hLow,candle.low);
+                            }
                         }
                     }
                 }
