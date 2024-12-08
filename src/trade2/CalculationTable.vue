@@ -25,9 +25,9 @@
 				</span> 
 			</router-link>
 				<small class="fw-bold  badge p-range text-xxs">
-					<span v-if="row.item.ticker">
+					<span v-if="row.item.range">
 					{{(row.item.range.hHigh-row.item.range.hLow)/row.item.range.hHigh*100 | round}}
-					<span v-if="row.item.ticker">
+					</span>-<span v-if="row.item.range">
 					{{(row.item.range.dHigh-row.item.range.dLow)/row.item.range.dHigh*100 | round}}
 					</span>-<span v-if="row.item.range">
 					{{(row.item.range.wHigh-row.item.range.wLow)/row.item.range.wHigh*100 | round}}
