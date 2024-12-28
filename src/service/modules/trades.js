@@ -222,7 +222,7 @@ const getters = {
       return !!value.symbol 
         && ((
           false
-            ||   !!Math.round(num(value?.meta?.stock_worth)*100000000) 
+            ||   (!!Math.round(num(value?.meta?.stock_worth)*100000000) && (num(value?.meta?.stock_worth)>30))
             ||   (!!Math.round(num(value?.balance?.total)*1000000000) &&  (num(value?.ticker?.last_price * value?.balance?.total)>30))
             || !!Math.round(num(value?.order?.onbuy_amount))
             || !!Math.round(num(value?.order?.onsale_amount))
