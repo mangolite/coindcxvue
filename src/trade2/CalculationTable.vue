@@ -8,7 +8,7 @@
 			<router-link :to="`/trade2/${account}/${row.item.symbol}`" 
 				tag="b" style="cursor:pointer" class="text-sm">
 				{{ row.item.symbol}} 
-				<span class="text-xs"
+				<span class="text-xs" 
 						:class="{
 							'text-success fa fa-sort-up' : row.value>100,
 							'text-danger fa fa-sort-down' : row.value<100,
@@ -93,7 +93,10 @@
 			</div>
 																			
 				<div class=" coin  ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div>
-
+				<i class="fas fa-info-circle" v-tooltip="{
+					trigger : 'click',
+					content : JSON.stringify(row.item, null, 2)
+				}"/>
 		</template>
 
 		<template #cell(stkwrth)="row">
@@ -110,7 +113,6 @@
 					}">
 						@&nbsp;{{row.item.meta.buy_rate_stock | round5}}
 					</div> 
-					
 				</div>
 				<!-- <div class="text-xs coin float-end ">{{(row.item.meta.buy_quantity - row.item.meta.sell_quantity ) | min0 | round5}}</div> -->
 		</template>
@@ -269,7 +271,7 @@
 						formatter: (v,k,item) => (item.meta.sell_rate-item.meta.buy_rate)*item.meta.sell_quantity},
 
 						{ key: 'stk', label: ' STOCK', sortable: true, variant : "coins", class:"fw-normal",sortByFormatted:true,
-						formatter: (v,k,item) => (item.meta.buy_quantity - item.meta.sell_quantity)},
+						formatter: (v,k,item) => formatter.num(item.meta.buy_quantity - item.meta.sell_quantity)},
 					
 					{ key: 'stkwrth', label: ' @BuyRate', sortable: true, variant : "stkb", class:"fw-normal",sortByFormatted:true,
 						formatter: (v,k,item) => formatter.num(item?.meta?.buy_rate_stock || 0) * formatter.num(item?.meta?.stock || 0) * 0.999 },

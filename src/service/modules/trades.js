@@ -220,13 +220,15 @@ const getters = {
   sortedWallets : function (state) {
     return Object.values(state.summary).filter(function(value){
       return !!value.symbol 
-        && (
-              !!Math.round(num(value?.meta?.stock_worth)) 
-            || !!Math.round(num(value?.meta?.onbuy_amount))
-            || !!Math.round(num(value?.meta?.onsale_amount))
+        && ((
+          false
+            ||   !!Math.round(num(value?.meta?.stock_worth)*100000000) 
+            ||   (!!Math.round(num(value?.balance?.total)*1000000000) &&  (num(value?.ticker?.last_price * value?.balance?.total)>30))
+            || !!Math.round(num(value?.order?.onbuy_amount))
+            || !!Math.round(num(value?.order?.onsale_amount))
             //!!value?.order?.onbuy_qty || !!value.order?.onsale_qty  ||
             //!!num(value?.balance?.balance) || !!num(value?.balance?.locked_balance)
-          );
+          ));
     });
   },
   total(state){
@@ -834,7 +836,7 @@ const actions = {
           if(summary[market]){
             let summItem = summary[market];
             summItem.ticker = ticker;
-            summItem.meta.stock_worth = summItem.meta.stock * summItem.ticker.last_price * 0.999;
+            summItem.meta.stock_worth = (summItem.meta.stock * summItem.ticker.last_price * 0.999);
             summItem.meta.now_profit = summItem.meta.stock_worth + summItem.meta.earning;
             summItem.meta.signal_sell = (summItem.ticker.high-summItem.ticker.last_price)/(summItem.ticker.high-summItem.meta.buy_rate_stock)*-100
             summItem.meta.signal_buy = (summItem.ticker.last_price-summItem.ticker.low)/(summItem.meta.buy_rate_stock-summItem.ticker.low)*100;
