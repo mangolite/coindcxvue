@@ -26,6 +26,7 @@
 						<div class="  edit">	
 							<b-button secondary class=" btn-sm fa fa-plus" @click="keyIndex=null; showEditor();"></b-button>&nbsp;
 							<b-button secondary class="btn-sm fa fa-edit" @click="keyIndex=$store.getters.account;showEditor();"></b-button>&nbsp;
+							<b-button secondary class="btn-sm fa fa-exchange-alt" @click="keyIndex=$store.getters.account;showTransfer();"></b-button>&nbsp;
 							<b-button secondary class="btn-sm fa fa-trash" @click="keyIndex=$store.getters.account;deleteCurrentKey()"></b-button>&nbsp;
 							</div>
 
@@ -111,6 +112,56 @@
     </b-modal>
 
 
+<b-modal
+      id="modal-prevent-closing-transfer"
+      ref="modal-transfer"
+      title="Submit Your Detail"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="transferOk"
+      
+    >
+      <form ref="form" @submit.stop.prevent="transferSubmit">
+        <b-form-group
+          label="From"
+          label-for="api-account-input"
+          invalid-feedback="To/Froma Accounts required"
+          :state="transferAccountsState"
+          class="acc-modal"
+        >
+		<b-form-select v-model="transfer.from"  id="from"
+            :state="transferAccountsState"
+			:options="accounts"></b-form-select>
+		<b-form-select v-model="transfer.to"  id="to"
+            :state="transferAccountsState"
+			:options="accounts"></b-form-select>
+        </b-form-group>
+
+        <b-form-group
+          label="Cur/Amount"
+          label-for="api-cur-amount"
+          invalid-feedback="Currency/Amount required"
+          :state="transferAmountState"
+          class="acc-modal"
+        >
+          <b-form-input
+            id="from"
+            v-model="transfer.currency"
+            :state="transferAmountState"
+            required
+          ></b-form-input>
+		   <b-form-input
+            id="to"
+            v-model="transfer.amount"
+            :state="transferAmountState"
+            required
+          ></b-form-input>
+        </b-form-group>
+
+
+      </form>
+    </b-modal>
+
 		</b-navbar>
 
 </template>
@@ -149,6 +200,17 @@
 				apiKey : null, apiKeyState : null,
 				apiSecret : null, apiSecretState : null,
 				keyIndex : 1,
+				transferAccountsState : null, transferAmountState : null,
+				transfer : {
+					from : "", to : "", currency : "POLYX", amount : 49.1
+				}
+			}
+		},
+		computed : {
+			accounts(){
+				return this.$store.getters.KEY_LIST.map((KEY)=>{
+						return { value : KEY.account, text : `${KEY.name}(${KEY.email}):${KEY.account}`}
+				})
 			}
 		},
 		methods: {
@@ -169,6 +231,19 @@
 				this.apiSecret = KEYS["api_secret_" + this.keyIndex];
 				this.$bvModal.show('modal-prevent-closing');
 			},
+			showTransfer(){
+				console.log("showTransfer")
+				this.$bvModal.show('modal-prevent-closing-transfer');
+			},
+			transferOk(bvModalEvt){
+				// Prevent modal from closing
+				bvModalEvt.preventDefault()
+				// Trigger submit handler
+				this.transferSubmit()
+			},
+			transferSubmit() {
+				 this.$store.dispatch('makeTransfer',this.transfer);
+			},
 			checkFormValidity() {
 				const valid = this.$refs.form.checkValidity()
 				this.apiKeyState = valid
@@ -187,7 +262,7 @@
 				// Trigger submit handler
 				this.handleSubmit()
 			},
-			handleSubmit() {
+			async handleSubmit() {
 				// Exit when the form isn't valid
 				if (!this.checkFormValidity()) {
 					return
@@ -209,6 +284,12 @@
 				this.$store.commit("KEYS",KEYS);
 				this.$store.commit("INDEX",INDEX);
 
+				let resp = await this.$store.dispatch('getUserInfo',this.transfer);
+
+				localStorage.setItem("api_account_"+this.keyIndex,resp.coindcx_id);
+				localStorage.setItem("api_email_"+this.keyIndex,resp.email);
+
+				console.log("resp",resp)
 				// Hide the modal manually
 				this.$nextTick(() => {
 				this.$bvModal.hide('modal-prevent-closing')

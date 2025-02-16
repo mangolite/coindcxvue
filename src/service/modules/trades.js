@@ -77,6 +77,8 @@ var INDEX = 0;
 for(var i =1; i < 50; i++){
   KEYS["api_key_" + i] = localStorage.getItem("api_key_"+i);
   KEYS["api_secret_" + i] = localStorage.getItem("api_secret_"+i);
+  KEYS["api_email_" + i] = localStorage.getItem("api_email_"+i);
+  KEYS["api_account_" + i] = localStorage.getItem("api_account_"+i);
   KEYS["api_name_" + i] = localStorage.getItem("api_name_"+i) || ('Acct '+ i);
   if(KEYS["api_key_" + i]){
     KEY_LIST.push({
@@ -84,6 +86,8 @@ for(var i =1; i < 50; i++){
       name : KEYS["api_name_" + i],
       key : KEYS["api_key_" + i],
       secret : KEYS["api_secret_" + i],
+      email : KEYS["api_email_" + i],
+      account : KEYS["api_account_" + i],
     });
   }
 }
@@ -1144,7 +1148,84 @@ async updateLocal({ commit,dispatch,getters }){
         Vue.$toast.success(body.message || order.type + " Success");
       });
 
+    },
+
+    makeTransfer({commit,getters},transfer){
+      let _index = getters.account;
+      let api_key = KEYS["api_key_" + _index];
+      let api_secret = KEYS["api_secret_" + _index];
+      console.log("_index",_index)
+      if(!api_key && !api_secret){
+        return;
+      }
+
+      console.log("makeTransfer",transfer)
+      var timeStamp = Math.floor(Date.now());
+      // To check if the timestamp is correct
+      console.log(timeStamp);
+      let body = {
+          "timestamp": timeStamp,
+          "from_account_id" : transfer.from,
+          "to_account_id": transfer.to,
+          "currency_short_name": transfer.currency,
+          amount : formatters.num(transfer.amount)
+      }
+
+      const payload = new Buffer(JSON.stringify(body)).toString();
+      const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+  
+      const options = {
+          url: baseurl ("/exchange/v1/wallets/sub_account_transfer"),
+          headers: {
+              'X-AUTH-APIKEY': api_key,
+              'X-AUTH-SIGNATURE': signature
+          },
+          json: true,
+          body: body
+      }
+
+      request.post(options,function(error, response, body) {
+        Vue.$toast.success(body.message || transfer.type + " Success");
+      });
+
+    },
+
+    async getUserInfo({commit,getters}){
+      let _index = getters.account;
+      let api_key = KEYS["api_key_" + _index];
+      let api_secret = KEYS["api_secret_" + _index];
+      console.log("_index",_index)
+      if(!api_key && !api_secret){
+        return;
+      }
+
+      console.log("getUserInfo")
+      var timeStamp = Math.floor(Date.now());
+      // To check if the timestamp is correct
+      console.log(timeStamp);
+      let body = {
+          "timestamp": timeStamp
+      }
+
+      const payload = new Buffer(JSON.stringify(body)).toString();
+      const signature = crypto.createHmac('sha256', api_secret).update(payload).digest('hex')
+  
+      const options = {
+          url: baseurl ("/exchange/v1/users/info"),
+          headers: {
+              'X-AUTH-APIKEY': api_key,
+              'X-AUTH-SIGNATURE': signature
+          },
+          json: true,
+          body: body
+      }
+
+      let resp =  await request.POST(options);
+      Vue.$toast.success(resp.message || KEYS["api_name_" + _index] + " info");
+      return resp.body;
+
     }
+
 };
 
 const mutations = {
